@@ -23,7 +23,7 @@ export const viewport: Viewport = { themeColor: '#050505', colorScheme: 'dark' }
 
 /** Marks the document as motion-capable before first paint so reveal start states never flash. */
 /* If the motion engine has not started within 3.5s (very slow device, script blocked), reveal everything. */
-const PRE_PAINT = `try{var d=document.documentElement;if(location.pathname==='/'&&!scrollY)d.classList.add('hero-top');if(!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('rv-on');if(location.pathname==='/'&&!sessionStorage.getItem('rf-intro-seen')){d.classList.add('intro-first');window.__t0=performance.now()}setTimeout(function(){if(!window.__rv)d.classList.remove('rv-on','intro-first')},3500)}}catch(e){}`;
+const PRE_PAINT = `try{var d=document.documentElement;if(!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('rv-on');if(location.pathname==='/')d.setAttribute('data-in-hero','');if(location.pathname==='/'&&!sessionStorage.getItem('rf-intro-seen')){d.classList.add('intro-first');window.__t0=performance.now()}setTimeout(function(){if(!window.__rv)d.classList.remove('rv-on','intro-first')},3500)}}catch(e){}`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

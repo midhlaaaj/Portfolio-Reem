@@ -1,0 +1,102 @@
+.section {
+  position: relative;
+  z-index: 1;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(104px, 12.5vw, 180px) 0 0;
+  box-sizing: border-box;
+}
+.head {
+  padding: 0 clamp(20px, 4.44vw, 64px);
+  margin-bottom: clamp(40px, 4.4vw, 64px);
+}
+.h2 {
+  margin: 0;
+  font: 900 clamp(52px, 7.6vw, 112px) / 0.88 var(--font-display);
+  letter-spacing: -0.045em;
+  color: var(--paper);
+}
+.line {
+  display: block;
+  overflow: hidden;
+  padding: 0.1em 0.06em 0.06em 0;
+  margin: -0.1em 0 -0.06em;
+}
+.lineIn {
+  display: block;
+}
+
+/* Endless loop: the list is rendered twice and the track slides exactly one copy's width, then repeats. */
+.marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
+}
+.track {
+  display: flex;
+  width: max-content;
+  animation: slide 45s linear infinite;
+  will-change: transform;
+}
+.marquee:hover .track {
+  animation-play-state: paused;
+}
+.group {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 14px;
+  padding-right: 14px;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  height: 56px;
+  padding: 0 28px;
+  border: 1px solid rgba(244, 242, 239, 0.22);
+  border-radius: 999px;
+  box-sizing: border-box;
+  font: 600 clamp(16px, 1.3vw, 19px) / 1 var(--font-body);
+  color: var(--paper);
+  white-space: nowrap;
+  transition:
+    background 180ms var(--ease-out),
+    border-color 180ms var(--ease-out);
+}
+.pill:hover {
+  background: rgba(244, 242, 239, 0.06);
+  border-color: rgba(244, 242, 239, 0.4);
+}
+.pill::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  margin-right: 12px;
+  border-radius: 50%;
+  background: var(--red);
+}
+
+@keyframes slide {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* Reduced motion: no looping. The row is a plain, swipeable strip of one copy. */
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+  }
+  .marquee {
+    overflow-x: auto;
+    padding: 0 clamp(20px, 4.44vw, 64px);
+    -webkit-mask-image: none;
+    mask-image: none;
+    scrollbar-width: none;
+  }
+  .copy {
+    display: none;
+  }
+}

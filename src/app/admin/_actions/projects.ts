@@ -28,9 +28,9 @@ export async function saveProject(
     };
   }
 
-  // The folder tab falls back to the first category's name, as in the design.
-  let tab = d.tab;
-  if (!tab && d.categoryIds[0]) {
+  // The folder tab always shows the first category's name.
+  let tab = '';
+  if (d.categoryIds[0]) {
     const [c] = await db.select({ name: categories.name }).from(categories).where(eq(categories.id, d.categoryIds[0]));
     tab = c?.name ?? '';
   }

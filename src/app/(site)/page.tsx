@@ -5,9 +5,11 @@ import { HeroMotion } from '@/components/motion/HeroMotion';
 import { PageFrame } from '@/components/site/PageFrame';
 import { SelectedWork } from '@/components/site/SelectedWork';
 import { Testimonials } from '@/components/site/Testimonials';
+import { Tools } from '@/components/site/Tools';
 import { WhatIDo } from '@/components/site/WhatIDo';
 import { JsonLd } from '@/components/ui/JsonLd';
 import {
+  getAbout,
   getCopy,
   getFeaturedProjects,
   getHome,
@@ -34,7 +36,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const [copy, home, settings, services, featured, published, quotes] = await Promise.all([
+  const [about, copy, home, settings, services, featured, published, quotes] = await Promise.all([
+    getAbout(),
     getCopy(),
     getHome(),
     getSettings(),
@@ -86,6 +89,7 @@ export default async function HomePage() {
         intro={home.introText}
         services={services.items.map((i) => ({ name: i.name, short: i.short, img: m(i.imageId) }))}
       />
+      <Tools tools={[...about.toolsDesign, ...about.toolsAI]} />
       {featured.length > 0 && <SelectedWork copy={copy} projects={featured} title={home.selectedWorkTitle} />}
       {brands.length > 0 && <Brands title={home.brandsTitle} brands={brands} />}
       <Testimonials quotes={quotes} />

@@ -121,7 +121,7 @@ export function ProjectEditor({ data }: { data: ProjectEditData }) {
       title: v.title || 'Untitled project',
       client: v.client,
       scope: v.scope,
-      tab: v.tab || firstCat || '',
+      tab: firstCat || '',
       cats: v.categoryIds.map((id) => data.categories.find((c) => c.id === id)?.name).filter(Boolean),
       cover: item(v.coverId),
       featured: v.featured,
@@ -297,17 +297,6 @@ export function ProjectEditor({ data }: { data: ProjectEditData }) {
                   Year
                 </label>
                 <input id="ed-year" inputMode="numeric" className={css.input} {...register('year')} />
-              </div>
-              <div className={css.field}>
-                <label className={css.label} htmlFor="ed-tab">
-                  Folder tab label
-                </label>
-                <input
-                  id="ed-tab"
-                  className={css.input}
-                  placeholder={firstCat || 'Uses the first category'}
-                  {...register('tab')}
-                />
               </div>
             </div>
 

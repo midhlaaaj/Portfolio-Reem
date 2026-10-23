@@ -20,7 +20,14 @@ export function Nav({ copy: c, email, phone, whatsapp }: Props & { copy: Copy })
       <header className={css.header1} data-nav="">
         <div className={css.div1} data-nav-bg="" aria-hidden="true"></div>
         <nav className={css.nav1} aria-label="Main">
-          <TLink className={css.a1} data-go="Home" data-nav-brand="" aria-label="Reem Fathima, home" href="/">
+          <TLink
+            className={css.a1}
+            data-brand=""
+            data-go="Home"
+            data-nav-brand=""
+            aria-label="Reem Fathima, home"
+            href="/"
+          >
             <span className={css.span1}>Reem Fathima</span>
           </TLink>
           <div className={css.div2}>

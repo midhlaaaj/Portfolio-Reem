@@ -102,23 +102,23 @@ export function setupHero(): () => void {
   };
   layout();
 
-  // On phones the big name sits just under the header, so the header's small one stays hidden until the hero is scrolled.
   const root = document.documentElement;
-  const syncBrand = () =>
-    root.classList.toggle(
-      'hero-top',
-      innerWidth < BP && scrollY < (red ? innerHeight * 0.5 : (wrap.offsetHeight - innerHeight) * 0.45),
-    );
-  syncBrand();
-  addEventListener('scroll', syncBrand, { passive: true });
 
   const onResize = () => {
     layout();
-    syncBrand();
     ScrollTrigger.refresh();
   };
   addEventListener('resize', onResize);
   document.fonts?.ready.then(layout);
+
+  // On phones the nav's name stays hidden for as long as the hero is on screen, and returns once it has scrolled away.
+  const heroTrigger = ScrollTrigger.create({
+    trigger: wrap,
+    start: 'top bottom',
+    end: 'bottom 90px',
+    onToggle: (self) => root.toggleAttribute('data-in-hero', self.isActive),
+  });
+  root.toggleAttribute('data-in-hero', heroTrigger.isActive);
 
   // ---- scroll progress through the 260vh wrapper ----
   const st = red
@@ -331,15 +331,7 @@ export function setupHero(): () => void {
         z: z - r,
       };
     };
-    const place = (
-      e: HTMLElement,
-      k: number,
-      z: number,
-      fx: number,
-      fy: number,
-      fr: number,
-      d?: Deck,
-    ) => {
+    const place = (e: HTMLElement, k: number, z: number, fx: number, fy: number, fr: number, d?: Deck) => {
       const T = d ? stack(d, 6) : null;
       const tx = T ? T.tx : g.sw / 2 + k * step - bx;
       const ty = T ? T.ty : byT - by;
@@ -349,8 +341,24 @@ export function setupHero(): () => void {
       e.style.opacity = '1';
     };
     const b2 = m ? bm : bs;
-    place(pl, -1, 2, -1 * 0.6 * W * b2, pk - 24 * hv * (1 - b2) - 0.24 * H * b2, -1 * (4 * hv * (1 - b2) + 9 * b2), m ? deck[0] : undefined);
-    place(pr, 1, 3, 1 * 0.6 * W * b2, pk - 24 * hv * (1 - b2) - 0.24 * H * b2, 1 * (4 * hv * (1 - b2) + 9 * b2), m ? deck[2] : undefined);
+    place(
+      pl,
+      -1,
+      2,
+      -1 * 0.6 * W * b2,
+      pk - 24 * hv * (1 - b2) - 0.24 * H * b2,
+      -1 * (4 * hv * (1 - b2) + 9 * b2),
+      m ? deck[0] : undefined,
+    );
+    place(
+      pr,
+      1,
+      3,
+      1 * 0.6 * W * b2,
+      pk - 24 * hv * (1 - b2) - 0.24 * H * b2,
+      1 * (4 * hv * (1 - b2) + 9 * b2),
+      m ? deck[2] : undefined,
+    );
     place(pm, 0, 4, 0, pk - 24 * hv * (1 - bm) - 0.38 * H * bm, 0, m ? deck[1] : undefined);
 
     // "A little bit of everything."
@@ -412,12 +420,12 @@ export function setupHero(): () => void {
     engine.cursorFilter = null;
     engine.nav = 1;
     st?.kill();
+    heroTrigger.kill();
+    root.removeAttribute('data-in-hero');
     timers.forEach((t) => t.kill());
     gsap.killTweensOf(v);
     gsap.killTweensOf(engine);
     removeEventListener('resize', onResize);
-    removeEventListener('scroll', syncBrand);
-    root.classList.remove('hero-top');
     document.removeEventListener('click', onClick);
     document.removeEventListener('keydown', onKey);
   };

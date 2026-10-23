@@ -15,7 +15,7 @@ npm run admin:hash -- "your password"   # paste the output line into .env.local
 npm run dev             # terminal 2
 ```
 
-Copy `.env.example` to `.env.local`. With `DATABASE_URL` pointing at `127.0.0.1` the app uses the local stand-in; leave `S3_*` and Turnstile keys empty and uploads go to `public/uploads` and the spam check is skipped. Admin: `/admin`.
+Copy `.env.example` to `.env.local`. With `DATABASE_URL` pointing at `127.0.0.1` the app uses the local stand-in; leave the storage and Turnstile keys empty and uploads go to `public/uploads` and the spam check is skipped. Admin: `/admin`.
 
 ## Deploy (Vercel + Neon)
 
@@ -28,6 +28,6 @@ Copy `.env.example` to `.env.local`. With `DATABASE_URL` pointing at `127.0.0.1`
 ## Notes and deliberate decisions
 
 - Seeded testimonials are the design's placeholders and are seeded **hidden**.
-- Brands strip on Home (`src/content/brands.ts`) is fixed in the design; no admin editor exists for it.
+- The Home brands strip, What I do services, How I work steps, About skills, projects, testimonials and categories are all editable in the admin. Fixed wording (headings, button labels) lives in `src/content/copy.ts`.
 - Images render through `next/image`'s optimiser via `getImageProps` (plain `<img>` on the server, no hydration cost).
 - Uploads are resized in the browser (≤2400px) then re-encoded to WebP by `sharp`; limit 4 MB (Vercel body limit). CV PDF limit 2.5 MB.

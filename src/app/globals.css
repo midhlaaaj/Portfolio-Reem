@@ -125,6 +125,17 @@ img {
 }
 
 /* Skip link: invisible until a keyboard user tabs to it. */
+/* The nav's name is hidden while Home's hero (which carries the big name) is on screen. */
+[data-brand] {
+  transition: opacity 320ms var(--ease-out);
+}
+@media (max-width: 819.98px) {
+  html[data-in-hero] [data-brand] {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
 .skip-link {
   position: fixed;
   left: 16px;

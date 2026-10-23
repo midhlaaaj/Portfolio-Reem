@@ -134,7 +134,7 @@ export function WorkIndex({ copy: c, projects, categories }: Props & { copy: Cop
               >
                 <div className={css.div6} data-rv="clip">
                   <div className={css.div7} data-card-tab="">
-                    {p.tab}
+                    {cat !== ALL && p.cats.includes(cat) ? cat : p.tab}
                   </div>
                   <div className={css.div8}>
                     <div className={css.div9} aria-hidden="true"></div>
