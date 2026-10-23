@@ -2,7 +2,7 @@ import './env.mts';
 import { eq } from 'drizzle-orm';
 import { connect } from '../src/db/connect';
 import * as t from '../src/db/schema';
-import { seedAbout, seedHome, seedProjects, seedServices, seedSettings } from '../src/db/seed-data';
+import { seedAbout, seedHome, seedMedia, seedProjects, seedServices, seedSettings } from '../src/db/seed-data';
 
 /**
  * Pushes the wording in seed-data.ts into an already-seeded database without touching media, uploads,
@@ -68,10 +68,22 @@ await savePage('services', {
   }),
 });
 
+// The share-preview image: add it if missing, and select it only if the old default is still selected.
+const og = seedMedia.find((m) => m.id === seedSettings.seoImageId);
+if (og) await db.insert(t.media).values({ ...og }).onConflictDoNothing();
+
 const [settings] = await db.select().from(t.settings).where(eq(t.settings.id, 1));
+const live = (settings?.data ?? {}) as { seoImageId?: string | null };
 await db
   .update(t.settings)
-  .set({ data: { ...(settings?.data as object), siteTitle: seedSettings.siteTitle, siteDesc: seedSettings.siteDesc } })
+  .set({
+    data: {
+      ...live,
+      siteTitle: seedSettings.siteTitle,
+      siteDesc: seedSettings.siteDesc,
+      seoImageId: !live.seoImageId || live.seoImageId === 'm-cover' ? seedSettings.seoImageId : live.seoImageId,
+    },
+  })
   .where(eq(t.settings.id, 1));
 
 console.log('Wording refreshed.');
