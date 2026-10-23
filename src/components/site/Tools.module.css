@@ -6,40 +6,22 @@
   padding: clamp(104px, 12.5vw, 180px) 0 0;
   box-sizing: border-box;
 }
-.head {
-  padding: 0 clamp(20px, 4.44vw, 64px);
-  margin-bottom: clamp(40px, 4.4vw, 64px);
-}
-.h2 {
-  margin: 0;
-  font: 900 clamp(52px, 7.6vw, 112px) / 0.88 var(--font-display);
-  letter-spacing: -0.045em;
-  color: var(--paper);
-}
-.line {
-  display: block;
-  overflow: hidden;
-  padding: 0.1em 0.06em 0.06em 0;
-  margin: -0.1em 0 -0.06em;
-}
-.lineIn {
-  display: block;
-}
-
-/* Endless loop: the list is rendered twice and the track slides exactly one copy's width, then repeats. */
+/* Endless loop: the list is rendered twice and the row scrolls itself, wrapping at one copy's width; it can also be dragged or swiped. */
 .marquee {
-  overflow: hidden;
+  overflow-x: auto;
+  scrollbar-width: none;
   -webkit-mask-image: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
   mask-image: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
 }
 .track {
   display: flex;
   width: max-content;
-  animation: slide 45s linear infinite;
-  will-change: transform;
 }
-.marquee:hover .track {
-  animation-play-state: paused;
+.marquee::-webkit-scrollbar {
+  display: none;
+}
+.marquee + .marquee {
+  margin-top: 14px;
 }
 .group {
   display: flex;
@@ -47,6 +29,7 @@
   gap: 14px;
   padding-right: 14px;
 }
+.marquee { cursor: grab; }
 .pill {
   display: inline-flex;
   align-items: center;
@@ -75,22 +58,9 @@
   background: var(--red);
 }
 
-@keyframes slide {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(-50%, 0, 0);
-  }
-}
-
 /* Reduced motion: no looping. The row is a plain, swipeable strip of one copy. */
 @media (prefers-reduced-motion: reduce) {
-  .track {
-    animation: none;
-  }
   .marquee {
-    overflow-x: auto;
     padding: 0 clamp(20px, 4.44vw, 64px);
     -webkit-mask-image: none;
     mask-image: none;

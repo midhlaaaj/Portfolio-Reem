@@ -89,7 +89,7 @@ export default async function HomePage() {
         intro={home.introText}
         services={services.items.map((i) => ({ name: i.name, short: i.short, img: m(i.imageId) }))}
       />
-      <Tools tools={[...about.toolsDesign, ...about.toolsAI]} />
+      <Tools rows={[about.toolsDesign, about.toolsAI]} />
       {featured.length > 0 && <SelectedWork copy={copy} projects={featured} title={home.selectedWorkTitle} />}
       {brands.length > 0 && <Brands title={home.brandsTitle} brands={brands} />}
       <Testimonials quotes={quotes} />
