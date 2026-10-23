@@ -14,6 +14,7 @@ const m = (id: string, file: string, width: number, height: number, alt: string)
 const each = (alts: string[], mk: (i: number, alt: string) => void) => alts.forEach((a, i) => mk(i, a));
 
 m('m-cover', 'p01-0.jpg', 1920, 1080, 'Red portfolio folder held in a hand');
+m('m-og', 'og.jpg', 1200, 630, 'Reem Fathima, graphic designer and social media designer, over a red portfolio folder');
 m('m-expo-entrance', 'p05-0.jpg', 1439, 914, 'Expo entrance with two branded pillars and a red carpet');
 each(
   [
@@ -338,7 +339,7 @@ export const seedSettings: SiteSettings = {
   linkedin: '',
   cvUrl: '',
   cvName: '',
-  seoImageId: 'm-cover',
+  seoImageId: 'm-og',
   replyTime: 'I usually reply within a day.',
 };
 
