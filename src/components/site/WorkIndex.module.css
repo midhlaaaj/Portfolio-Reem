@@ -136,10 +136,17 @@
 /* Below 820px the design switched these from JS: one column, wrapping filter chips, no stagger. */
 @media (max-width: 819.98px) {
   .div3 {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 8px;
     padding: 0;
     border-color: transparent;
+  }
+  .div2 {
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  .button1 {
+    flex: 0 0 auto;
   }
   .button1:not([aria-pressed='true']) {
     border-color: rgba(244, 242, 239, 0.22);

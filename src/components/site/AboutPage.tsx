@@ -1,4 +1,3 @@
-import { TLink } from '@/components/motion/TLink';
 import type { Copy } from '@/content/copy';
 import { Img } from '@/components/ui/Img';
 import type { MediaItem } from '@/lib/data';
@@ -103,9 +102,6 @@ export function AboutPage({ ab, copy: c }: { ab: AboutView; copy: Copy }) {
               </a>
             </>
           )}
-          <TLink className={css.a2} data-go="Contact" href="/contact">
-            {c['about.start']}
-          </TLink>
         </div>
       </section>
     </>

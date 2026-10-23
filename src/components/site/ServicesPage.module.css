@@ -191,6 +191,7 @@
 @media (max-width: 1039.98px) {
   .div8 {
     position: relative;
+    top: auto;
   }
 }
 

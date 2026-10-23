@@ -53,7 +53,6 @@ const ENTRIES = [
   ['about.toolsAI', 'About page', 'AI tools label', 'AI tools'],
   ['about.experience', 'About page', 'Experience heading', 'Experience'],
   ['about.downloadCv', 'About page', 'Download CV button', 'Download CV'],
-  ['about.start', 'About page', 'Start a project button', 'Start a project'],
 
   ['contact.line1', 'Contact page', 'Heading, line 1', "Let's talk"],
   ['contact.line2', 'Contact page', 'Heading, line 2', 'about your project.'],
