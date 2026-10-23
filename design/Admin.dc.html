@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&amp;family=Figtree:wght@400;500;600&amp;display=swap">
+<style>
+html,body{margin:0;padding:0;background:#050505}
+body{color:rgba(244,242,239,.92);font-family:Figtree,system-ui,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+a{color:#F4F2EF;text-decoration:none}
+a:hover{color:#F4F2EF}
+::selection{background:#E10600;color:#F4F2EF}
+:focus-visible{outline:2px solid #E10600;outline-offset:2px}
+input::placeholder,textarea::placeholder{color:rgba(244,242,239,.42)}
+select option{background:#141416;color:#F4F2EF}
+</style>
+</helmet>
+<div style="min-height:100vh; background:#050505; color:rgba(244,242,239,0.92); font-family:Figtree, system-ui, sans-serif;">
+  <input type="file" ref="{{ fileRef }}" accept="image/*" multiple="" onChange="{{ onFiles }}" style="display:none;">
+  <input type="file" ref="{{ cvRef }}" accept="application/pdf" onChange="{{ onCv }}" style="display:none;">
+
+  <sc-if value="{{ showLogin }}" hint-placeholder-val="{{ false }}">
+    <div style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; box-sizing:border-box; background:radial-gradient(ellipse 70% 80% at 0% 30%, rgba(61,6,6,0.75), rgba(5,5,5,0) 70%), #050505;">
+      <form onSubmit="{{ login }}" noValidate="" style="width:100%; max-width:400px; display:flex; flex-direction:column; gap:20px; padding:36px 32px; box-sizing:border-box; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:18px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span style="font:900 22px/1 Archivo, sans-serif; letter-spacing:-0.04em; color:#F4F2EF;">Reem Fathima</span>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <h1 style="margin:0; font:900 40px/1 Archivo, sans-serif; letter-spacing:-0.04em; color:#F4F2EF;">Log in</h1>
+          <p style="margin:0; font:400 15px/1.5 Figtree, sans-serif; color:rgba(244,242,239,0.7);">Manage projects, pages and inquiries for the site.</p>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <label for="lg-email" style="font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Email</label>
+          <input id="lg-email" type="email" autoComplete="username" value="{{ le }}" onChange="{{ onLe }}" style="width:100%; box-sizing:border-box; height:48px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 16px/1 Figtree, sans-serif; outline:none; transition:border-color 180ms cubic-bezier(0.16,1,0.3,1);" style-focus="border-color:#E10600;">
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <label for="lg-pw" style="font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Password</label>
+          <input id="lg-pw" type="password" autoComplete="current-password" value="{{ lp }}" onChange="{{ onLp }}" style="width:100%; box-sizing:border-box; height:48px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 16px/1 Figtree, sans-serif; outline:none; transition:border-color 180ms cubic-bezier(0.16,1,0.3,1);" style-focus="border-color:#E10600;">
+        </div>
+        <sc-if value="{{ hasLerr }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:0; display:flex; gap:8px; align-items:baseline; font:500 14px/1.4 Figtree, sans-serif; color:#F4F2EF;"><span aria-hidden="true" style="flex:0 0 auto; width:7px; height:7px; border-radius:50%; background:#E10600;"></span>{{ lerr }}</p></sc-if>
+        <button type="submit" style="appearance:none; height:48px; border:0; border-radius:999px; background:#E10600; color:#F4F2EF; font:600 16px/1 Figtree, sans-serif; cursor:pointer; transition:background 180ms cubic-bezier(0.16,1,0.3,1);" style-hover="background:#C70500;">Log in</button>
+        <p style="margin:0; font:400 14px/1.5 Figtree, sans-serif; color:rgba(244,242,239,0.62);">Prototype login: reemfathima66@gmail.com, password folder</p>
+      </form>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showApp }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; min-height:100vh;">
+      <sc-if value="{{ desktop }}" hint-placeholder-val="{{ true }}">
+        <aside style="position:sticky; top:0; height:100vh; flex:0 0 248px; box-sizing:border-box; padding:22px 14px; border-right:1px solid rgba(244,242,239,0.08); background:#08080A; display:flex; flex-direction:column; gap:28px; overflow-y:auto;">
+          <div style="display:flex; align-items:center; gap:12px; padding:0 10px;">
+            <div style="display:flex; flex-direction:column; gap:3px;">
+              <span style="font:900 18px/1 Archivo, sans-serif; letter-spacing:-0.035em; color:#F4F2EF;">Reem Fathima</span>
+              <span style="font:500 13px/1 Figtree, sans-serif; color:rgba(244,242,239,0.6);">Site admin</span>
+            </div>
+          </div>
+          <nav aria-label="Admin" style="display:flex; flex-direction:column; gap:2px;">
+            <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="8">
+              <button type="button" onClick="{{ n.on }}" aria-current="{{ n.cur }}" style="appearance:none; display:flex; align-items:center; justify-content:space-between; gap:10px; height:42px; padding:0 12px; border:0; border-radius:10px; background:{{ n.bg }}; color:{{ n.color }}; font:600 15px/1 Figtree, sans-serif; text-align:left; cursor:pointer; transition:background 180ms cubic-bezier(0.16,1,0.3,1), color 180ms cubic-bezier(0.16,1,0.3,1);" style-hover="color:#F4F2EF;">
+                <span>{{ n.label }}</span>
+                <sc-if value="{{ n.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="min-width:22px; height:22px; padding:0 7px; box-sizing:border-box; border-radius:999px; background:{{ n.badgeBg }}; color:#F4F2EF; font:600 12px/22px Figtree, sans-serif; text-align:center;">{{ n.badge }}</span></sc-if>
+              </button>
+            </sc-for>
+          </nav>
+        </aside>
+      </sc-if>
+
+      <div style="flex:1 1 auto; min-width:0; display:flex; flex-direction:column;">
+        <header style="position:sticky; top:0; z-index:30; height:64px; box-sizing:border-box; padding:0 clamp(16px,3vw,40px); display:flex; align-items:center; justify-content:space-between; gap:16px; background:rgba(5,5,5,0.86); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border-bottom:1px solid rgba(244,242,239,0.08);">
+          <span style="font:600 15px/1 Figtree, sans-serif; color:rgba(244,242,239,0.72);">{{ crumb }}</span>
+          <div style="position:relative; display:flex; align-items:center; gap:10px;">
+            <a href="Home.dc.html" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; height:38px; padding:0 16px; border-radius:999px; border:1px solid rgba(244,242,239,0.2); color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; transition:background 180ms cubic-bezier(0.16,1,0.3,1);" style-hover="background:rgba(244,242,239,0.06);">View site</a>
+            <button type="button" onClick="{{ toggleAcct }}" aria-expanded="{{ acctOpen }}" aria-label="Account menu" style="appearance:none; display:inline-flex; align-items:center; gap:8px; height:38px; padding:0 12px 0 4px; border-radius:999px; border:1px solid rgba(244,242,239,0.14); background:transparent; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; cursor:pointer; transition:background 180ms cubic-bezier(0.16,1,0.3,1);" style-hover="background:rgba(244,242,239,0.06);">
+              <span aria-hidden="true" style="width:30px; height:30px; border-radius:50%; background:#3D0606; color:#F4F2EF; font:700 12px/30px Figtree, sans-serif; text-align:center;">RF</span>Reem
+            </button>
+            <sc-if value="{{ acct }}" hint-placeholder-val="{{ false }}">
+              <div role="menu" style="position:absolute; right:0; top:48px; min-width:220px; padding:6px; background:#141416; border:1px solid rgba(244,242,239,0.12); border-radius:12px; box-shadow:0 24px 60px -20px rgba(0,0,0,0.8); display:flex; flex-direction:column;">
+                <span style="padding:10px 12px 8px; font:500 13px/1.4 Figtree, sans-serif; color:rgba(244,242,239,0.6);">reemfathima66@gmail.com</span>
+                <button type="button" role="menuitem" onClick="{{ askReset }}" style="appearance:none; height:40px; padding:0 12px; border:0; border-radius:8px; background:transparent; color:#F4F2EF; font:500 14px/1 Figtree, sans-serif; text-align:left; cursor:pointer; transition:background 180ms cubic-bezier(0.16,1,0.3,1);" style-hover="background:rgba(244,242,239,0.06);">Reset demo content</button>
+                <button type="button" role="menuitem" onClick="{{ logout }}" style="appearance:none; height:40px; padding:0 12px; border:0; border-radius:8px; background:transparent; color:#F4F2EF; font:500 14px/1 Figtree, sans-serif; text-align:left; cursor:pointer; transition:background 180ms cubic-bezier(0.16,1,0.3,1);" style-hover="background:rgba(244,242,239,0.06);">Log out</button>
+              </div>
+            </sc-if>
+          </div>
+        </header>
+
+        <main style="flex:1 1 auto; width:100%; max-width:1240px; margin:0 auto; box-sizing:border-box; padding:32px clamp(16px,3vw,40px) {{ mainPadB }};">
+          <sc-if value="{{ isDash }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex; flex-direction:column; gap:28px;">
+              <div style="display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:16px 24px;">
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                  <h1 style="margin:0; font:900 clamp(34px,4vw,48px)/1 Archivo, sans-serif; letter-spacing:-0.035em; color:#F4F2EF;">Dashboard</h1>
+                  <p style="margin:0; font:400 15px/1.5 Figtree, sans-serif; color:rgba(244,242,239,0.68);">Welcome back, Reem. Everything you change here updates the live site.</p>
+                </div>
+                <div style="display:flex; flex-wrap:wrap; gap:10px;">
+                  <button type="button" onClick="{{ goInq }}" style="appearance:none; display:inline-flex; align-items:center; height:42px; padding:0 18px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer; transition:background 180ms cubic-bezier(0.16,1,0.3,1);" style-hover="background:rgba(244,242,239,0.06);">View inquiries</button>
+                  <button type="button" onClick="{{ newProject }}" style="appearance:none; display:inline-flex; align-items:center; height:42px; padding:0 18px; border:0; border-radius:999px; background:#E10600; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer; transition:background 180ms cubic-bezier(0.16,1,0.3,1);" style-hover="background:#C70500;">Add project</button>
+                </div>
+              </div>
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap:16px;">
+                <section style="display:flex; flex-direction:column; gap:18px; padding:22px; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px;">
+                  <div style="display:flex; align-items:baseline; gap:12px;"><span style="font:900 48px/1 Archivo, sans-serif; letter-spacing:-0.04em; color:#F4F2EF;">{{ dash.newCount }}</span><span style="font:600 16px/1.3 Figtree, sans-serif; color:#F4F2EF;">{{ dash.newLabel }}</span></div>
+                  <div style="display:flex; flex-direction:column; border-top:1px solid rgba(244,242,239,0.08);">
+                    <sc-for list="{{ dash.latest }}" as="q" hint-placeholder-count="3">
+                      <button type="button" onClick="{{ q.on }}" style="appearance:none; display:flex; align-items:center; gap:12px; padding:12px 0; border:0; border-bottom:1px solid rgba(244,242,239,0.08); background:transparent; color:#F4F2EF; text-align:left; cursor:pointer; transition:opacity 180ms cubic-bezier(0.16,1,0.3,1);" style-hover="opacity:0.8;">
+                        <sc-if value="{{ q.isNew }}" hint-placeholder-val="{{ false }}"><span aria-label="New" style="flex:0 0 auto; width:8px; height:8px; border-radius:50%; background:#E10600;"></span></sc-if>
+                        <span style="flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:3px;"><span style="font:600 15px/1.3 Figtree, sans-serif;">{{ q.name }}</span><span style="font:400 14px/1.3 Figtree, sans-serif; color:rgba(244,242,239,0.65);">{{ q.type }}</span></span>
+                        <span style="flex:0 0 auto; font:500 13px/1.3 Figtree, sans-serif; color:rgba(244,242,239,0.6);">{{ q.when }}</span>
+                      </button>
+                    </sc-for>
+                    <sc-if value="{{ dash.noLatest }}" hint-placeholder-val="{{ false }}"><p style="margin:14px 0 0; font:400 14px/1.5 Figtree, sans-serif; color:rgba(244,242,239,0.65);">No inquiries yet. Messages from the contact form show up here.</p></sc-if>
+                  </div>
+                </section>
+                <section style="display:flex; flex-direction:column; gap:18px; padding:22px; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px;">
+                  <h2 style="margin:0; font:600 17px/1.3 Figtree, sans-serif; color:#F4F2EF;">Projects</h2>
+                  <div style="display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px;">
+                    <div style="display:flex; flex-direction:column; gap:6px;"><span style="font:900 36px/1 Archivo, sans-serif; letter-spacing:-0.04em; color:#F4F2EF;">{{ dash.pub }}</span><span style="font:500 14px/1.3 Figtree, sans-serif; color:rgba(244,242,239,0.68);">Published</span></div>
+                    <div style="display:flex; flex-direction:column; gap:6px;"><span style="font:900 36px/1 Archivo, sans-serif; letter-spacing:-0.04em; color:#F4F2EF;">{{ dash.draft }}</span><span style="font:500 14px/1.3 Figtree, sans-serif; color:rgba(244,242,239,0.68);">Drafts</span></div>
+                    <div style="display:flex; flex-direction:column; gap:6px;"><span style="font:900 36px/1 Archivo, sans-serif; letter-spacing:-0.04em; color:#F4F2EF;">{{ dash.feat }}</span><span style="font:500 14px/1.3 Figtree, sans-serif; color:rgba(244,242,239,0.68);">On Home</span></div>
+                  </div>
+                  <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:auto;">
+                    <button type="button" onClick="{{ goProjects }}" style="appearance:none; display:inline-flex; align-items:center; height:40px; padding:0 16px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer; transition:background 180ms cubic-bezier(0.16,1,0.3,1);" style-hover="background:rgba(244,242,239,0.06);">Manage projects</button>
+                    <button type="button" onClick="{{ goMedia }}" style="appearance:none; display:inline-flex; align-items:center; height:40px; padding:0 16px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer; transition:background 180ms cubic-bezier(0.16,1,0.3,1);" style-hover="background:rgba(244,242,239,0.06);">Upload images</button>
+                  </div>
+                </section>
+                <section style="display:flex; flex-direction:column; gap:14px; padding:22px; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px;">
+                  <h2 style="margin:0; font:600 17px/1.3 Figtree, sans-serif; color:#F4F2EF;">Recent edits</h2>
+                  <ul style="list-style:none; margin:0; padding:0; display:flex; flex-direction:column;">
+                    <sc-for list="{{ dash.activity }}" as="a" hint-placeholder-count="4">
+                      <li style="display:flex; justify-content:space-between; gap:16px; padding:10px 0; border-top:1px solid rgba(244,242,239,0.08);"><span style="font:500 14px/1.4 Figtree, sans-serif; color:#F4F2EF;">{{ a.text }}</span><span style="flex:0 0 auto; font:500 13px/1.4 Figtree, sans-serif; color:rgba(244,242,239,0.6);">{{ a.when }}</span></li>
+                    </sc-for>
+                  </ul>
+                </section>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isProjects }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; flex-direction:column; gap:22px;">
+              <div style="display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:16px 24px;">
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                  <h1 style="margin:0; font:900 clamp(34px,4vw,48px)/1 Archivo, sans-serif; letter-spacing:-0.035em; color:#F4F2EF;">Projects</h1>
+                  <p style="margin:0; font:400 15px/1.5 Figtree, sans-serif; color:rgba(244,242,239,0.68);">{{ projCount }}</p>
+                </div>
+                <button type="button" onClick="{{ newProject }}" style="appearance:none; display:inline-flex; align-items:center; height:42px; padding:0 18px; border:0; border-radius:999px; background:#E10600; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer; transition:background 180ms cubic-bezier(0.16,1,0.3,1);" style-hover="background:#C70500;">Add project</button>
+              </div>
+              <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px 24px;">
+                <input type="search" aria-label="Search projects" placeholder="Search by title or client" value="{{ q }}" onChange="{{ onQ }}" style="flex:0 1 360px; min-width:0; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none; transition:border-color 180ms cubic-bezier(0.16,1,0.3,1);" style-focus="border-color:#E10600;">
+                <span style="font:400 14px/1.4 Figtree, sans-serif; color:rgba(244,242,239,0.62);">{{ dragHint }}</span>
+              </div>
+              <sc-if value="{{ projEmpty }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex; flex-direction:column; align-items:flex-start; gap:16px; padding:40px 28px; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px;">
+                  <p style="margin:0; font:500 17px/1.5 Figtree, sans-serif; color:#F4F2EF;">No projects yet. Add your first one to show it on the site.</p>
+                  <button type="button" onClick="{{ newProject }}" style="appearance:none; height:42px; padding:0 18px; border:0; border-radius:999px; background:#E10600; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; cursor:pointer;" style-hover="background:#C70500;">Add project</button>
+                </div>
+              </sc-if>
+              <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}"><p style="margin:0; padding:24px 0; font:500 16px/1.5 Figtree, sans-serif; color:rgba(244,242,239,0.75);">No projects match that search. Try a different title or client.</p></sc-if>
+              <sc-if value="{{ hasRows }}" hint-placeholder-val="{{ true }}">
+                <div style="background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px; overflow:hidden;">
+                  <sc-if value="{{ desktop }}" hint-placeholder-val="{{ true }}">
+                    <div aria-hidden="true" style="display:grid; grid-template-columns:28px 64px minmax(0,2fr) minmax(0,1.4fr) minmax(0,1.3fr) 76px 112px 120px; gap:14px; align-items:center; padding:12px 16px; border-bottom:1px solid rgba(244,242,239,0.08); font:600 13px/1 Figtree, sans-serif; color:rgba(244,242,239,0.6);">
+                      <span></span><span></span><span>Project</span><span>Client</span><span>Categories</span><span>Featured</span><span>Status</span><span>Last edited</span>
+                    </div>
+                  </sc-if>
+                  <sc-for list="{{ prows }}" as="r" hint-placeholder-count="6">
+                    <div draggable="{{ r.drag }}" onDragStart="{{ r.dstart }}" onDragOver="{{ r.dover }}" onDrop="{{ r.ddrop }}" onDragEnd="{{ r.dend }}" style="display:flex; flex-wrap:wrap; align-items:center; gap:12px 14px; padding:12px 16px; border-bottom:1px solid rgba(244,242,239,0.06); opacity:{{ r.op }}; transition:background 180ms cubic-bezier(0.16,1,0.3,1);" style-hover="background:rgba(244,242,239,0.03);">
+                      <button type="button" aria-label="Reorder project. Use arrow keys to move." onKeyDown="{{ r.dkey }}" style="appearance:none; flex:0 0 28px; height:36px; display:grid; grid-template-columns:repeat(2, 4px); gap:4px; align-content:center; justify-content:center; border:0; border-radius:8px; background:transparent; cursor:grab;" style-hover="background:rgba(244,242,239,0.06);"><span style="width:4px; height:4px; border-radius:50%; background:rgba(244,242,239,0.5);"></span><span style="width:4px; height:4px; border-radius:50%; background:rgba(244,242,239,0.5);"></span><span style="width:4px; height:4px; border-radius:50%; background:rgba(244,242,239,0.5);"></span><span style="width:4px; height:4px; border-radius:50%; background:rgba(244,242,239,0.5);"></span><span style="width:4px; height:4px; border-radius:50%; background:rgba(244,242,239,0.5);"></span><span style="width:4px; height:4px; border-radius:50%; background:rgba(244,242,239,0.5);"></span></button>
+                      <div style="flex:0 0 64px; height:48px; border-radius:6px; overflow:hidden; background:#0B0B0C; border:1px solid rgba(244,242,239,0.08);">
+                        <sc-if value="{{ r.hasThumb }}" hint-placeholder-val="{{ false }}"><img src="{{ r.thumb }}" alt="" style="display:block; width:100%; height:100%; object-fit:cover;"></sc-if>
+                      </div>
+                      <button type="button" onClick="{{ r.open }}" style="appearance:none; flex:2 1 180px; min-width:0; display:flex; flex-direction:column; gap:4px; padding:4px 0; border:0; background:transparent; color:#F4F2EF; text-align:left; cursor:pointer;" style-hover="opacity:0.82;">
+                        <span style="font:600 15px/1.3 Figtree, sans-serif;">{{ r.title }}</span>
+                        <span style="font:400 13px/1.3 Figtree, sans-serif; color:rgba(244,242,239,0.6);">{{ r.slug }}</span>
+                      </button>
+                      <span style="flex:1.4 1 140px; min-width:0; font:400 14px/1.4 Figtree, sans-serif; color:rgba(244,242,239,0.78);">{{ r.client }}</span>
+                      <span style="flex:1.3 1 140px; min-width:0; font:400 14px/1.4 Figtree, sans-serif; color:rgba(244,242,239,0.78);">{{ r.cats }}</span>
+                      <span style="flex:0 0 76px; display:flex;">
+                        <button type="button" role="switch" aria-checked="{{ r.fOn }}" aria-label="{{ r.fLabel }}" onClick="{{ r.toggle }}" style="appearance:none; position:relative; width:42px; height:24px; padding:0; border:0; border-radius:999px; background:{{ r.fBg }}; cursor:pointer; transition:background 180ms cubic-bezier(0.16,1,0.3,1);"><span style="position:absolute; left:3px; top:3px; width:18px; height:18px; border-radius:50%; background:#F4F2EF; transform:{{ r.fX }}; transition:transform 180ms cubic-bezier(0.16,1,0.3,1);"></span></button>
+                      </span>
+                      <span style="flex:0 0 112px; display:inline-flex; align-items:center; gap:8px; font:500 14px/1 Figtree, sans-serif; color:#F4F2EF;"><span aria-hidden="true" style="width:8px; height:8px; box-sizing:border-box; border-radius:50%; background:{{ r.dotBg }}; border:1.5px solid {{ r.dotBd }};"></span>{{ r.status }}</span>
+                      <span style="flex:0 0 120px; font:400 14px/1.3 Figtree, sans-serif; color:rgba(244,242,239,0.65);">{{ r.edited }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+          <sc-if value="{{ isEditor }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; flex-direction:column; gap:24px;">
+              <div style="display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:16px 24px;">
+                <div style="display:flex; flex-direction:column; gap:10px; min-width:0;">
+                  <button type="button" onClick="{{ edOn.back }}" style="appearance:none; align-self:flex-start; padding:6px 0; border:0; background:transparent; color:rgba(244,242,239,0.72); font:600 14px/1 Figtree, sans-serif; cursor:pointer;" style-hover="color:#F4F2EF;">All projects</button>
+                  <h1 style="margin:0; font:900 clamp(30px,3.6vw,44px)/1.02 Archivo, sans-serif; letter-spacing:-0.035em; color:#F4F2EF; overflow-wrap:anywhere;">{{ ed.heading }}</h1>
+                  <span style="display:inline-flex; align-items:center; gap:8px; font:500 14px/1.3 Figtree, sans-serif; color:rgba(244,242,239,0.7);"><span aria-hidden="true" style="width:7px; height:7px; border-radius:50%; background:{{ ed.dirtyDot }};"></span>{{ ed.dirty }}</span>
+                </div>
+                <div style="display:flex; flex-wrap:wrap; gap:10px;">
+                  <button type="button" onClick="{{ edOn.preview }}" style="appearance:none; height:42px; padding:0 18px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer;" style-hover="background:rgba(244,242,239,0.06);">Preview</button>
+                  <button type="button" onClick="{{ edOn.draft }}" style="appearance:none; height:42px; padding:0 18px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer;" style-hover="background:rgba(244,242,239,0.06);">Save draft</button>
+                  <button type="button" onClick="{{ edOn.publish }}" style="appearance:none; height:42px; padding:0 18px; border:0; border-radius:999px; background:#E10600; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer;" style-hover="background:#C70500;">Publish</button>
+                </div>
+              </div>
+              <div style="display:flex; flex-wrap:wrap; align-items:flex-start; gap:20px;">
+                <div style="flex:999 1 520px; min-width:0; display:flex; flex-direction:column; gap:20px;">
+                  <section style="display:flex; flex-direction:column; gap:18px; padding:22px; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px;">
+                    <h2 style="margin:0; font:600 17px/1.3 Figtree, sans-serif; color:#F4F2EF;">Basics</h2>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap:16px;">
+                      <div style="display:flex; flex-direction:column; gap:8px;">
+                        <label for="ed-title" style="font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Title</label>
+                        <input id="ed-title" value="{{ ed.title }}" onChange="{{ edOn.title }}" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid {{ edBd.title }}; background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;">
+                        <sc-if value="{{ edHas.title }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:0; font:500 14px/1.4 Figtree, sans-serif; color:#F4F2EF;">{{ edErr.title }}</p></sc-if>
+                      </div>
+                      <div style="display:flex; flex-direction:column; gap:8px;">
+                        <label for="ed-slug" style="font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Slug</label>
+                        <div style="display:flex; align-items:center; height:44px; box-sizing:border-box; border-radius:10px; border:1px solid {{ edBd.slug }}; background:#0B0B0C; overflow:hidden;">
+                          <span style="padding:0 2px 0 14px; font:400 15px/1 Figtree, sans-serif; color:rgba(244,242,239,0.5);">/work/</span>
+                          <input id="ed-slug" value="{{ ed.slug }}" onChange="{{ edOn.slug }}" style="flex:1; min-width:0; height:100%; padding:0 14px 0 0; border:0; background:transparent; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;">
+                        </div>
+                        <sc-if value="{{ edHas.slug }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:0; font:500 14px/1.4 Figtree, sans-serif; color:#F4F2EF;">{{ edErr.slug }}</p></sc-if>
+                      </div>
+                      <div style="display:flex; flex-direction:column; gap:8px;">
+                        <label for="ed-client" style="font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Client</label>
+                        <input id="ed-client" value="{{ ed.client }}" onChange="{{ edOn.client }}" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid {{ edBd.client }}; background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;">
+                        <sc-if value="{{ edHas.client }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:0; font:500 14px/1.4 Figtree, sans-serif; color:#F4F2EF;">{{ edErr.client }}</p></sc-if>
+                      </div>
+                      <div style="display:flex; flex-direction:column; gap:8px;">
+                        <label for="ed-scope" style="font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Scope</label>
+                        <input id="ed-scope" value="{{ ed.scope }}" onChange="{{ edOn.scope }}" placeholder="Logo design, brand guidelines" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;">
+                      </div>
+                      <div style="display:flex; flex-direction:column; gap:8px;">
+                        <label for="ed-year" style="font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Year</label>
+                        <input id="ed-year" inputMode="numeric" value="{{ ed.year }}" onChange="{{ edOn.year }}" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;">
+                      </div>
+                      <div style="display:flex; flex-direction:column; gap:8px;">
+                        <label for="ed-tab" style="font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Folder tab label</label>
+                        <input id="ed-tab" value="{{ ed.tab }}" onChange="{{ edOn.tab }}" placeholder="{{ ed.tabPh }}" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;">
+                      </div>
+                    </div>
+                    <fieldset style="margin:0; padding:0; border:0; display:flex; flex-direction:column; gap:10px;">
+                      <legend style="padding:0; margin-bottom:10px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Categories</legend>
+                      <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                        <sc-for list="{{ edCats }}" as="c" hint-placeholder-count="5">
+                          <button type="button" aria-pressed="{{ c.pressed }}" onClick="{{ c.on }}" style="appearance:none; height:38px; padding:0 16px; border-radius:999px; border:1px solid {{ c.bd }}; background:{{ c.bg }}; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer; transition:background 180ms cubic-bezier(0.16,1,0.3,1), border-color 180ms cubic-bezier(0.16,1,0.3,1);" style-hover="border-color:rgba(244,242,239,0.5);">{{ c.name }}</button>
+                        </sc-for>
+                      </div>
+                    </fieldset>
+                    <div style="display:flex; flex-direction:column; gap:8px;">
+                      <label for="ed-ov" style="font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Overview</label>
+                      <textarea id="ed-ov" rows="5" value="{{ ed.overview }}" onChange="{{ edOn.overview }}" style="width:100%; box-sizing:border-box; padding:12px 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1.55 Figtree, sans-serif; outline:none; resize:vertical;" style-focus="border-color:#E10600;"></textarea>
+                    </div>
+                  </section>
+
+                  <section style="display:flex; flex-direction:column; gap:16px; padding:22px; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px;">
+                    <h2 style="margin:0; font:600 17px/1.3 Figtree, sans-serif; color:#F4F2EF;">Cover image</h2>
+                    <div style="display:flex; flex-wrap:wrap; align-items:center; gap:16px;">
+                      <div style="flex:0 0 200px; aspect-ratio:6 / 5; border-radius:8px; overflow:hidden; background:#0B0B0C; border:1px solid rgba(244,242,239,0.10); display:flex; align-items:center; justify-content:center;">
+                        <sc-if value="{{ ed.hasCover }}" hint-placeholder-val="{{ false }}"><img src="{{ ed.cover }}" alt="" style="display:block; width:100%; height:100%; object-fit:cover;"></sc-if>
+                        <sc-if value="{{ ed.noCover }}" hint-placeholder-val="{{ true }}"><span style="font:500 14px/1.4 Figtree, sans-serif; color:rgba(244,242,239,0.6);">No cover yet</span></sc-if>
+                      </div>
+                      <div style="display:flex; flex-direction:column; align-items:flex-start; gap:10px;">
+                        <p style="margin:0; max-width:30em; font:400 14px/1.5 Figtree, sans-serif; color:rgba(244,242,239,0.7);">Shown on the folder card and as the full-width header of the project page.</p>
+                        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                          <button type="button" onClick="{{ edOn.cover }}" style="appearance:none; height:40px; padding:0 16px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer;" style-hover="background:rgba(244,242,239,0.06);">Choose image</button>
+                          <sc-if value="{{ ed.hasCover }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ edOn.clearCover }}" style="appearance:none; height:40px; padding:0 16px; border:0; border-radius:999px; background:transparent; color:rgba(244,242,239,0.75); font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer;" style-hover="color:#F4F2EF;">Remove</button></sc-if>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section style="display:flex; flex-direction:column; gap:16px; padding:22px; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px;">
+                    <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px;">
+                      <h2 style="margin:0; font:600 17px/1.3 Figtree, sans-serif; color:#F4F2EF;">Sections</h2>
+                      <button type="button" onClick="{{ edOn.addSec }}" style="appearance:none; height:40px; padding:0 16px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer;" style-hover="background:rgba(244,242,239,0.06);">Add section</button>
+                    </div>
+                    <sc-if value="{{ ed.noSecs }}" hint-placeholder-val="{{ false }}"><p style="margin:0; font:400 14px/1.5 Figtree, sans-serif; color:rgba(244,242,239,0.7);">No sections yet. Add one for each deliverable: a full-bleed image, a grid, a poster strip or a video.</p></sc-if>
+                    <sc-for list="{{ secs }}" as="x" hint-placeholder-count="2">
+                      <div onDragOver="{{ x.dover }}" onDrop="{{ x.ddrop }}" style="display:flex; flex-direction:column; gap:14px; padding:16px; background:#0E0E10; border:1px solid rgba(244,242,239,0.08); border-radius:12px; opacity:{{ x.op }};">
+                        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px;">
+                          <button type="button" draggable="true" onDragStart="{{ x.dstart }}" onDragEnd="{{ x.dend }}" onKeyDown="{{ x.dkey }}" aria-label="{{ x.handleLabel }}" style="appearance:none; flex:0 0 28px; height:36px; display:grid; grid-template-columns:repeat(2, 4px); gap:4px; align-content:center; justify-content:center; border:0; border-radius:8px; background:transparent; cursor:grab;" style-hover="background:rgba(244,242,239,0.06);"><span style="width:4px; height:4px; border-radius:50%; background:rgba(244,242,239,0.5);"></span><span style="width:4px; height:4px; border-radius:50%; background:rgba(244,242,239,0.5);"></span><span style="width:4px; height:4px; border-radius:50%; background:rgba(244,242,239,0.5);"></span><span style="width:4px; height:4px; border-radius:50%; background:rgba(244,242,239,0.5);"></span><span style="width:4px; height:4px; border-radius:50%; background:rgba(244,242,239,0.5);"></span><span style="width:4px; height:4px; border-radius:50%; background:rgba(244,242,239,0.5);"></span></button>
+                          <span style="font:600 15px/1 Figtree, sans-serif; color:#F4F2EF;">{{ x.n }}</span>
+                          <div role="group" aria-label="Section type" style="display:flex; flex-wrap:wrap; gap:6px;">
+                            <sc-for list="{{ x.types }}" as="t" hint-placeholder-count="4">
+                              <button type="button" aria-pressed="{{ t.pressed }}" onClick="{{ t.on }}" style="appearance:none; height:34px; padding:0 14px; border-radius:999px; border:1px solid {{ t.bd }}; background:{{ t.bg }}; color:#F4F2EF; font:600 13px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer;">{{ t.label }}</button>
+                            </sc-for>
+                          </div>
+                          <button type="button" onClick="{{ x.remove }}" style="appearance:none; margin-left:auto; height:34px; padding:0 12px; border:0; border-radius:999px; background:transparent; color:rgba(244,242,239,0.72); font:600 13px/1 Figtree, sans-serif; cursor:pointer;" style-hover="color:#F4F2EF; background:rgba(244,242,239,0.06);">Remove</button>
+                        </div>
+                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap:12px;">
+                          <input aria-label="Section title" placeholder="Section title" value="{{ x.title }}" onChange="{{ x.onTitle }}" style="width:100%; box-sizing:border-box; height:42px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;">
+                          <input aria-label="One line description" placeholder="One line about this deliverable" value="{{ x.text }}" onChange="{{ x.onText }}" style="width:100%; box-sizing:border-box; height:42px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;">
+                        </div>
+                        <sc-if value="{{ x.isVideo }}" hint-placeholder-val="{{ false }}">
+                          <input aria-label="Video URL" placeholder="Video file URL, MP4" value="{{ x.videoUrl }}" onChange="{{ x.onVideo }}" style="width:100%; box-sizing:border-box; height:42px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;">
+                        </sc-if>
+                        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                          <sc-for list="{{ x.media }}" as="mm">
+                            <div style="position:relative; width:64px; height:64px; border-radius:6px; overflow:hidden; background:#0B0B0C;">
+                              <img src="{{ mm.src }}" alt="{{ mm.alt }}" style="display:block; width:100%; height:100%; object-fit:cover;">
+                              <button type="button" onClick="{{ mm.rm }}" aria-label="{{ mm.rmLabel }}" style="appearance:none; position:absolute; right:3px; top:3px; width:22px; height:22px; padding:0; border:0; border-radius:50%; background:rgba(5,5,5,0.8); color:#F4F2EF; font:600 14px/22px Figtree, sans-serif; cursor:pointer;" style-hover="background:#E10600;">×</button>
+                            </div>
+                          </sc-for>
+                          <button type="button" onClick="{{ x.add }}" style="appearance:none; height:64px; padding:0 16px; border:1px dashed rgba(244,242,239,0.28); border-radius:6px; background:transparent; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer;" style-hover="border-color:#E10600;">Add {{ x.mediaLabel }}</button>
+                        </div>
+                        <sc-if value="{{ x.noMedia }}" hint-placeholder-val="{{ false }}"><p style="margin:0; font:400 13px/1.4 Figtree, sans-serif; color:rgba(244,242,239,0.62);">No media yet. The site shows a placeholder until you add some.</p></sc-if>
+                      </div>
+                    </sc-for>
+                  </section>
+                </div>
+
+                <div style="flex:1 1 280px; min-width:0; display:flex; flex-direction:column; gap:20px; position:sticky; top:84px;">
+                  <section style="display:flex; flex-direction:column; gap:16px; padding:22px; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px;">
+                    <h2 style="margin:0; font:600 17px/1.3 Figtree, sans-serif; color:#F4F2EF;">Status</h2>
+                    <div style="display:flex; flex-direction:column; gap:6px;">
+                      <span style="display:inline-flex; align-items:center; gap:8px; font:600 15px/1 Figtree, sans-serif; color:#F4F2EF;"><span aria-hidden="true" style="width:9px; height:9px; box-sizing:border-box; border-radius:50%; background:{{ ed.dotBg }}; border:1.5px solid {{ ed.dotBd }};"></span>{{ ed.status }}</span>
+                      <span style="font:400 14px/1.4 Figtree, sans-serif; color:rgba(244,242,239,0.68);">{{ ed.statusText }} {{ ed.edited }}</span>
+                    </div>
+                    <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding-top:14px; border-top:1px solid rgba(244,242,239,0.08);">
+                      <span id="ed-feat" style="font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Featured on Home</span>
+                      <button type="button" role="switch" aria-checked="{{ ed.fOn }}" aria-labelledby="ed-feat" onClick="{{ edOn.featured }}" style="appearance:none; position:relative; width:42px; height:24px; padding:0; border:0; border-radius:999px; background:{{ ed.fBg }}; cursor:pointer; transition:background 180ms cubic-bezier(0.16,1,0.3,1);"><span style="position:absolute; left:3px; top:3px; width:18px; height:18px; border-radius:50%; background:#F4F2EF; transform:{{ ed.fX }}; transition:transform 180ms cubic-bezier(0.16,1,0.3,1);"></span></button>
+                    </div>
+                  </section>
+                  <section style="display:flex; flex-direction:column; gap:14px; padding:22px; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px;">
+                    <h2 style="margin:0; font:600 17px/1.3 Figtree, sans-serif; color:#F4F2EF;">Search and sharing</h2>
+                    <div style="display:flex; flex-direction:column; gap:8px;">
+                      <label for="ed-seot" style="font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">SEO title</label>
+                      <input id="ed-seot" value="{{ ed.seoTitle }}" onChange="{{ edOn.seoTitle }}" placeholder="{{ ed.seoTitlePh }}" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;">
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:8px;">
+                      <label for="ed-seod" style="font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">SEO description</label>
+                      <textarea id="ed-seod" rows="3" value="{{ ed.seoDesc }}" onChange="{{ edOn.seoDesc }}" placeholder="Uses the first line of the overview" style="width:100%; box-sizing:border-box; padding:12px 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1.5 Figtree, sans-serif; outline:none; resize:vertical;" style-focus="border-color:#E10600;"></textarea>
+                      <span style="font:400 13px/1.3 Figtree, sans-serif; color:rgba(244,242,239,0.6);">{{ ed.seoCount }}</span>
+                    </div>
+                  </section>
+                  <sc-if value="{{ ed.canDelete }}" hint-placeholder-val="{{ false }}">
+                    <button type="button" onClick="{{ edOn.del }}" style="appearance:none; align-self:flex-start; height:42px; padding:0 18px; border:1px solid rgba(225,6,0,0.55); border-radius:999px; background:transparent; color:#FF8A84; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer; transition:background 180ms cubic-bezier(0.16,1,0.3,1);" style-hover="background:rgba(225,6,0,0.12);">Delete project</button>
+                  </sc-if>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ isCats }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; flex-direction:column; gap:22px; max-width:820px;">
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <h1 style="margin:0; font:900 clamp(34px,4vw,48px)/1 Archivo, sans-serif; letter-spacing:-0.035em; color:#F4F2EF;">Categories</h1>
+                <p style="margin:0; font:400 15px/1.5 Figtree, sans-serif; color:rgba(244,242,239,0.68);">These become the filter tabs on the Work page.</p>
+              </div>
+              <form onSubmit="{{ addCat }}" noValidate="" style="display:flex; flex-direction:column; gap:8px;">
+                <label for="cat-new" style="font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">New category</label>
+                <div style="display:flex; flex-wrap:wrap; gap:10px;">
+                  <input id="cat-new" value="{{ catName }}" onChange="{{ onCatName }}" placeholder="Packaging" style="flex:1 1 240px; min-width:0; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;">
+                  <button type="submit" style="appearance:none; height:44px; padding:0 18px; border:0; border-radius:999px; background:#E10600; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer;" style-hover="background:#C70500;">Add category</button>
+                </div>
+                <sc-if value="{{ hasCatErr }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:0; font:500 14px/1.4 Figtree, sans-serif; color:#F4F2EF;">{{ catErr }}</p></sc-if>
+              </form>
+              <div style="background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px; overflow:hidden;">
+                <sc-if value="{{ noCats }}" hint-placeholder-val="{{ false }}"><p style="margin:0; padding:24px; font:400 15px/1.5 Figtree, sans-serif; color:rgba(244,242,239,0.7);">No categories yet. Add one above.</p></sc-if>
+                <sc-for list="{{ cats }}" as="c" hint-placeholder-count="5">
+                  <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px 16px; padding:14px 18px; border-bottom:1px solid rgba(244,242,239,0.06);">
+                    <sc-if value="{{ c.notRenaming }}" hint-placeholder-val="{{ true }}">
+                      <div style="flex:1 1 220px; min-width:0; display:flex; flex-direction:column; gap:4px;"><span style="font:600 15px/1.3 Figtree, sans-serif; color:#F4F2EF;">{{ c.name }}</span><span style="font:400 13px/1.3 Figtree, sans-serif; color:rgba(244,242,239,0.6);">{{ c.slug }}</span></div>
+                      <span style="flex:0 0 auto; font:500 14px/1 Figtree, sans-serif; color:rgba(244,242,239,0.72);">{{ c.count }}</span>
+                      <div style="display:flex; gap:6px;">
+                        <button type="button" onClick="{{ c.startRen }}" style="appearance:none; height:36px; padding:0 14px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 13px/1 Figtree, sans-serif; cursor:pointer;" style-hover="background:rgba(244,242,239,0.06);">Rename</button>
+                        <button type="button" onClick="{{ c.del }}" style="appearance:none; height:36px; padding:0 14px; border:0; border-radius:999px; background:transparent; color:#FF8A84; font:600 13px/1 Figtree, sans-serif; cursor:pointer;" style-hover="background:rgba(225,6,0,0.12);">Delete</button>
+                      </div>
+                    </sc-if>
+                    <sc-if value="{{ c.renaming }}" hint-placeholder-val="{{ false }}">
+                      <form onSubmit="{{ c.saveRen }}" noValidate="" style="flex:1 1 100%; display:flex; flex-wrap:wrap; gap:8px;">
+                        <input aria-label="Category name" value="{{ c.renVal }}" onChange="{{ c.onRen }}" style="flex:1 1 220px; min-width:0; box-sizing:border-box; height:40px; padding:0 14px; border-radius:10px; border:1px solid #E10600; background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;">
+                        <button type="submit" style="appearance:none; height:40px; padding:0 16px; border:0; border-radius:999px; background:#E10600; color:#F4F2EF; font:600 13px/1 Figtree, sans-serif; cursor:pointer;">Save</button>
+                        <button type="button" onClick="{{ c.cancelRen }}" style="appearance:none; height:40px; padding:0 16px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 13px/1 Figtree, sans-serif; cursor:pointer;">Cancel</button>
+                      </form>
+                    </sc-if>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isTests }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; flex-direction:column; gap:22px; max-width:960px;">
+              <div style="display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:16px 24px;">
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                  <h1 style="margin:0; font:900 clamp(34px,4vw,48px)/1 Archivo, sans-serif; letter-spacing:-0.035em; color:#F4F2EF;">Testimonials</h1>
+                  <p style="margin:0; font:400 15px/1.5 Figtree, sans-serif; color:rgba(244,242,239,0.68);">Visible quotes rotate on Home in this order. Drag to reorder.</p>
+                </div>
+                <button type="button" onClick="{{ addT }}" style="appearance:none; height:42px; padding:0 18px; border:0; border-radius:999px; background:#E10600; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer;" style-hover="background:#C70500;">Add testimonial</button>
+              </div>
+              <sc-if value="{{ noTests }}" hint-placeholder-val="{{ false }}"><p style="margin:0; padding:24px; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px; font:400 15px/1.5 Figtree, sans-serif; color:rgba(244,242,239,0.7);">No testimonials yet. Add one to show it on Home.</p></sc-if>
+              <div style="display:flex; flex-direction:column; gap:10px;">
+                <sc-for list="{{ tests }}" as="t" hint-placeholder-count="3">
+                  <div onDragOver="{{ t.dover }}" onDrop="{{ t.ddrop }}" style="display:flex; flex-wrap:wrap; align-items:center; gap:12px 16px; padding:16px 18px; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px; opacity:{{ t.op }};">
+                    <button type="button" draggable="true" onDragStart="{{ t.dstart }}" onDragEnd="{{ t.dend }}" onKeyDown="{{ t.dkey }}" aria-label="Reorder testimonial. Use arrow keys to move." style="appearance:none; flex:0 0 28px; height:36px; display:grid; grid-template-columns:repeat(2, 4px); gap:4px; align-content:center; justify-content:center; border:0; border-radius:8px; background:transparent; cursor:grab;" style-hover="background:rgba(244,242,239,0.06);"><span style="width:4px; height:4px; border-radius:50%; background:rgba(244,242,239,0.5);"></span><span style="width:4px; height:4px; border-radius:50%; background:rgba(244,242,239,0.5);"></span><span style="width:4px; height:4px; border-radius:50%; background:rgba(244,242,239,0.5);"></span><span style="width:4px; height:4px; border-radius:50%; background:rgba(244,242,239,0.5);"></span><span style="width:4px; height:4px; border-radius:50%; background:rgba(244,242,239,0.5);"></span><span style="width:4px; height:4px; border-radius:50%; background:rgba(244,242,239,0.5);"></span></button>
+                    <div style="flex:0 0 44px; width:44px; height:44px; border-radius:50%; overflow:hidden; background:#3D0606; display:flex; align-items:center; justify-content:center; font:700 16px/1 Figtree, sans-serif; color:#F4F2EF;">
+                      <sc-if value="{{ t.hasPhoto }}" hint-placeholder-val="{{ false }}"><img src="{{ t.photo }}" alt="" style="width:100%; height:100%; object-fit:cover;"></sc-if>
+                      <sc-if value="{{ t.noPhoto }}" hint-placeholder-val="{{ true }}"><span>{{ t.initial }}</span></sc-if>
+                    </div>
+                    <div style="flex:1 1 300px; min-width:0; display:flex; flex-direction:column; gap:6px;">
+                      <p style="margin:0; font:400 15px/1.5 Figtree, sans-serif; color:#F4F2EF;">{{ t.quote }}</p>
+                      <span style="font:500 13px/1.3 Figtree, sans-serif; color:rgba(244,242,239,0.65);">{{ t.who }}</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                      <button type="button" role="switch" aria-checked="{{ t.vOn }}" aria-label="{{ t.vLabel }}" onClick="{{ t.toggle }}" style="appearance:none; position:relative; width:42px; height:24px; padding:0; border:0; border-radius:999px; background:{{ t.vBg }}; cursor:pointer; transition:background 180ms cubic-bezier(0.16,1,0.3,1);"><span style="position:absolute; left:3px; top:3px; width:18px; height:18px; border-radius:50%; background:#F4F2EF; transform:{{ t.vX }}; transition:transform 180ms cubic-bezier(0.16,1,0.3,1);"></span></button>
+                      <span style="width:56px; font:500 13px/1 Figtree, sans-serif; color:rgba(244,242,239,0.7);">{{ t.status }}</span>
+                      <button type="button" onClick="{{ t.edit }}" style="appearance:none; height:36px; padding:0 14px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 13px/1 Figtree, sans-serif; cursor:pointer;" style-hover="background:rgba(244,242,239,0.06);">Edit</button>
+                      <button type="button" onClick="{{ t.del }}" style="appearance:none; height:36px; padding:0 14px; border:0; border-radius:999px; background:transparent; color:#FF8A84; font:600 13px/1 Figtree, sans-serif; cursor:pointer;" style-hover="background:rgba(225,6,0,0.12);">Delete</button>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isPages }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; flex-direction:column; gap:22px; max-width:960px;">
+              <div style="display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:16px 24px;">
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                  <h1 style="margin:0; font:900 clamp(34px,4vw,48px)/1 Archivo, sans-serif; letter-spacing:-0.035em; color:#F4F2EF;">Pages</h1>
+                  <span style="display:inline-flex; align-items:center; gap:8px; font:500 14px/1.3 Figtree, sans-serif; color:rgba(244,242,239,0.7);"><span aria-hidden="true" style="width:7px; height:7px; border-radius:50%; background:{{ saveDot }};"></span>{{ saveLabel }}</span>
+                </div>
+                <div style="display:flex; flex-wrap:wrap; gap:10px;">
+                  <button type="button" onClick="{{ pfOn.discard }}" style="appearance:none; height:42px; padding:0 18px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer; opacity:{{ saveOp }};" style-hover="background:rgba(244,242,239,0.06);">Discard</button>
+                  <button type="button" onClick="{{ pfOn.save }}" style="appearance:none; height:42px; padding:0 18px; border:0; border-radius:999px; background:#E10600; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer; opacity:{{ saveOp }};" style-hover="background:#C70500;">Save changes</button>
+                </div>
+              </div>
+              <div role="tablist" aria-label="Page" style="display:flex; flex-wrap:wrap; gap:8px;">
+                <sc-for list="{{ pTabs }}" as="t" hint-placeholder-count="3">
+                  <button type="button" role="tab" aria-selected="{{ t.pressed }}" onClick="{{ t.on }}" style="appearance:none; height:40px; padding:0 18px; border-radius:999px; border:1px solid {{ t.bd }}; background:{{ t.bg }}; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; cursor:pointer;">{{ t.label }}</button>
+                </sc-for>
+              </div>
+
+              <sc-if value="{{ pgHome }}" hint-placeholder-val="{{ true }}">
+                <section style="display:flex; flex-direction:column; gap:16px; padding:22px; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px;">
+                  <h2 style="margin:0; font:600 17px/1.3 Figtree, sans-serif; color:#F4F2EF;">Hero text</h2>
+                  <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Tagline<textarea rows="2" value="{{ pf.home.tagline }}" onChange="{{ pfOn.tagline }}" style="width:100%; box-sizing:border-box; padding:12px 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1.5 Figtree, sans-serif; outline:none; resize:vertical;" style-focus="border-color:#E10600;"></textarea></label>
+                  <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Small line<input value="{{ pf.home.smallLine }}" onChange="{{ pfOn.smallLine }}" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;"></label>
+                  <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Brands line<input value="{{ pf.home.clientsLine }}" onChange="{{ pfOn.clientsLine }}" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;"></label>
+                </section>
+                <section style="display:flex; flex-direction:column; gap:16px; padding:22px; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px;">
+                  <h2 style="margin:0; font:600 17px/1.3 Figtree, sans-serif; color:#F4F2EF;">Hero folder</h2>
+                  <p style="margin:0; font:400 14px/1.5 Figtree, sans-serif; color:rgba(244,242,239,0.68);">The three papers peeking out of the red folder. As visitors scroll, the folder opens and these three spread out under “A little bit of everything.”</p>
+                  <div style="display:flex; flex-wrap:wrap; gap:24px;">
+                    <div style="display:flex; flex-direction:column; gap:10px; align-items:flex-start;"><span style="font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Left paper</span><div style="width:110px; aspect-ratio:4 / 5; border-radius:6px; overflow:hidden; background:#0B0B0C; border:1px solid rgba(244,242,239,0.10);"><sc-if value="{{ pHasHeroL }}" hint-placeholder-val="{{ false }}"><img src="{{ pHeroL }}" alt="" style="width:100%; height:100%; object-fit:cover;"></sc-if></div><button type="button" onClick="{{ pfOn.heroL }}" style="appearance:none; height:38px; padding:0 14px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 13px/1 Figtree, sans-serif; cursor:pointer;" style-hover="background:rgba(244,242,239,0.06);">Change</button></div>
+                    <div style="display:flex; flex-direction:column; gap:10px; align-items:flex-start;"><span style="font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Middle paper</span><div style="width:110px; aspect-ratio:4 / 5; border-radius:6px; overflow:hidden; background:#0B0B0C; border:1px solid rgba(244,242,239,0.10);"><sc-if value="{{ pHasPoster }}" hint-placeholder-val="{{ false }}"><img src="{{ pPoster }}" alt="" style="width:100%; height:100%; object-fit:cover;"></sc-if></div><button type="button" onClick="{{ pfOn.poster }}" style="appearance:none; height:38px; padding:0 14px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 13px/1 Figtree, sans-serif; cursor:pointer;" style-hover="background:rgba(244,242,239,0.06);">Change</button></div>
+                    <div style="display:flex; flex-direction:column; gap:10px; align-items:flex-start;"><span style="font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Right paper</span><div style="width:110px; aspect-ratio:4 / 5; border-radius:6px; overflow:hidden; background:#0B0B0C; border:1px solid rgba(244,242,239,0.10);"><sc-if value="{{ pHasHeroR }}" hint-placeholder-val="{{ false }}"><img src="{{ pHeroR }}" alt="" style="width:100%; height:100%; object-fit:cover;"></sc-if></div><button type="button" onClick="{{ pfOn.heroR }}" style="appearance:none; height:38px; padding:0 14px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 13px/1 Figtree, sans-serif; cursor:pointer;" style-hover="background:rgba(244,242,239,0.06);">Change</button></div>
+                  </div>
+                </section>
+                <section style="display:flex; flex-direction:column; gap:12px; padding:22px; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px;">
+                  <h2 style="margin:0; font:600 17px/1.3 Figtree, sans-serif; color:#F4F2EF;">Selected work order</h2>
+                  <p style="margin:0; font:400 14px/1.5 Figtree, sans-serif; color:rgba(244,242,239,0.68);">Drag to reorder. Saves straight away. Turn Featured on Home on or off in each project.</p>
+                  <sc-if value="{{ noFeat }}" hint-placeholder-val="{{ false }}"><p style="margin:0; font:400 14px/1.5 Figtree, sans-serif; color:rgba(244,242,239,0.7);">No featured projects yet.</p></sc-if>
+                  <sc-for list="{{ featList }}" as="f" hint-placeholder-count="4">
+                    <div onDragOver="{{ f.dover }}" onDrop="{{ f.ddrop }}" style="display:flex; align-items:center; gap:14px; padding:10px 12px; background:#0E0E10; border:1px solid rgba(244,242,239,0.08); border-radius:10px; opacity:{{ f.op }};">
+                      <button type="button" draggable="true" onDragStart="{{ f.dstart }}" onDragEnd="{{ f.dend }}" onKeyDown="{{ f.dkey }}" aria-label="Reorder. Use arrow keys to move." style="appearance:none; flex:0 0 28px; height:36px; display:grid; grid-template-columns:repeat(2, 4px); gap:4px; align-content:center; justify-content:center; border:0; border-radius:8px; background:transparent; cursor:grab;"><span style="width:4px; height:4px; border-radius:50%; background:rgba(244,242,239,0.5);"></span><span style="width:4px; height:4px; border-radius:50%; background:rgba(244,242,239,0.5);"></span><span style="width:4px; height:4px; border-radius:50%; background:rgba(244,242,239,0.5);"></span><span style="width:4px; height:4px; border-radius:50%; background:rgba(244,242,239,0.5);"></span><span style="width:4px; height:4px; border-radius:50%; background:rgba(244,242,239,0.5);"></span><span style="width:4px; height:4px; border-radius:50%; background:rgba(244,242,239,0.5);"></span></button>
+                      <span style="width:20px; font:600 14px/1 Figtree, sans-serif; color:rgba(244,242,239,0.6);">{{ f.n }}</span>
+                      <div style="width:56px; height:42px; border-radius:5px; overflow:hidden; background:#0B0B0C;"><sc-if value="{{ f.hasThumb }}" hint-placeholder-val="{{ false }}"><img src="{{ f.thumb }}" alt="" style="width:100%; height:100%; object-fit:cover;"></sc-if></div>
+                      <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:3px;"><span style="font:600 15px/1.3 Figtree, sans-serif; color:#F4F2EF;">{{ f.title }}</span><span style="font:400 13px/1.3 Figtree, sans-serif; color:rgba(244,242,239,0.62);">{{ f.sub }}</span></div>
+                    </div>
+                  </sc-for>
+                </section>
+              </sc-if>
+
+              <sc-if value="{{ pgAbout }}" hint-placeholder-val="{{ false }}">
+                <section style="display:flex; flex-direction:column; gap:16px; padding:22px; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px;">
+                  <h2 style="margin:0; font:600 17px/1.3 Figtree, sans-serif; color:#F4F2EF;">Story</h2>
+                  <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Lead paragraph<textarea rows="3" value="{{ pf.about.lead }}" onChange="{{ pfOn.lead }}" style="width:100%; box-sizing:border-box; padding:12px 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1.5 Figtree, sans-serif; outline:none; resize:vertical;" style-focus="border-color:#E10600;"></textarea></label>
+                  <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Second paragraph<textarea rows="3" value="{{ pf.about.story }}" onChange="{{ pfOn.story }}" style="width:100%; box-sizing:border-box; padding:12px 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1.5 Figtree, sans-serif; outline:none; resize:vertical;" style-focus="border-color:#E10600;"></textarea></label>
+                  <div style="display:flex; flex-wrap:wrap; align-items:center; gap:14px;">
+                    <div style="width:96px; aspect-ratio:4 / 5; border-radius:6px; overflow:hidden; background:#0B0B0C; border:1px solid rgba(244,242,239,0.10);"><sc-if value="{{ pHasPortrait }}" hint-placeholder-val="{{ false }}"><img src="{{ pPortrait }}" alt="" style="width:100%; height:100%; object-fit:cover;"></sc-if></div>
+                    <button type="button" onClick="{{ pfOn.portrait }}" style="appearance:none; height:40px; padding:0 16px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; cursor:pointer;" style-hover="background:rgba(244,242,239,0.06);">Choose portrait</button>
+                  </div>
+                </section>
+                <section style="display:flex; flex-direction:column; gap:16px; padding:22px; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px;">
+                  <h2 style="margin:0; font:600 17px/1.3 Figtree, sans-serif; color:#F4F2EF;">Tools and experience</h2>
+                  <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Design and video tools, separated by commas<input value="{{ pf.about.toolsDesignText }}" onChange="{{ pfOn.toolsD }}" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;"></label>
+                  <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">AI tools, separated by commas<input value="{{ pf.about.toolsAIText }}" onChange="{{ pfOn.toolsA }}" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;"></label>
+                  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap:16px;">
+                    <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Role<input value="{{ pf.about.expRole }}" onChange="{{ pfOn.expRole }}" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;"></label>
+                    <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Start year<input inputMode="numeric" value="{{ pf.about.expStart }}" onChange="{{ pfOn.expStart }}" placeholder="2021" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;"></label>
+                  </div>
+                  <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">What the work covers<textarea rows="2" value="{{ pf.about.expText }}" onChange="{{ pfOn.expText }}" style="width:100%; box-sizing:border-box; padding:12px 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1.5 Figtree, sans-serif; outline:none; resize:vertical;" style-focus="border-color:#E10600;"></textarea></label>
+                  <p style="margin:0; font:400 14px/1.5 Figtree, sans-serif; color:rgba(244,242,239,0.65);">Upload the CV in Settings.</p>
+                </section>
+              </sc-if>
+
+              <sc-if value="{{ pgSvc }}" hint-placeholder-val="{{ false }}">
+                <section style="display:flex; flex-direction:column; gap:16px; padding:22px; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px;">
+                  <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Intro<textarea rows="2" value="{{ pf.services.intro }}" onChange="{{ pfOn.intro }}" style="width:100%; box-sizing:border-box; padding:12px 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1.5 Figtree, sans-serif; outline:none; resize:vertical;" style-focus="border-color:#E10600;"></textarea></label>
+                  <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+                    <span id="pr-lbl" style="font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Show starting prices</span>
+                    <button type="button" role="switch" aria-checked="{{ pricing.on }}" aria-labelledby="pr-lbl" onClick="{{ pfOn.pricing }}" style="appearance:none; position:relative; width:42px; height:24px; padding:0; border:0; border-radius:999px; background:{{ pricing.bg }}; cursor:pointer;"><span style="position:absolute; left:3px; top:3px; width:18px; height:18px; border-radius:50%; background:#F4F2EF; transform:{{ pricing.x }}; transition:transform 180ms cubic-bezier(0.16,1,0.3,1);"></span></button>
+                  </div>
+                </section>
+                <sc-for list="{{ svcItems }}" as="it" hint-placeholder-count="2">
+                  <section style="display:flex; flex-direction:column; gap:14px; padding:22px; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px;">
+                    <span style="font:600 13px/1 Figtree, sans-serif; color:rgba(244,242,239,0.6);">{{ it.n }}</span>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap:14px;">
+                      <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Name<input value="{{ it.name }}" onChange="{{ it.onName }}" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;"></label>
+                      <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Linked project<select value="{{ it.project }}" onChange="{{ it.onProject }}" style="width:100%; box-sizing:border-box; height:44px; padding:0 12px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;"><sc-for list="{{ projOpts }}" as="o"><option value="{{ o.slug }}">{{ o.title }}</option></sc-for></select></label>
+                    </div>
+                    <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">One line for Home<input value="{{ it.short }}" onChange="{{ it.onShort }}" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;"></label>
+                    <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Description<textarea rows="3" value="{{ it.desc }}" onChange="{{ it.onDesc }}" style="width:100%; box-sizing:border-box; padding:12px 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1.5 Figtree, sans-serif; outline:none; resize:vertical;" style-focus="border-color:#E10600;"></textarea></label>
+                    <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Deliverables, one per line<textarea rows="3" value="{{ it.delText }}" onChange="{{ it.onDel }}" style="width:100%; box-sizing:border-box; padding:12px 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1.5 Figtree, sans-serif; outline:none; resize:vertical;" style-focus="border-color:#E10600;"></textarea></label>
+                    <div style="display:flex; flex-wrap:wrap; align-items:flex-end; gap:14px;">
+                      <div style="width:96px; aspect-ratio:4 / 3; border-radius:6px; overflow:hidden; background:#0B0B0C; border:1px solid rgba(244,242,239,0.10);"><sc-if value="{{ it.hasImg }}" hint-placeholder-val="{{ false }}"><img src="{{ it.img }}" alt="" style="width:100%; height:100%; object-fit:cover;"></sc-if></div>
+                      <button type="button" onClick="{{ it.pick }}" style="appearance:none; height:40px; padding:0 16px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; cursor:pointer;" style-hover="background:rgba(244,242,239,0.06);">Choose image</button>
+                      <sc-if value="{{ it.showPrice }}" hint-placeholder-val="{{ false }}"><label style="flex:1 1 200px; display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Starting price<input value="{{ it.price }}" onChange="{{ it.onPrice }}" placeholder="From ₹8,000" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;"></label></sc-if>
+                    </div>
+                  </section>
+                </sc-for>
+                <section style="display:flex; flex-direction:column; gap:14px; padding:22px; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px;">
+                  <h2 style="margin:0; font:600 17px/1.3 Figtree, sans-serif; color:#F4F2EF;">How I work</h2>
+                  <sc-for list="{{ procItems }}" as="p" hint-placeholder-count="4">
+                    <div style="display:grid; grid-template-columns:32px minmax(0,1fr) minmax(0,2fr); align-items:center; gap:12px;">
+                      <span style="font:600 14px/1 Figtree, sans-serif; color:rgba(244,242,239,0.6);">{{ p.n }}</span>
+                      <input aria-label="Step title" value="{{ p.title }}" onChange="{{ p.onTitle }}" style="width:100%; box-sizing:border-box; height:42px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;">
+                      <input aria-label="Step description" value="{{ p.text }}" onChange="{{ p.onText }}" style="width:100%; box-sizing:border-box; height:42px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;">
+                    </div>
+                  </sc-for>
+                </section>
+              </sc-if>
+            </div>
+          </sc-if>
+          <sc-if value="{{ isInq }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; flex-direction:column; gap:22px;">
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <h1 style="margin:0; font:900 clamp(34px,4vw,48px)/1 Archivo, sans-serif; letter-spacing:-0.035em; color:#F4F2EF;">Inquiries</h1>
+                <p style="margin:0; font:400 15px/1.5 Figtree, sans-serif; color:rgba(244,242,239,0.68);">Messages sent from the contact form.</p>
+              </div>
+              <div role="tablist" aria-label="Filter inquiries" style="display:flex; flex-wrap:wrap; gap:8px;">
+                <sc-for list="{{ inqTabs }}" as="t" hint-placeholder-count="4">
+                  <button type="button" role="tab" aria-selected="{{ t.pressed }}" onClick="{{ t.on }}" style="appearance:none; height:38px; padding:0 16px; border-radius:999px; border:1px solid {{ t.bd }}; background:{{ t.bg }}; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer;">{{ t.label }}</button>
+                </sc-for>
+              </div>
+              <div style="display:flex; flex-wrap:wrap; align-items:flex-start; gap:16px;">
+                <sc-if value="{{ showInqList }}" hint-placeholder-val="{{ true }}">
+                  <div style="flex:1 1 340px; min-width:0; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px; overflow:hidden;">
+                    <sc-if value="{{ inqEmpty }}" hint-placeholder-val="{{ false }}"><p style="margin:0; padding:24px; font:400 15px/1.5 Figtree, sans-serif; color:rgba(244,242,239,0.7);">{{ inqEmptyText }}</p></sc-if>
+                    <sc-for list="{{ inqRows }}" as="q" hint-placeholder-count="3">
+                      <button type="button" onClick="{{ q.on }}" aria-current="{{ q.cur }}" style="appearance:none; width:100%; display:flex; flex-direction:column; gap:6px; padding:16px 18px; border:0; border-bottom:1px solid rgba(244,242,239,0.06); background:{{ q.bg }}; color:#F4F2EF; text-align:left; cursor:pointer; transition:background 180ms cubic-bezier(0.16,1,0.3,1);" style-hover="background:rgba(244,242,239,0.04);">
+                        <span style="display:flex; align-items:center; gap:10px; width:100%;">
+                          <sc-if value="{{ q.isNew }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="width:8px; height:8px; border-radius:50%; background:#E10600;"></span></sc-if>
+                          <span style="flex:1; min-width:0; font:600 15px/1.3 Figtree, sans-serif;">{{ q.name }}</span>
+                          <span style="font:500 13px/1 Figtree, sans-serif; color:rgba(244,242,239,0.6);">{{ q.when }}</span>
+                        </span>
+                        <span style="font:400 14px/1.4 Figtree, sans-serif; color:rgba(244,242,239,0.72);">{{ q.type }}, {{ q.budget }}</span>
+                        <span style="font:500 13px/1 Figtree, sans-serif; color:rgba(244,242,239,0.6);">{{ q.status }}</span>
+                      </button>
+                    </sc-for>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ showInqPh }}" hint-placeholder-val="{{ false }}">
+                  <div style="flex:2 1 420px; min-width:0; padding:40px 28px; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px; font:400 15px/1.5 Figtree, sans-serif; color:rgba(244,242,239,0.65);">Choose an inquiry to read it.</div>
+                </sc-if>
+                <sc-if value="{{ showInqDetail }}" hint-placeholder-val="{{ false }}">
+                  <article style="flex:2 1 420px; min-width:0; display:flex; flex-direction:column; gap:20px; padding:24px; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px;">
+                    <sc-if value="{{ mobile }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ iq.back }}" style="appearance:none; align-self:flex-start; padding:6px 0; border:0; background:transparent; color:rgba(244,242,239,0.72); font:600 14px/1 Figtree, sans-serif; cursor:pointer;">All inquiries</button></sc-if>
+                    <div style="display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between; gap:12px;">
+                      <div style="display:flex; flex-direction:column; gap:6px; min-width:0;">
+                        <h2 style="margin:0; font:800 28px/1.1 Archivo, sans-serif; letter-spacing:-0.025em; color:#F4F2EF;">{{ iq.name }}</h2>
+                        <span style="font:400 14px/1.4 Figtree, sans-serif; color:rgba(244,242,239,0.72); overflow-wrap:anywhere;">{{ iq.email }}, {{ iq.phone }}</span>
+                      </div>
+                      <span style="padding:7px 12px; border-radius:999px; border:1px solid rgba(244,242,239,0.2); font:600 13px/1 Figtree, sans-serif; color:#F4F2EF;">{{ iq.status }}</span>
+                    </div>
+                    <dl style="margin:0; display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:14px; padding:16px 0; border-top:1px solid rgba(244,242,239,0.08); border-bottom:1px solid rgba(244,242,239,0.08);">
+                      <div><dt style="font:500 13px/1.3 Figtree, sans-serif; color:rgba(244,242,239,0.6);">Project type</dt><dd style="margin:4px 0 0; font:600 15px/1.3 Figtree, sans-serif; color:#F4F2EF;">{{ iq.type }}</dd></div>
+                      <div><dt style="font:500 13px/1.3 Figtree, sans-serif; color:rgba(244,242,239,0.6);">Budget</dt><dd style="margin:4px 0 0; font:600 15px/1.3 Figtree, sans-serif; color:#F4F2EF;">{{ iq.budget }}</dd></div>
+                      <div><dt style="font:500 13px/1.3 Figtree, sans-serif; color:rgba(244,242,239,0.6);">Timeline</dt><dd style="margin:4px 0 0; font:600 15px/1.3 Figtree, sans-serif; color:#F4F2EF;">{{ iq.timeline }}</dd></div>
+                      <div><dt style="font:500 13px/1.3 Figtree, sans-serif; color:rgba(244,242,239,0.6);">Received</dt><dd style="margin:4px 0 0; font:600 15px/1.3 Figtree, sans-serif; color:#F4F2EF;">{{ iq.when }}</dd></div>
+                    </dl>
+                    <p style="margin:0; font:400 16px/1.65 Figtree, sans-serif; color:#F4F2EF; white-space:pre-wrap;">{{ iq.message }}</p>
+                    <div style="display:flex; flex-wrap:wrap; gap:10px;">
+                      <a href="{{ iq.mailto }}" style="display:inline-flex; align-items:center; height:42px; padding:0 18px; border-radius:999px; background:#E10600; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap;" style-hover="background:#C70500;">Reply by email</a>
+                      <sc-if value="{{ iq.hasWa }}" hint-placeholder-val="{{ false }}"><a href="{{ iq.wa }}" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; height:42px; padding:0 18px; border-radius:999px; border:1px solid rgba(244,242,239,0.2); color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap;" style-hover="background:rgba(244,242,239,0.06);">Open WhatsApp</a></sc-if>
+                      <sc-if value="{{ iq.notReplied }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ iq.replied }}" style="appearance:none; height:42px; padding:0 18px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer;" style-hover="background:rgba(244,242,239,0.06);">Mark as replied</button></sc-if>
+                      <sc-if value="{{ iq.notArchived }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ iq.archive }}" style="appearance:none; height:42px; padding:0 18px; border:0; border-radius:999px; background:transparent; color:rgba(244,242,239,0.75); font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer;" style-hover="color:#F4F2EF; background:rgba(244,242,239,0.06);">Archive</button></sc-if>
+                      <sc-if value="{{ iq.notNew }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ iq.unnew }}" style="appearance:none; height:42px; padding:0 18px; border:0; border-radius:999px; background:transparent; color:rgba(244,242,239,0.75); font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer;" style-hover="color:#F4F2EF; background:rgba(244,242,239,0.06);">Move to New</button></sc-if>
+                    </div>
+                  </article>
+                </sc-if>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isMedia }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; flex-direction:column; gap:22px;">
+              <div style="display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:16px 24px;">
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                  <h1 style="margin:0; font:900 clamp(34px,4vw,48px)/1 Archivo, sans-serif; letter-spacing:-0.035em; color:#F4F2EF;">Media</h1>
+                  <p style="margin:0; font:400 15px/1.5 Figtree, sans-serif; color:rgba(244,242,239,0.68);">{{ mCount }}</p>
+                </div>
+                <button type="button" onClick="{{ browse }}" style="appearance:none; height:42px; padding:0 18px; border:0; border-radius:999px; background:#E10600; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer;" style-hover="background:#C70500;">Upload images</button>
+              </div>
+              <div onDragOver="{{ dz.over }}" onDragLeave="{{ dz.leave }}" onDrop="{{ dz.drop }}" style="display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:10px 16px; padding:28px; border:1.5px dashed {{ dropBd }}; border-radius:14px; background:{{ dropBg }}; text-align:center; transition:border-color 180ms cubic-bezier(0.16,1,0.3,1), background 180ms cubic-bezier(0.16,1,0.3,1);">
+                <span style="font:500 15px/1.4 Figtree, sans-serif; color:#F4F2EF;">Drop images here to upload. You'll add alt text for each one.</span>
+                <button type="button" onClick="{{ browse }}" style="appearance:none; height:38px; padding:0 16px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; cursor:pointer;" style-hover="background:rgba(244,242,239,0.06);">Choose files</button>
+              </div>
+              <div style="display:flex; flex-wrap:wrap; align-items:center; gap:12px;">
+                <input type="search" aria-label="Search media" placeholder="Search by file name or alt text" value="{{ mq }}" onChange="{{ onMq }}" style="flex:0 1 340px; min-width:0; box-sizing:border-box; height:42px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;">
+                <div role="tablist" aria-label="Filter media" style="display:flex; gap:6px;">
+                  <sc-for list="{{ mTabs }}" as="t" hint-placeholder-count="3">
+                    <button type="button" role="tab" aria-selected="{{ t.pressed }}" onClick="{{ t.on }}" style="appearance:none; height:38px; padding:0 14px; border-radius:999px; border:1px solid {{ t.bd }}; background:{{ t.bg }}; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer;">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <sc-if value="{{ mEmpty }}" hint-placeholder-val="{{ false }}"><p style="margin:0; font:400 15px/1.5 Figtree, sans-serif; color:rgba(244,242,239,0.7);">No images match. Try another search or filter.</p></sc-if>
+              <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 190px), 1fr)); gap:14px;">
+                <sc-for list="{{ mItems }}" as="m" hint-placeholder-count="8">
+                  <div style="display:flex; flex-direction:column; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:12px; overflow:hidden;">
+                    <div style="aspect-ratio:4 / 3; background:#0B0B0C;"><img src="{{ m.src }}" alt="{{ m.alt }}" loading="lazy" style="display:block; width:100%; height:100%; object-fit:cover;"></div>
+                    <div style="flex:1; display:flex; flex-direction:column; gap:6px; padding:12px;">
+                      <span style="font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ m.name }}</span>
+                      <span style="font:400 13px/1.4 Figtree, sans-serif; color:rgba(244,242,239,0.72);">{{ m.alt }}</span>
+                      <span style="font:500 12px/1.4 Figtree, sans-serif; color:rgba(244,242,239,0.6);">{{ m.used }}</span>
+                      <div style="display:flex; gap:6px; margin-top:auto; padding-top:6px;">
+                        <button type="button" onClick="{{ m.editAlt }}" aria-label="{{ m.altLabel }}" style="appearance:none; height:34px; padding:0 12px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 13px/1 Figtree, sans-serif; cursor:pointer;" style-hover="background:rgba(244,242,239,0.06);">Alt text</button>
+                        <button type="button" onClick="{{ m.del }}" aria-label="{{ m.delLabel }}" style="appearance:none; height:34px; padding:0 12px; border:0; border-radius:999px; background:transparent; color:#FF8A84; font:600 13px/1 Figtree, sans-serif; cursor:pointer;" style-hover="background:rgba(225,6,0,0.12);">Delete</button>
+                      </div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; flex-direction:column; gap:22px; max-width:880px;">
+              <div style="display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:16px 24px;">
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                  <h1 style="margin:0; font:900 clamp(34px,4vw,48px)/1 Archivo, sans-serif; letter-spacing:-0.035em; color:#F4F2EF;">Settings</h1>
+                  <span style="display:inline-flex; align-items:center; gap:8px; font:500 14px/1.3 Figtree, sans-serif; color:rgba(244,242,239,0.7);"><span aria-hidden="true" style="width:7px; height:7px; border-radius:50%; background:{{ saveDot }};"></span>{{ saveLabel }}</span>
+                </div>
+                <div style="display:flex; flex-wrap:wrap; gap:10px;">
+                  <button type="button" onClick="{{ sfOn.discard }}" style="appearance:none; height:42px; padding:0 18px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer; opacity:{{ saveOp }};" style-hover="background:rgba(244,242,239,0.06);">Discard</button>
+                  <button type="button" onClick="{{ sfOn.save }}" style="appearance:none; height:42px; padding:0 18px; border:0; border-radius:999px; background:#E10600; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer; opacity:{{ saveOp }};" style-hover="background:#C70500;">Save changes</button>
+                </div>
+              </div>
+              <section style="display:flex; flex-direction:column; gap:16px; padding:22px; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px;">
+                <h2 style="margin:0; font:600 17px/1.3 Figtree, sans-serif; color:#F4F2EF;">Contact</h2>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap:16px;">
+                  <div style="display:flex; flex-direction:column; gap:8px;">
+                    <label for="s-email" style="font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Email</label>
+                    <input id="s-email" type="email" value="{{ sf.email }}" onChange="{{ sfOn.email }}" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid {{ sfBd.email }}; background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;">
+                    <sc-if value="{{ sfHas.email }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:0; font:500 14px/1.4 Figtree, sans-serif; color:#F4F2EF;">{{ sfErr.email }}</p></sc-if>
+                  </div>
+                  <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Phone, as shown<input value="{{ sf.phone }}" onChange="{{ sfOn.phone }}" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;"></label>
+                  <div style="display:flex; flex-direction:column; gap:8px;">
+                    <label for="s-wa" style="font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">WhatsApp number, with country code</label>
+                    <input id="s-wa" inputMode="numeric" value="{{ sf.whatsapp }}" onChange="{{ sfOn.whatsapp }}" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid {{ sfBd.whatsapp }}; background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;">
+                    <sc-if value="{{ sfHas.whatsapp }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:0; font:500 14px/1.4 Figtree, sans-serif; color:#F4F2EF;">{{ sfErr.whatsapp }}</p></sc-if>
+                  </div>
+                  <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Reply time line<input value="{{ sf.replyTime }}" onChange="{{ sfOn.replyTime }}" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;"></label>
+                </div>
+              </section>
+              <section style="display:flex; flex-direction:column; gap:16px; padding:22px; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px;">
+                <h2 style="margin:0; font:600 17px/1.3 Figtree, sans-serif; color:#F4F2EF;">Social links</h2>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap:16px;">
+                  <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Instagram<input value="{{ sf.instagram }}" onChange="{{ sfOn.instagram }}" placeholder="https://instagram.com/…" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;"></label>
+                  <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Behance<input value="{{ sf.behance }}" onChange="{{ sfOn.behance }}" placeholder="https://behance.net/…" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;"></label>
+                  <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">LinkedIn<input value="{{ sf.linkedin }}" onChange="{{ sfOn.linkedin }}" placeholder="https://linkedin.com/in/…" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;"></label>
+                </div>
+                <p style="margin:0; font:400 14px/1.5 Figtree, sans-serif; color:rgba(244,242,239,0.65);">Empty links are hidden on the site.</p>
+              </section>
+              <section style="display:flex; flex-direction:column; gap:16px; padding:22px; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px;">
+                <h2 style="margin:0; font:600 17px/1.3 Figtree, sans-serif; color:#F4F2EF;">CV</h2>
+                <sc-if value="{{ hasCv }}" hint-placeholder-val="{{ false }}"><p style="margin:0; font:500 15px/1.4 Figtree, sans-serif; color:#F4F2EF;">{{ cvName }}</p></sc-if>
+                <sc-if value="{{ noCv }}" hint-placeholder-val="{{ true }}"><p style="margin:0; font:400 15px/1.4 Figtree, sans-serif; color:rgba(244,242,239,0.7);">No CV uploaded. The Download CV button is hidden until you add one.</p></sc-if>
+                <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                  <button type="button" onClick="{{ sfOn.cv }}" style="appearance:none; height:40px; padding:0 16px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; cursor:pointer;" style-hover="background:rgba(244,242,239,0.06);">Upload PDF</button>
+                  <sc-if value="{{ hasCv }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ sfOn.clearCv }}" style="appearance:none; height:40px; padding:0 16px; border:0; border-radius:999px; background:transparent; color:#FF8A84; font:600 14px/1 Figtree, sans-serif; cursor:pointer;" style-hover="background:rgba(225,6,0,0.12);">Remove</button></sc-if>
+                </div>
+              </section>
+              <section style="display:flex; flex-direction:column; gap:16px; padding:22px; background:#141416; border:1px solid rgba(244,242,239,0.10); border-radius:14px;">
+                <h2 style="margin:0; font:600 17px/1.3 Figtree, sans-serif; color:#F4F2EF;">Search and sharing</h2>
+                <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Site title<input value="{{ sf.siteTitle }}" onChange="{{ sfOn.siteTitle }}" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;"></label>
+                <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Site description<textarea rows="3" value="{{ sf.siteDesc }}" onChange="{{ sfOn.siteDesc }}" style="width:100%; box-sizing:border-box; padding:12px 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1.5 Figtree, sans-serif; outline:none; resize:vertical;" style-focus="border-color:#E10600;"></textarea></label>
+                <div style="display:flex; flex-wrap:wrap; align-items:center; gap:14px;">
+                  <div style="width:160px; aspect-ratio:1.91 / 1; border-radius:6px; overflow:hidden; background:#0B0B0C; border:1px solid rgba(244,242,239,0.10);"><sc-if value="{{ sHasSeo }}" hint-placeholder-val="{{ false }}"><img src="{{ sSeo }}" alt="" style="width:100%; height:100%; object-fit:cover;"></sc-if></div>
+                  <button type="button" onClick="{{ sfOn.seo }}" style="appearance:none; height:40px; padding:0 16px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; cursor:pointer;" style-hover="background:rgba(244,242,239,0.06);">Choose default share image</button>
+                </div>
+              </section>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ mobile }}" hint-placeholder-val="{{ false }}">
+            <div style="position:fixed; left:0; right:0; bottom:0; z-index:40; padding:12px 16px calc(12px + env(safe-area-inset-bottom)); display:flex; align-items:center; justify-content:space-between; gap:12px; background:rgba(8,8,10,0.94); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border-top:1px solid rgba(244,242,239,0.08);">
+              <span style="font:600 15px/1 Figtree, sans-serif; color:#F4F2EF;">{{ viewLabel }}</span>
+              <button type="button" onClick="{{ openSheet }}" style="appearance:none; height:44px; padding:0 20px; border:1px solid rgba(244,242,239,0.22); border-radius:999px; background:transparent; color:#F4F2EF; font:600 15px/1 Figtree, sans-serif; cursor:pointer;">Menu</button>
+            </div>
+            <div onClick="{{ closeSheet }}" style="position:fixed; inset:0; z-index:45; background:rgba(5,5,5,0.6); opacity:{{ sheetOp }}; visibility:{{ sheetVis }}; pointer-events:{{ sheetPe }}; transition:opacity 250ms cubic-bezier(0.16,1,0.3,1), visibility 250ms;"></div>
+            <div role="dialog" aria-label="Admin menu" style="position:fixed; left:0; right:0; bottom:0; z-index:46; padding:10px 12px calc(20px + env(safe-area-inset-bottom)); background:#141416; border-top:1px solid rgba(244,242,239,0.12); border-radius:20px 20px 0 0; transform:{{ sheetY }}; visibility:{{ sheetVis }}; transition:transform 250ms cubic-bezier(0.16,1,0.3,1), visibility 250ms;">
+              <div aria-hidden="true" style="width:40px; height:4px; margin:4px auto 12px; border-radius:2px; background:rgba(244,242,239,0.25);"></div>
+              <nav aria-label="Admin" style="display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:6px;">
+                <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="8">
+                  <button type="button" onClick="{{ n.on }}" aria-current="{{ n.cur }}" style="appearance:none; display:flex; align-items:center; justify-content:space-between; gap:8px; height:48px; padding:0 14px; border:0; border-radius:12px; background:{{ n.bg }}; color:#F4F2EF; font:600 15px/1 Figtree, sans-serif; text-align:left; cursor:pointer;">
+                    <span>{{ n.label }}</span>
+                    <sc-if value="{{ n.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="min-width:22px; height:22px; padding:0 7px; box-sizing:border-box; border-radius:999px; background:{{ n.badgeBg }}; font:600 12px/22px Figtree, sans-serif; text-align:center;">{{ n.badge }}</span></sc-if>
+                  </button>
+                </sc-for>
+              </nav>
+            </div>
+          </sc-if>
+
+          <div onClick="{{ teOn.close }}" style="position:fixed; inset:0; z-index:50; background:rgba(5,5,5,0.6); opacity:{{ drawerBg }}; visibility:{{ drawerVis }}; pointer-events:{{ drawerPe }}; transition:opacity 250ms cubic-bezier(0.16,1,0.3,1), visibility 250ms;"></div>
+          <aside role="dialog" aria-label="{{ te.title }}" style="position:fixed; top:0; right:0; bottom:0; z-index:51; width:min(460px, 100vw); box-sizing:border-box; padding:24px; display:flex; flex-direction:column; gap:16px; overflow-y:auto; background:#141416; border-left:1px solid rgba(244,242,239,0.12); transform:{{ drawerX }}; visibility:{{ drawerVis }}; transition:transform 250ms cubic-bezier(0.16,1,0.3,1), visibility 250ms;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+              <h2 style="margin:0; font:800 24px/1.1 Archivo, sans-serif; letter-spacing:-0.025em; color:#F4F2EF;">{{ te.title }}</h2>
+              <button type="button" onClick="{{ teOn.close }}" style="appearance:none; height:38px; padding:0 14px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; cursor:pointer;">Close</button>
+            </div>
+            <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Quote<textarea rows="5" value="{{ te.quote }}" onChange="{{ teOn.quote }}" style="width:100%; box-sizing:border-box; padding:12px 14px; border-radius:10px; border:1px solid {{ te.bdQuote }}; background:#0B0B0C; color:#F4F2EF; font:400 15px/1.5 Figtree, sans-serif; outline:none; resize:vertical;" style-focus="border-color:#E10600;"></textarea></label>
+            <sc-if value="{{ te.hasErrQuote }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:-8px 0 0; font:500 14px/1.4 Figtree, sans-serif; color:#F4F2EF;">{{ te.errQuote }}</p></sc-if>
+            <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Name<input value="{{ te.name }}" onChange="{{ teOn.name }}" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;"></label>
+            <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Role<input value="{{ te.role }}" onChange="{{ teOn.role }}" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;"></label>
+            <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Business<input value="{{ te.business }}" onChange="{{ teOn.business }}" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;"></label>
+            <sc-if value="{{ te.hasErrName }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:-8px 0 0; font:500 14px/1.4 Figtree, sans-serif; color:#F4F2EF;">{{ te.errName }}</p></sc-if>
+            <div style="display:flex; align-items:center; gap:14px;">
+              <div style="width:56px; height:56px; border-radius:50%; overflow:hidden; background:#0B0B0C; border:1px solid rgba(244,242,239,0.10);"><sc-if value="{{ te.hasPhoto }}" hint-placeholder-val="{{ false }}"><img src="{{ te.photo }}" alt="" style="width:100%; height:100%; object-fit:cover;"></sc-if></div>
+              <button type="button" onClick="{{ teOn.photo }}" style="appearance:none; height:38px; padding:0 14px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; cursor:pointer;">Choose photo</button>
+              <sc-if value="{{ te.hasPhoto }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ teOn.clearPhoto }}" style="appearance:none; height:38px; padding:0 12px; border:0; border-radius:999px; background:transparent; color:rgba(244,242,239,0.75); font:600 14px/1 Figtree, sans-serif; cursor:pointer;">Remove</button></sc-if>
+            </div>
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding-top:12px; border-top:1px solid rgba(244,242,239,0.08);">
+              <span id="te-vis" style="font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Show on the site</span>
+              <button type="button" role="switch" aria-checked="{{ te.vOn }}" aria-labelledby="te-vis" onClick="{{ teOn.visible }}" style="appearance:none; position:relative; width:42px; height:24px; padding:0; border:0; border-radius:999px; background:{{ te.vBg }}; cursor:pointer;"><span style="position:absolute; left:3px; top:3px; width:18px; height:18px; border-radius:50%; background:#F4F2EF; transform:{{ te.vX }}; transition:transform 180ms cubic-bezier(0.16,1,0.3,1);"></span></button>
+            </div>
+            <button type="button" onClick="{{ teOn.save }}" style="appearance:none; margin-top:auto; height:46px; border:0; border-radius:999px; background:#E10600; color:#F4F2EF; font:600 15px/1 Figtree, sans-serif; cursor:pointer;" style-hover="background:#C70500;">Save testimonial</button>
+          </aside>
+
+          <sc-if value="{{ pickerOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:fixed; inset:0; z-index:60; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(5,5,5,0.76); backdrop-filter:blur(6px);">
+              <div role="dialog" aria-modal="true" aria-label="{{ pk.title }}" style="width:100%; max-width:920px; max-height:calc(100vh - 32px); display:flex; flex-direction:column; background:#141416; border:1px solid rgba(244,242,239,0.12); border-radius:16px; overflow:hidden;">
+                <div style="display:flex; flex-wrap:wrap; align-items:center; gap:12px; padding:18px 20px; border-bottom:1px solid rgba(244,242,239,0.08);">
+                  <h2 style="margin:0; flex:1 1 auto; font:800 22px/1.1 Archivo, sans-serif; letter-spacing:-0.02em; color:#F4F2EF;">{{ pk.title }}</h2>
+                  <input type="search" aria-label="Search images" placeholder="Search" value="{{ pk.q }}" onChange="{{ pk.onQ }}" style="flex:0 1 240px; min-width:0; box-sizing:border-box; height:40px; padding:0 14px; border-radius:10px; border:1px solid rgba(244,242,239,0.14); background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;">
+                  <button type="button" onClick="{{ pk.upload }}" style="appearance:none; height:40px; padding:0 16px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer;">Upload</button>
+                </div>
+                <div style="flex:1; overflow-y:auto; padding:16px 20px; display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:10px; align-content:start;">
+                  <sc-for list="{{ pk.items }}" as="m" hint-placeholder-count="12">
+                    <button type="button" aria-pressed="{{ m.pressed }}" onClick="{{ m.on }}" style="appearance:none; position:relative; padding:0; aspect-ratio:1 / 1; border-radius:8px; border:2px solid {{ m.bd }}; background:#0B0B0C; overflow:hidden; cursor:pointer;">
+                      <img src="{{ m.src }}" alt="{{ m.alt }}" loading="lazy" style="display:block; width:100%; height:100%; object-fit:cover;">
+                      <sc-if value="{{ m.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="position:absolute; left:6px; top:6px; min-width:24px; height:24px; padding:0 7px; box-sizing:border-box; border-radius:999px; background:#E10600; color:#F4F2EF; font:600 12px/24px Figtree, sans-serif;">{{ m.badge }}</span></sc-if>
+                    </button>
+                  </sc-for>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:10px; padding:14px 20px; border-top:1px solid rgba(244,242,239,0.08);">
+                  <button type="button" onClick="{{ pk.cancel }}" style="appearance:none; height:42px; padding:0 18px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; cursor:pointer;">Cancel</button>
+                  <button type="button" onClick="{{ pk.apply }}" style="appearance:none; height:42px; padding:0 18px; border:0; border-radius:999px; background:#E10600; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer;" style-hover="background:#C70500;">{{ pk.use }}</button>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ upOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:fixed; inset:0; z-index:70; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(5,5,5,0.76); backdrop-filter:blur(6px);">
+              <div role="dialog" aria-modal="true" aria-label="{{ up.title }}" style="width:100%; max-width:520px; display:flex; flex-direction:column; gap:16px; padding:22px; background:#141416; border:1px solid rgba(244,242,239,0.12); border-radius:16px;">
+                <h2 style="margin:0; font:800 22px/1.1 Archivo, sans-serif; letter-spacing:-0.02em; color:#F4F2EF;">{{ up.title }}</h2>
+                <div style="max-height:280px; border-radius:8px; overflow:hidden; background:#0B0B0C; display:flex; justify-content:center;"><img src="{{ up.src }}" alt="" style="display:block; max-width:100%; max-height:280px; object-fit:contain;"></div>
+                <span style="font:500 14px/1.3 Figtree, sans-serif; color:rgba(244,242,239,0.7); overflow-wrap:anywhere;">{{ up.name }}</span>
+                <label style="display:flex; flex-direction:column; gap:8px; font:600 14px/1.3 Figtree, sans-serif; color:#F4F2EF;">Alt text, required<input value="{{ up.alt }}" onChange="{{ up.onAlt }}" placeholder="What the image shows, for example: roll-up banner for studying in the UK" style="width:100%; box-sizing:border-box; height:44px; padding:0 14px; border-radius:10px; border:1px solid {{ up.bd }}; background:#0B0B0C; color:#F4F2EF; font:400 15px/1 Figtree, sans-serif; outline:none;" style-focus="border-color:#E10600;"></label>
+                <sc-if value="{{ up.hasErr }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:-6px 0 0; font:500 14px/1.4 Figtree, sans-serif; color:#F4F2EF;">{{ up.err }}</p></sc-if>
+                <sc-if value="{{ up.hasLeft }}" hint-placeholder-val="{{ false }}"><p style="margin:0; font:400 13px/1.4 Figtree, sans-serif; color:rgba(244,242,239,0.62);">{{ up.left }}</p></sc-if>
+                <div style="display:flex; justify-content:flex-end; gap:10px;">
+                  <button type="button" onClick="{{ up.cancel }}" style="appearance:none; height:42px; padding:0 18px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; cursor:pointer;">Cancel</button>
+                  <button type="button" onClick="{{ up.ok }}" style="appearance:none; height:42px; padding:0 18px; border:0; border-radius:999px; background:#E10600; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer;" style-hover="background:#C70500;">{{ up.btn }}</button>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ cfOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:fixed; inset:0; z-index:80; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(5,5,5,0.76); backdrop-filter:blur(6px);">
+              <div role="alertdialog" aria-modal="true" aria-label="{{ cf.title }}" style="width:100%; max-width:440px; display:flex; flex-direction:column; gap:14px; padding:24px; background:#141416; border:1px solid rgba(244,242,239,0.12); border-radius:16px;">
+                <h2 style="margin:0; font:800 24px/1.1 Archivo, sans-serif; letter-spacing:-0.025em; color:#F4F2EF;">{{ cf.title }}</h2>
+                <p style="margin:0; font:400 15px/1.55 Figtree, sans-serif; color:rgba(244,242,239,0.8);">{{ cf.text }}</p>
+                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:6px;">
+                  <button type="button" onClick="{{ cf.cancel }}" style="appearance:none; height:42px; padding:0 18px; border:1px solid rgba(244,242,239,0.2); border-radius:999px; background:transparent; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; cursor:pointer;">Cancel</button>
+                  <button type="button" onClick="{{ cf.ok }}" style="appearance:none; height:42px; padding:0 18px; border:0; border-radius:999px; background:#E10600; color:#F4F2EF; font:600 14px/1 Figtree, sans-serif; white-space:nowrap; cursor:pointer;" style-hover="background:#C70500;">{{ cf.label }}</button>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <div role="status" aria-live="polite" style="position:fixed; right:24px; bottom:{{ toastBottom }}; z-index:90; max-width:min(420px, calc(100vw - 48px)); display:flex; align-items:center; gap:10px; padding:14px 18px; background:#F4F2EF; color:#050505; border-radius:12px; box-shadow:0 20px 50px -16px rgba(0,0,0,0.8); font:600 14px/1.4 Figtree, sans-serif; transform:{{ toastY }}; transition:transform 250ms cubic-bezier(0.16,1,0.3,1); pointer-events:none;">
+            <span aria-hidden="true" style="flex:0 0 auto; width:8px; height:8px; border-radius:50%; background:{{ toastDot }}; box-shadow:0 0 0 1px rgba(5,5,5,0.25);"></span>{{ toastText }}
+          </div>
+        </main>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+// ---- Content store (shared with the site via localStorage) ----
+(function () {
+  if (window.RFData) return;
+  const KEY = 'rf-cms-v1';
+  const uid = p => (p || 'id') + '-' + Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-3);
+  const slugify = s => String(s || '').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
+
+  const M = [];
+  const m = (id, src, w, h, alt) => { M.push({ id, src, w, h, alt, name: src.split('/').pop(), uploaded: 0 }); return id; };
+  m('m-cover', 'assets/p01-0.jpg', 1920, 1080, 'Red portfolio folder held in a hand');
+  m('m-expo-entrance', 'assets/p05-0.jpg', 1439, 914, 'Expo entrance with two branded pillars and a red carpet');
+  ['Study MBBS in Uzbekistan poster', 'NEET score poster', 'MBBS seat in India poster', 'Nursing in Germany poster', 'NEET qualified poster', 'MBBS in Georgia for 2.5 lakh poster', 'Scholarship poster', 'Expo event calendar poster'].forEach((a, i) => m('m-expo-post-' + i, 'assets/p06-' + i + '.jpg', 304, 380, a));
+  m('m-expo-mbbs', 'assets/p07-0.jpg', 1431, 786, 'MBBS in Georgia brochure spreads');
+  m('m-expo-nursing', 'assets/p08-0.jpg', 1431, 786, 'Nursing in Georgia brochure spreads');
+  [0, 1, 2, 3].forEach(i => m('m-rollup-' + i, 'assets/rollup-' + i + '.jpg', 473, 653, 'Study abroad roll-up banner ' + (i + 1)));
+  m('m-expo-flyer', 'assets/p10-0.jpg', 1455, 915, 'Study abroad flyer mockup');
+  m('m-to-entrance', 'assets/p11-0.jpg', 691, 388, 'Take Off entrance pillars');
+  m('m-to-install-1', 'assets/p12-0.jpg', 890, 694, 'Go where you grow installation');
+  m('m-to-install-2', 'assets/p12-1.jpg', 527, 694, 'Pillar installation with motivational lines');
+  m('m-to-brochure', 'assets/p13-0.jpg', 1918, 602, 'Take Off four-page brochure');
+  m('m-cb-mark', 'assets/p14-0.jpg', 362, 428, 'CB Perfume fingerprint monogram');
+  m('m-cb-guide', 'assets/p15-0.jpg', 1435, 815, 'CB Perfume brand guideline pages');
+  m('m-cb-bottles', 'assets/p16-0.jpg', 1435, 903, 'CB Perfume bottles in warm amber light');
+  m('m-ss-cover', 'assets/p17-0.jpg', 596, 844, 'Sugar Sisters menu cover');
+  m('m-ss-spreads', 'assets/p18-0.jpg', 1258, 904, 'Sugar Sisters menu spreads on lilac stripes');
+  m('m-ss-pets', 'assets/p19-0.jpg', 1918, 904, 'Paws and Pastries pet menu');
+  m('m-roost-cover', 'assets/p20-0.jpg', 715, 896, 'Less sad story, more Roostory rooster poster');
+  m('m-roost-sheet', 'assets/p21-0.jpg', 1047, 876, 'Roostory campaign posters');
+  ['Classic flame grilled chicken poster', 'We are hiring poster', 'Grand opening poster', 'Less sad story, more Roostory poster', 'Winter special poster', 'Fine dine ceremony poster'].forEach((a, i) => m('m-roost-' + i, 'assets/roostory-' + i + '.jpg', 343, 432, a));
+  m('m-asaas-sheet', 'assets/p22-0.jpg', 1014, 885, 'ASAAS campaign posters in deep blue and green');
+  ['Bookkeeping and financial reviews poster', 'VAT registration poster', 'E-invoicing poster', 'Traditional invoicing poster', 'Our services poster', 'Services list poster'].forEach((a, i) => m('m-asaas-' + i, 'assets/asaas-' + i + '.jpg', 330, 434, a));
+
+  const S = (type, title, text, media) => ({ id: uid('s'), type, title, text, media: media || [], videoUrl: '' });
+  const range = (p, n) => Array.from({ length: n }, (_, i) => p + i);
+  const T0 = Date.parse('2026-10-01T10:00:00Z');
+
+  function defaults() {
+    const cats = [
+      { id: 'c-branding', name: 'Branding', slug: 'branding' },
+      { id: 'c-events', name: 'Events & installations', slug: 'events-and-installations' },
+      { id: 'c-print', name: 'Print', slug: 'print' },
+      { id: 'c-social', name: 'Social media', slug: 'social-media' },
+      { id: 'c-motion', name: 'Motion', slug: 'motion' }
+    ];
+    const P = (o) => Object.assign({ id: uid('p'), year: '', status: 'published', featured: false, seoTitle: '', seoDesc: '', updated: T0, sections: [] }, o);
+    const projects = [
+      P({ slug: 'study-abroad-expo-2026', title: 'Study Abroad Expo 2026', client: 'Bayroot International Study Abroad', scope: 'Event identity, social media, print', year: '2026', cats: ['c-events', 'c-social', 'c-print'], tab: 'Events & installations', cover: 'm-expo-entrance', featured: true,
+        overview: 'A complete creative suite for “Kerala’s Biggest Study Abroad Expo 2026”, touring from Kasaragod to Trivandrum: expo identity, entrance branding, social media creatives for MBBS and nursing abroad in Malayalam and English, brochures, roll-up standees and flyers, tied together by a consistent red, white and blue visual language.',
+        sections: [
+          S('full', 'Event logo', 'A bold identity that pairs dynamic type with bright colour to capture the excitement of studying abroad.', []),
+          S('full', 'Event entrance', 'Two custom pillars with destination visuals, bold type and a red-carpet walk turn the venue into a branded first impression.', ['m-expo-entrance']),
+          S('strip', 'Social media posters', 'A Malayalam and English series promoting scholarships, MBBS and nursing seats, and tour dates across Kerala.', range('m-expo-post-', 8)),
+          S('grid', 'Brochure: Study MBBS in Georgia', 'Cover, university profiles, fee comparisons and the application process, in a red-and-white system built for credibility.', ['m-expo-mbbs']),
+          S('grid', 'Brochure: Study Nursing in Georgia', 'Programme benefits, fee structures and living costs, organised so students can compare at a glance.', ['m-expo-nursing']),
+          S('grid', 'Roll-up banners', 'Destination standees for the UK, Bulgaria and more, each with its own colour scheme for exhibition floors.', range('m-rollup-', 4)),
+          S('full', 'Flyer', 'A Malayalam flyer covering Georgia, Uzbekistan, Bulgaria, the UK and the UAE in a bold purple-and-white palette.', ['m-expo-flyer'])
+        ] }),
+      P({ slug: 'take-off-2026', title: 'Take Off 2026', client: 'Bayroot International Study Abroad', scope: 'Event branding, print, installations', year: '2026', cats: ['c-events', 'c-print'], tab: 'Events & installations', cover: 'm-to-install-1',
+        overview: 'Creatives for “Take Off”, a 2026 send-off event for students leaving for the UK, Georgia, Uzbekistan, Egypt and beyond: entrance pillars, a country-by-country guidebook, a folded brochure, and motivational installations and backdrops in bold blue, red, orange and yellow.',
+        sections: [
+          S('grid', 'Entrance branding', 'An aviation-inspired entrance in blue and yellow, with oversized type and cloud visuals to welcome students.', ['m-to-entrance']),
+          S('grid', 'Event installations', 'Travel illustrations, motivational lines and geometric structures that celebrate students before they fly.', ['m-to-install-1', 'm-to-install-2']),
+          S('full', '4-page brochure', 'A bilingual brochure with country-by-country benefits, flags and key facts in an easy-to-scan layout.', ['m-to-brochure'])
+        ] }),
+      P({ slug: 'cb-perfume', title: 'CB Perfume', client: 'CB Perfume', scope: 'Logo design, brand guidelines', cats: ['c-branding'], tab: 'Branding', cover: 'm-cb-bottles', featured: true,
+        overview: 'A logo and brand book for a personalised fragrance house. A fingerprint holds the CB monogram, a sign that every person is unique and every scent can be too. Built on black and gold, with logo variations, a colour palette and packaging applications.',
+        sections: [
+          S('grid', 'Logo and brand guidelines', 'A fingerprint holds the CB monogram, with logo variations, a colour palette and usage rules in black and gold.', ['m-cb-mark', 'm-cb-guide']),
+          S('full', 'Product mockups', 'Amber light, gold tones and reflective glass carry the identity onto the bottle.', ['m-cb-bottles'])
+        ] }),
+      P({ slug: 'sugar-sisters', title: 'Sugar Sisters', client: 'Sugar Sisters', scope: 'Menu design, layout, illustration', cats: ['c-print', 'c-branding'], tab: 'Print', cover: 'm-ss-spreads', featured: true,
+        overview: 'A cake menu for a bakery run by two sisters, built on lilac stripes, soft textures and hand-drawn illustration. It tells the brand’s story, lists the 1 kg and 500 g signature cakes by chocolate and vanilla families, and ends with ordering information.',
+        sections: [
+          S('grid', 'Cake menu', 'Signature cakes in chocolate and vanilla families, with the brand story and ordering details on lilac stripes.', ['m-ss-cover', 'm-ss-spreads']),
+          S('full', 'Paws & Pastries pet menu', 'A dog-friendly menu that extends the brand with safe cakes, ingredient lists and a warm, friendly tone.', ['m-ss-pets'])
+        ] }),
+      P({ slug: 'roostory', title: 'Roostory', client: 'Roostory', scope: 'Campaign, posters, social media', cats: ['c-social'], tab: 'Social media', cover: 'm-roost-sheet', featured: true,
+        overview: 'A campaign for a grilled chicken restaurant, with elegant type, a warm red-and-cream palette and a playful rooster mascot across the grand opening, hiring, menu highlights, winter specials and a fine-dining night.',
+        sections: [S('strip', 'Campaign posters', 'Grand opening, hiring, menu highlights, winter specials and a fine-dining night, in warm red and cream.', range('m-roost-', 6))] }),
+      P({ slug: 'asaas', title: 'ASAAS', client: 'ASAAS Auditing', scope: 'Campaign, posters, social media', cats: ['c-social'], tab: 'Social media', cover: 'm-asaas-sheet',
+        overview: 'A campaign for a UAE tax consultancy covering accounting, bookkeeping, VAT registration, e-invoicing and advisory, in deep blue with bright green accents.',
+        sections: [S('strip', 'Campaign posters', 'Accounting, bookkeeping, VAT registration and e-invoicing explained in deep blue with bright green accents.', range('m-asaas-', 6))] }),
+      P({ slug: 'motion', title: 'Motion reel pieces', client: 'Various clients', scope: 'Animated promos and reels', cats: ['c-motion'], tab: 'Motion', cover: null,
+        overview: 'Animated promos, logo reveals and reels made in After Effects and Premiere Pro. The pieces go here as the video files arrive.',
+        sections: [S('video', 'Showreel', 'The full reel, 45 to 90 seconds.', [])] })
+    ];
+    return {
+      v: 1, mv: 2,
+      settings: {
+        siteTitle: 'Reem Fathima, graphic designer and social media creative',
+        siteDesc: 'Posters, brands, events and motion, made to be noticed. Self-taught designer working with brands across Kerala and the Gulf.',
+        email: 'reemfathima66@gmail.com', phone: '+91 75104 49444', whatsapp: '917510449444',
+        instagram: '', behance: '', linkedin: '', cvUrl: '', cvName: '', seoImage: 'm-cover', replyTime: 'I usually reply within a day.'
+      },
+      pages: {
+        home: { tagline: 'Graphic designer and social media creative. Posters, brands, events and motion, made to be noticed.', smallLine: 'A collection of work built on a skill I taught myself.', showreelUrl: '', showreelPoster: 'm-cover', heroLeft: 'm-expo-post-6', heroRight: 'm-roost-cover', clientsLine: 'Education, food, fragrance and finance, across Kerala and the UAE.' },
+        about: {
+          lead: "I'm Reem, a self-taught graphic designer. I started by teaching myself the tools, and now I design posters, brands, event spaces and motion for businesses across industries.",
+          story: "I like work that's bold enough to stop a scroll and clear enough to sell. Lately I've been combining design with AI tools to produce more, faster, without losing the hand-finished quality.",
+          toolsDesign: ['Photoshop', 'Illustrator', 'After Effects', 'Premiere Pro'],
+          toolsAI: ['ChatGPT', 'Gemini', 'Kling AI', 'Veo 3', 'Flow', 'ElevenLabs'],
+          expRole: 'Freelance graphic and motion designer', expStart: '', expText: 'Social media creatives, ads, posters, digital marketing materials and animated promos for companies across industries.', portrait: null
+        },
+        services: {
+          intro: 'Design and content for brands that need to be seen, from a single poster to a full campaign.',
+          pricingOn: false,
+          items: [
+            { id: 'sv-social', name: 'Social media creatives', short: 'Campaign posters and post series in English and Malayalam.', desc: 'Campaign posters and post series in English and Malayalam, made to stop the scroll and carry one clear message. Each campaign is built as a system, so every post looks like it belongs.', deliverables: ['Launch and offer posters', 'Carousel and story sets', 'Bilingual post series'], project: 'roostory', image: 'm-expo-post-6', price: '' },
+            { id: 'sv-brand', name: 'Brand identity', short: 'Logos, colour systems and brand guidelines.', desc: 'Logos, colour systems and brand guidelines for businesses that want to look the same everywhere. Every mark is built to work on a sign, a box and a phone screen.', deliverables: ['Logo and variations', 'Colour palette and type', 'Brand book and packaging mockups'], project: 'cb-perfume', image: 'm-cb-mark', price: '' },
+            { id: 'sv-event', name: 'Event branding', short: 'Entrance installations, backdrops, roll-ups and stage graphics.', desc: 'Entrance installations, backdrops, roll-ups and stage graphics for expos, launches and send-offs. One visual language from the gate to the stage.', deliverables: ['Entrance arches and pillars', 'Stage backdrops', 'Roll-up standees'], project: 'study-abroad-expo-2026', image: 'm-to-install-2', price: '' },
+            { id: 'sv-print', name: 'Print', short: 'Brochures, flyers and menus.', desc: 'Brochures, flyers and menus, laid out for reading and set up for the press. Files come print-ready, with bleed and the right colour profile.', deliverables: ['Folded brochures', 'Flyers', 'Menus'], project: 'sugar-sisters', image: 'm-ss-cover', price: '' },
+            { id: 'sv-motion', name: 'Motion graphics', short: 'Animated promos and reels in After Effects and Premiere Pro.', desc: 'Animated promos and reels in After Effects and Premiere Pro. Posters that move, logos that land and edits cut for each platform.', deliverables: ['Animated posters', 'Logo reveals', 'Reels and promos'], project: 'motion', image: null, price: '' },
+            { id: 'sv-ai', name: 'AI-assisted content', short: 'Visuals and video made with Kling, Veo, Gemini and ElevenLabs, finished by hand.', desc: 'Visuals and video made with Kling, Veo, Gemini and ElevenLabs, finished by hand. More content for busy campaigns, without the generated look.', deliverables: ['AI-generated visuals', 'Short video ads', 'Voice-overs'], project: '', image: 'm-roost-3', price: '' }
+          ],
+          process: [
+            { title: 'Brief', text: 'You share the goal, audience, deadline and budget.' },
+            { title: 'Concept', text: 'I come back with a direction, references and rough layouts.' },
+            { title: 'Design', text: 'I design the final pieces, with two rounds of revisions.' },
+            { title: 'Delivery', text: 'You get print-ready and social-ready files in every size you need.' }
+          ]
+        }
+      },
+      categories: cats,
+      projects,
+      media: M.map(x => Object.assign({}, x)),
+      testimonials: [
+        { id: 't-1', quote: 'A quote from Bayroot International on the Study Abroad Expo 2026: what the tour needed, and how the creative held together from Kasaragod to Trivandrum.', name: 'Name', role: 'Role', business: 'Bayroot International', photo: null, visible: true },
+        { id: 't-2', quote: 'A quote from Roostory on the opening campaign: the rooster, the posters, and what changed once they went live.', name: 'Name', role: 'Role', business: 'Roostory', photo: null, visible: true },
+        { id: 't-3', quote: 'A quote from CB Perfume on the brand identity: how the fingerprint mark landed with their customers.', name: 'Name', role: 'Role', business: 'CB Perfume', photo: null, visible: true }
+      ],
+      inquiries: [
+        { id: 'q-1', name: 'Anjali Menon', email: 'anjali@example.com', phone: '+91 98470 00000', type: 'Event branding', budget: '₹75,000 to ₹2,00,000', timeline: 'This month', message: 'We are planning a college fest in December and need an entrance arch, stage backdrop and social posts.', date: Date.parse('2026-10-19T09:12:00Z'), status: 'new' },
+        { id: 'q-2', name: 'Faris Ahmed', email: 'faris@example.com', phone: '', type: 'Branding', budget: '₹25,000 to ₹75,000', timeline: 'Flexible', message: 'Opening a small café in Kochi. Need a logo, menu and a few launch posters.', date: Date.parse('2026-10-16T14:40:00Z'), status: 'replied' }
+      ],
+      activity: [{ t: T0, text: 'Site content imported from the portfolio PDF' }]
+    };
+  }
+
+  let cache = null;
+  function load() {
+    if (cache) return cache;
+    let d = null;
+    try { const raw = localStorage.getItem(KEY); if (raw) d = JSON.parse(raw); } catch (e) {}
+    if (!d || d.v !== 1) d = defaults();
+    if ((d.mv || 1) < 2) {
+      const df = defaults();
+      df.media.forEach(x => { if (!d.media.some(y => y.id === x.id)) d.media.push(x); });
+      const h = d.pages.home;
+      if (h.heroLeft === undefined) h.heroLeft = df.pages.home.heroLeft;
+      if (h.heroRight === undefined) h.heroRight = df.pages.home.heroRight;
+      d.mv = 2;
+      try { localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) {}
+    }
+    cache = d; return d;
+  }
+  function save(d, note) {
+    if (note) { d.activity = [{ t: Date.now(), text: note }].concat(d.activity || []).slice(0, 40); }
+    cache = d;
+    try { localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) { return { ok: false, error: 'Storage is full. Remove some uploaded images and try again.' }; }
+    try { window.dispatchEvent(new CustomEvent('rf-data')); } catch (e) {}
+    return { ok: true };
+  }
+  function reset() { try { localStorage.removeItem(KEY); } catch (e) {} cache = null; const d = load(); save(d, 'Content reset to the original portfolio'); return d; }
+  function subscribe(fn) {
+    const a = e => { if (!e || e.key === KEY || e.type === 'rf-data') { if (e && e.key === KEY) cache = null; fn(load()); } };
+    window.addEventListener('storage', a); window.addEventListener('rf-data', a);
+    return () => { window.removeEventListener('storage', a); window.removeEventListener('rf-data', a); };
+  }
+
+  const media = (d, id) => (d.media || []).find(x => x.id === id) || null;
+  const cat = (d, id) => (d.categories || []).find(x => x.id === id) || null;
+  const published = d => (d.projects || []).filter(p => p.status === 'published');
+  const splitTitle = t => {
+    const w = String(t || '').split(' ');
+    if (w.length < 2 || t.length < 13) return [t];
+    let best = 1, bd = 1e9;
+    for (let i = 1; i < w.length; i++) { const a = w.slice(0, i).join(' ').length, b = w.slice(i).join(' ').length, df = Math.abs(a - b); if (df < bd) { bd = df; best = i; } }
+    return [w.slice(0, best).join(' '), w.slice(best).join(' ')];
+  };
+  const usedIn = (d, mid) => {
+    const out = [];
+    (d.projects || []).forEach(p => { if (p.cover === mid || (p.sections || []).some(s => (s.media || []).includes(mid))) out.push(p.title); });
+    const pg = d.pages || {};
+    if (pg.home && pg.home.showreelPoster === mid) out.push('Home folder papers');
+    if (pg.home && (pg.home.heroLeft === mid || pg.home.heroRight === mid)) out.push('Home folder papers');
+    if (pg.about && pg.about.portrait === mid) out.push('About portrait');
+    ((pg.services && pg.services.items) || []).forEach(s => { if (s.image === mid) out.push('Service: ' + s.name); });
+    (d.testimonials || []).forEach(t => { if (t.photo === mid) out.push('Testimonial: ' + t.business); });
+    if (d.settings && d.settings.seoImage === mid) out.push('Default SEO image');
+    return out;
+  };
+  function addInquiry(q) {
+    const d = load();
+    d.inquiries = [Object.assign({ id: uid('q'), date: Date.now(), status: 'new' }, q)].concat(d.inquiries || []);
+    return save(d, 'New inquiry from ' + (q.name || 'the contact form'));
+  }
+
+  window.RFData = { KEY, load, save, reset, subscribe, defaults, uid, slugify, media, cat, published, splitTitle, usedIn, addInquiry };
+})();
+
+const NAV = [['dashboard', 'Dashboard'], ['projects', 'Projects'], ['categories', 'Categories'], ['testimonials', 'Testimonials'], ['pages', 'Pages'], ['inquiries', 'Inquiries'], ['media', 'Media'], ['settings', 'Settings']];
+const TYPES = [['full', 'Full-bleed'], ['grid', 'Grid'], ['strip', 'Strip'], ['video', 'Video']];
+const clone = o => JSON.parse(JSON.stringify(o));
+const LINE = 'rgba(244,242,239,0.14)', ERR = 'rgba(225,6,0,0.95)';
+const fmtDate = t => {
+  if (!t) return '';
+  const d = new Date(t), n = new Date(), y = new Date(n); y.setDate(n.getDate() - 1);
+  const time = d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  if (d.toDateString() === n.toDateString()) return 'Today, ' + time;
+  if (d.toDateString() === y.toDateString()) return 'Yesterday, ' + time;
+  return d.toLocaleDateString('en-GB', d.getFullYear() === n.getFullYear() ? { day: 'numeric', month: 'short' } : { day: 'numeric', month: 'short', year: 'numeric' });
+};
+const sw = on => ({ checked: on ? 'true' : 'false', bg: on ? '#E10600' : 'rgba(244,242,239,0.18)', x: on ? 'translateX(18px)' : 'translateX(0px)' });
+const chip = on => ({ pressed: on ? 'true' : 'false', bg: on ? '#E10600' : 'transparent', bd: on ? '#E10600' : 'rgba(244,242,239,0.22)' });
+const setPath = (obj, path, val) => { const o = clone(obj); let c = o; for (let i = 0; i < path.length - 1; i++) c = c[path[i]]; c[path[path.length - 1]] = val; return o; };
+
+class Component extends DCLogic {
+  state = { ready: false, authed: false, le: '', lp: '', lerr: '', db: null, view: 'dashboard', q: '', draft: null, dErr: {}, dDirty: false, isNew: false, slugTouched: false, form: null, fDirty: false, fErr: {}, pageTab: 'home', inqF: 'all', inqSel: null, mq: '', mf: 'all', up: null, picker: null, confirm: null, toast: null, sheet: false, acct: false, tEdit: null, tErr: {}, catName: '', catErr: '', catRen: null, dragK: null, mobile: false, drop: false };
+  fileRef = React.createRef();
+  cvRef = React.createRef();
+  queue = [];
+
+  componentDidMount() {
+    let a = false; try { a = sessionStorage.getItem('rf-admin') === '1'; } catch (e) {}
+    const go = () => {
+      if (!window.RFData) { this.bt = setTimeout(go, 30); return; }
+      this.setState({ ready: true, authed: a, db: clone(window.RFData.load()) });
+      this.unsub = window.RFData.subscribe(d => this.setState({ db: clone(d) }));
+    };
+    go();
+    this.onR = () => { const m = window.innerWidth < 900; if (m !== this.state.mobile) this.setState({ mobile: m }); };
+    this.onR(); window.addEventListener('resize', this.onR);
+    this.onK = e => {
+      if (e.key !== 'Escape') return;
+      const s = this.state;
+      if (s.up) this.setState({ up: null }); else if (s.picker) this.setState({ picker: null }); else if (s.confirm) this.setState({ confirm: null });
+      else if (s.tEdit) this.setState({ tEdit: null }); else if (s.sheet) this.setState({ sheet: false }); else if (s.acct) this.setState({ acct: false });
+    };
+    window.addEventListener('keydown', this.onK);
+    try { document.title = 'Admin, Reem Fathima'; } catch (e) {}
+  }
+  componentWillUnmount() { clearTimeout(this.bt); clearTimeout(this.tt); if (this.unsub) this.unsub(); window.removeEventListener('resize', this.onR); window.removeEventListener('keydown', this.onK); }
+
+  toast(text, kind) {
+    clearTimeout(this.tt);
+    this.setState({ toast: { text, kind: kind || 'ok', show: true } });
+    this.tt = setTimeout(() => this.setState(s => ({ toast: s.toast ? Object.assign({}, s.toast, { show: false }) : null })), 2800);
+  }
+  commit(mut, note, msg) {
+    const d = clone(this.state.db);
+    if (mut(d) === false) return false;
+    const r = window.RFData.save(d, note);
+    if (!r.ok) { this.toast(r.error, 'error'); return false; }
+    this.setState({ db: d });
+    if (msg) this.toast(msg);
+    return true;
+  }
+  ask(title, text, label, act) { this.setState({ confirm: { title, text, label, act } }); }
+
+  login(e) {
+    e.preventDefault();
+    const { le, lp } = this.state;
+    if (le.trim().toLowerCase() === 'reemfathima66@gmail.com' && lp === 'folder') { try { sessionStorage.setItem('rf-admin', '1'); } catch (er) {} this.setState({ authed: true, lerr: '', lp: '' }); }
+    else this.setState({ lerr: "That email and password don't match." });
+  }
+  logout() { try { sessionStorage.removeItem('rf-admin'); } catch (e) {} this.setState({ authed: false, acct: false, view: 'dashboard', draft: null }); }
+
+  dirty() { const s = this.state; return (s.view === 'editor' && s.dDirty) || ((s.view === 'pages' || s.view === 'settings') && s.fDirty); }
+  nav(v, extra) {
+    const go = () => {
+      const db = this.state.db;
+      const form = v === 'pages' ? this.pagesForm(db) : v === 'settings' ? clone(db.settings) : null;
+      this.setState(Object.assign({ view: v, sheet: false, acct: false, q: '', form, fDirty: false, fErr: {}, dDirty: false, tEdit: null }, extra || {}));
+      try { window.scrollTo(0, 0); } catch (e) {}
+    };
+    if (this.dirty() && v !== this.state.view) this.ask('Leave without saving?', 'Your unsaved changes on this screen will be lost.', 'Leave', go);
+    else go();
+  }
+  pagesForm(db) {
+    const p = clone(db.pages);
+    p.about.toolsDesignText = (p.about.toolsDesign || []).join(', ');
+    p.about.toolsAIText = (p.about.toolsAI || []).join(', ');
+    p.services.items.forEach(it => { it.delText = (it.deliverables || []).join('\n'); });
+    return p;
+  }
+
+  dnd(kind, i, n, move) {
+    return {
+      start: e => { this.drag = { kind, i }; try { e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', String(i)); } catch (er) {} this.setState({ dragK: kind + ':' + i }); },
+      over: e => { if (this.drag && this.drag.kind === kind) e.preventDefault(); },
+      drop: e => { e.preventDefault(); const d = this.drag; this.drag = null; this.setState({ dragK: null }); if (d && d.kind === kind && d.i !== i) move(d.i, i); },
+      end: () => { this.drag = null; this.setState({ dragK: null }); },
+      key: e => { if (e.key === 'ArrowUp' && i > 0) { e.preventDefault(); move(i, i - 1); } else if (e.key === 'ArrowDown' && i < n - 1) { e.preventDefault(); move(i, i + 1); } }
+    };
+  }
+  mv(a, from, to) { a.splice(to, 0, a.splice(from, 1)[0]); }
+
+  openProject(id) { const p = this.state.db.projects.find(x => x.id === id); if (!p) return; this.nav('editor', { draft: clone(p), dErr: {}, isNew: false, slugTouched: true }); }
+  newProject() {
+    const p = { id: window.RFData.uid('p'), slug: '', title: '', client: '', scope: '', year: String(new Date().getFullYear()), cats: [], tab: '', overview: '', cover: null, status: 'draft', featured: false, seoTitle: '', seoDesc: '', updated: Date.now(), sections: [] };
+    this.nav('editor', { draft: p, dErr: {}, isNew: true, slugTouched: false });
+  }
+  setD(patch) {
+    this.setState(s => {
+      const d = Object.assign({}, s.draft, patch);
+      if ('title' in patch && !s.slugTouched) d.slug = window.RFData.slugify(patch.title);
+      const er = Object.assign({}, s.dErr); Object.keys(patch).forEach(k => { delete er[k]; }); if ('title' in patch) delete er.slug;
+      return { draft: d, dDirty: true, dErr: er };
+    });
+  }
+  setSec(i, patch) { const secs = this.state.draft.sections.map((x, j) => j === i ? Object.assign({}, x, patch) : x); this.setD({ sections: secs }); }
+  validate(d) {
+    const e = {};
+    if (!d.title.trim()) e.title = 'Add a title. It shows on the folder card and the project page.';
+    if (!d.slug.trim()) e.slug = 'Add a slug. It becomes the page address.';
+    else if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(d.slug)) e.slug = 'Use lowercase letters, numbers and single hyphens in the slug.';
+    else if (this.state.db.projects.some(p => p.slug === d.slug && p.id !== d.id)) e.slug = 'Another project already uses this slug. Change it to something unique.';
+    if (!d.client.trim()) e.client = 'Add the client name.';
+    return e;
+  }
+  saveProject(status) {
+    const d = clone(this.state.draft);
+    const e = this.validate(d);
+    if (Object.keys(e).length) { this.setState({ dErr: e }); this.toast('Check the fields marked in red.', 'error'); return; }
+    d.status = status; d.updated = Date.now();
+    if (!d.tab) { const c = this.state.db.categories.find(x => x.id === d.cats[0]); d.tab = c ? c.name : ''; }
+    const live = status === 'published';
+    const ok = this.commit(db => { const i = db.projects.findIndex(p => p.id === d.id); if (i < 0) db.projects.push(d); else db.projects[i] = d; }, (live ? 'Published ' : 'Saved draft of ') + d.title, live ? "Published. It's live on the site." : 'Draft saved.');
+    if (ok) this.setState({ draft: d, dDirty: false, isNew: false, slugTouched: true });
+  }
+  preview() {
+    const d = clone(this.state.draft);
+    if (!d.slug) { this.setState({ dErr: Object.assign({}, this.state.dErr, { slug: 'Add a slug before previewing.' }) }); return; }
+    const db = clone(this.state.db); db.preview = d; window.RFData.save(db); this.setState({ db });
+    window.open('Home.dc.html?p=' + encodeURIComponent(d.slug) + '&preview=1', '_blank');
+  }
+  deleteProject() {
+    const d = this.state.draft;
+    this.ask('Delete this project?', "This can't be undone.", 'Delete project', () => {
+      this.commit(db => { db.projects = db.projects.filter(p => p.id !== d.id); }, 'Deleted ' + (d.title || 'a project'), 'Project deleted.');
+      this.setState({ dDirty: false }, () => this.nav('projects', { draft: null }));
+    });
+  }
+  toggleFeatured(id) {
+    let on = false;
+    this.commit(db => { const p = db.projects.find(x => x.id === id); p.featured = !p.featured; on = p.featured; p.updated = Date.now(); }, null, null);
+    const n = this.state.db.projects.filter(p => p.featured).length;
+    this.toast(on ? (n > 4 ? 'Featured. Home shows the first 4 featured projects.' : 'Featured on Home.') : 'Removed from Home.');
+  }
+
+  addCat(e) {
+    if (e) e.preventDefault();
+    const name = this.state.catName.trim();
+    if (!name) { this.setState({ catErr: 'Add a category name.' }); return; }
+    if (this.state.db.categories.some(c => c.name.toLowerCase() === name.toLowerCase())) { this.setState({ catErr: 'That category already exists. Use a different name.' }); return; }
+    if (this.commit(db => { db.categories.push({ id: window.RFData.uid('c'), name, slug: window.RFData.slugify(name) }); }, 'Added category ' + name, 'Category added.')) this.setState({ catName: '', catErr: '' });
+  }
+  saveRen() {
+    const r = this.state.catRen; const name = (r.name || '').trim();
+    if (!name) { this.toast('Add a category name.', 'error'); return; }
+    if (this.commit(db => { const c = db.categories.find(x => x.id === r.id); c.name = name; c.slug = window.RFData.slugify(name); db.projects.forEach(p => { if (p.tab === r.old) p.tab = name; }); }, 'Renamed category to ' + name, 'Category renamed.')) this.setState({ catRen: null });
+  }
+
+  editT(t) { this.setState({ tEdit: t ? Object.assign(clone(t), { _new: false }) : { id: window.RFData.uid('t'), quote: '', name: '', role: '', business: '', photo: null, visible: true, _new: true }, tErr: {} }); }
+  saveT() {
+    const t = clone(this.state.tEdit), e = {};
+    if (!t.quote.trim()) e.quote = 'Add the quote.';
+    if (!t.name.trim() && !t.business.trim()) e.name = 'Add a name or a business so visitors know who said it.';
+    if (Object.keys(e).length) { this.setState({ tErr: e }); return; }
+    const isNew = t._new; delete t._new;
+    if (this.commit(db => { const i = db.testimonials.findIndex(x => x.id === t.id); if (i < 0) db.testimonials.push(t); else db.testimonials[i] = t; }, (isNew ? 'Added' : 'Updated') + ' a testimonial', 'Testimonial saved.')) this.setState({ tEdit: null });
+  }
+
+  setF(path, val) { this.setState(s => { const er = Object.assign({}, s.fErr); delete er[path.join('.')]; return { form: setPath(s.form, path, val), fDirty: true, fErr: er }; }); }
+  savePages() {
+    const f = clone(this.state.form);
+    f.about.toolsDesign = f.about.toolsDesignText.split(',').map(x => x.trim()).filter(Boolean);
+    f.about.toolsAI = f.about.toolsAIText.split(',').map(x => x.trim()).filter(Boolean);
+    delete f.about.toolsDesignText; delete f.about.toolsAIText;
+    f.services.items.forEach(it => { it.deliverables = (it.delText || '').split('\n').map(x => x.trim()).filter(Boolean); delete it.delText; });
+    if (this.commit(db => { db.pages = f; }, 'Updated page copy', 'Pages saved. Changes are live.')) this.setState({ fDirty: false });
+  }
+  saveSettings() {
+    const f = clone(this.state.form), e = {};
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((f.email || '').trim())) e.email = 'Add a valid email, like name@example.com.';
+    const wa = (f.whatsapp || '').replace(/\D/g, '');
+    if (f.whatsapp && wa.length < 10) e.whatsapp = 'Add the WhatsApp number with country code, like 917510449444.';
+    if (Object.keys(e).length) { this.setState({ fErr: e }); this.toast('Check the fields marked in red.', 'error'); return; }
+    f.whatsapp = wa;
+    if (this.commit(db => { db.settings = f; }, 'Updated settings', 'Settings saved.')) this.setState({ fDirty: false });
+  }
+
+  openPicker(target, multi, sel) { this.setState({ picker: { target, multi, sel: (sel || []).filter(Boolean), q: '' } }); }
+  applyPicker() {
+    const p = this.state.picker, sel = p.sel, one = sel[0] || null, t = p.target;
+    if (t === 'cover') this.setD({ cover: one });
+    else if (t.indexOf('sec:') === 0) this.setSec(+t.slice(4), { media: sel });
+    else if (t === 'poster') this.setF(['home', 'showreelPoster'], one);
+    else if (t === 'heroL') this.setF(['home', 'heroLeft'], one);
+    else if (t === 'heroR') this.setF(['home', 'heroRight'], one);
+    else if (t === 'portrait') this.setF(['about', 'portrait'], one);
+    else if (t.indexOf('svc:') === 0) this.setF(['services', 'items', +t.slice(4), 'image'], one);
+    else if (t === 'seo') this.setF(['seoImage'], one);
+    else if (t === 'tphoto') this.setState(s => ({ tEdit: Object.assign({}, s.tEdit, { photo: one }) }));
+    this.setState({ picker: null });
+  }
+
+  queueFiles(files) {
+    const list = Array.from(files || []).filter(f => /^image\//.test(f.type));
+    if (!list.length) { if (files && files.length) this.toast('Only image files can be added to Media.', 'error'); return; }
+    this.queue = this.queue.concat(list);
+    if (!this.state.up) this.nextUpload();
+  }
+  nextUpload() {
+    const f = this.queue.shift(); if (!f) return;
+    const rd = new FileReader();
+    rd.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const k = Math.min(1, 1800 / Math.max(img.width, img.height));
+        const w = Math.round(img.width * k), h = Math.round(img.height * k);
+        const c = document.createElement('canvas'); c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        let src = rd.result; try { src = c.toDataURL('image/jpeg', 0.84); } catch (e) {}
+        this.setState({ up: { mode: 'new', src, w, h, name: f.name, alt: '', err: '', left: this.queue.length } });
+      };
+      img.onerror = () => { this.toast('That file could not be read as an image.', 'error'); this.nextUpload(); };
+      img.src = rd.result;
+    };
+    rd.readAsDataURL(f);
+  }
+  confirmUpload() {
+    const u = this.state.up;
+    if (!u.alt.trim()) { this.setState({ up: Object.assign({}, u, { err: 'Add alt text. Describe what the image shows for people using screen readers.' }) }); return; }
+    if (u.mode === 'edit') {
+      if (this.commit(db => { const m = db.media.find(x => x.id === u.id); m.alt = u.alt.trim(); }, null, 'Alt text saved.')) this.setState({ up: null });
+      return;
+    }
+    const id = window.RFData.uid('m');
+    const ok = this.commit(db => { db.media.unshift({ id, src: u.src, w: u.w, h: u.h, alt: u.alt.trim(), name: u.name, uploaded: Date.now() }); }, 'Uploaded ' + u.name, 'Image added to Media.');
+    if (!ok) { this.queue = []; return; }
+    const p = this.state.picker;
+    if (p) this.setState({ picker: Object.assign({}, p, { sel: p.multi ? p.sel.concat(id) : [id] }) });
+    this.setState({ up: null }, () => this.nextUpload());
+  }
+  delMedia(m) {
+    const used = window.RFData.usedIn(this.state.db, m.id);
+    this.ask('Delete this image?', used.length ? 'It is used in ' + used.join(', ') + '. Deleting it removes it from those places too.' : "It isn't used anywhere on the site.", 'Delete image', () => {
+      this.commit(db => {
+        db.media = db.media.filter(x => x.id !== m.id);
+        db.projects.forEach(p => { if (p.cover === m.id) p.cover = null; p.sections.forEach(s => { s.media = s.media.filter(x => x !== m.id); }); });
+        if (db.pages.home.showreelPoster === m.id) db.pages.home.showreelPoster = null;
+        if (db.pages.about.portrait === m.id) db.pages.about.portrait = null;
+        db.pages.services.items.forEach(it => { if (it.image === m.id) it.image = null; });
+        db.testimonials.forEach(t => { if (t.photo === m.id) t.photo = null; });
+        if (db.settings.seoImage === m.id) db.settings.seoImage = null;
+      }, 'Deleted image ' + m.name, 'Image deleted.');
+    });
+  }
+  cvFile(f) {
+    if (!f) return;
+    if (f.type !== 'application/pdf') { this.toast('Upload the CV as a PDF.', 'error'); return; }
+    if (f.size > 2.5 * 1024 * 1024) { this.toast('That PDF is over 2.5 MB. Export a smaller version and try again.', 'error'); return; }
+    const rd = new FileReader();
+    rd.onload = () => { this.setF(['cvUrl'], rd.result); this.setState(s => ({ form: Object.assign({}, s.form, { cvName: f.name }) })); };
+    rd.readAsDataURL(f);
+  }
+  setInq(id, status, msg) { this.commit(db => { const q = db.inquiries.find(x => x.id === id); q.status = status; }, null, msg); }
+
+  renderVals() {
+    const s = this.state, db = s.db, R = window.RFData;
+    const base = {
+      fileRef: this.fileRef, cvRef: this.cvRef,
+      onFiles: e => { this.queueFiles(e.target.files); e.target.value = ''; },
+      onCv: e => { this.cvFile(e.target.files && e.target.files[0]); e.target.value = ''; },
+      showLogin: false, showApp: false
+    };
+    if (!s.ready || !db) return base;
+    if (!s.authed) return Object.assign(base, {
+      showLogin: true, le: s.le, lp: s.lp, lerr: s.lerr, hasLerr: !!s.lerr,
+      onLe: e => this.setState({ le: e.target.value, lerr: '' }), onLp: e => this.setState({ lp: e.target.value, lerr: '' }), login: e => this.login(e)
+    });
+
+    const V = s.view, M = id => R.media(db, id), src = id => (M(id) || {}).src || '';
+    const newCount = db.inquiries.filter(q => q.status === 'new').length;
+    const active = k => V === k || (V === 'editor' && k === 'projects');
+    const navItems = NAV.map(([k, label]) => ({
+      label, on: () => this.nav(k), cur: active(k) ? 'page' : 'false',
+      bg: active(k) ? '#E10600' : 'transparent', color: active(k) ? '#F4F2EF' : 'rgba(244,242,239,0.76)',
+      hasBadge: k === 'inquiries' && newCount > 0, badge: String(newCount), badgeBg: active(k) ? 'rgba(5,5,5,0.35)' : '#E10600'
+    }));
+    const labelOf = k => (NAV.find(n => n[0] === k) || [k, 'Project editor'])[1];
+    const out = Object.assign(base, {
+      showApp: true, desktop: !s.mobile, mobile: s.mobile, navItems,
+      crumb: V === 'editor' ? 'Projects / ' + ((s.draft && s.draft.title) || 'New project') : labelOf(V),
+      mainPadB: s.mobile ? '120px' : '72px',
+      acct: s.acct, acctOpen: s.acct ? 'true' : 'false', toggleAcct: () => this.setState({ acct: !this.state.acct }),
+      logout: () => this.logout(),
+      askReset: () => { this.setState({ acct: false }); this.ask('Reset demo content?', 'This replaces every project, page, image and inquiry with the original portfolio content.', 'Reset content', () => { const d = R.reset(); this.setState({ db: clone(d), draft: null, form: null, fDirty: false, dDirty: false, view: 'dashboard' }); this.toast('Content reset.'); }); },
+      isDash: V === 'dashboard', isProjects: V === 'projects', isEditor: V === 'editor' && !!s.draft, isCats: V === 'categories', isTests: V === 'testimonials', isPages: V === 'pages' && !!s.form, isInq: V === 'inquiries', isMedia: V === 'media', isSettings: V === 'settings' && !!s.form,
+      newProject: () => this.newProject(), goInq: () => this.nav('inquiries'), goProjects: () => this.nav('projects'), goMedia: () => this.nav('media')
+    });
+
+    const pub = db.projects.filter(p => p.status === 'published').length;
+    out.dash = {
+      newCount: String(newCount), newLabel: newCount === 1 ? 'new inquiry' : 'new inquiries',
+      latest: db.inquiries.slice().sort((a, b) => b.date - a.date).slice(0, 3).map(q => ({ name: q.name, type: q.type || 'Not specified', when: fmtDate(q.date), isNew: q.status === 'new', on: () => this.nav('inquiries', { inqSel: q.id, inqF: 'all' }) })),
+      noLatest: db.inquiries.length === 0,
+      pub: String(pub), draft: String(db.projects.length - pub), feat: String(db.projects.filter(p => p.featured && p.status === 'published').length),
+      activity: (db.activity || []).slice(0, 6).map(a => ({ text: a.text, when: fmtDate(a.t) }))
+    };
+
+    const ql = s.q.trim().toLowerCase();
+    out.q = s.q; out.onQ = e => this.setState({ q: e.target.value });
+    out.projCount = db.projects.length + (db.projects.length === 1 ? ' project' : ' projects') + ', ' + pub + ' published';
+    out.projEmpty = db.projects.length === 0;
+    const canDrag = !ql;
+    out.prows = db.projects.map((p, i) => ({ p, i })).filter(({ p }) => !ql || (p.title + ' ' + p.client).toLowerCase().indexOf(ql) > -1).map(({ p, i }) => {
+      const d = this.dnd('proj', i, db.projects.length, (a, b) => this.commit(x => this.mv(x.projects, a, b), null, 'Order saved.'));
+      const f = sw(p.featured), live = p.status === 'published';
+      return {
+        title: p.title || 'Untitled project', slug: '/work/' + (p.slug || ''), client: p.client || 'No client yet',
+        cats: p.cats.map(c => (R.cat(db, c) || {}).name).filter(Boolean).join(', ') || 'None',
+        thumb: src(p.cover), hasThumb: !!src(p.cover), noThumb: !src(p.cover),
+        fOn: f.checked, fBg: f.bg, fX: f.x, toggle: () => this.toggleFeatured(p.id), fLabel: 'Feature ' + (p.title || 'project') + ' on Home',
+        status: live ? 'Published' : 'Draft', dotBg: live ? '#E10600' : 'transparent', dotBd: live ? '#E10600' : 'rgba(244,242,239,0.6)',
+        edited: fmtDate(p.updated), open: () => this.openProject(p.id),
+        drag: canDrag ? 'true' : 'false', dstart: d.start, dover: d.over, ddrop: d.drop, dend: d.end, dkey: d.key, op: s.dragK === 'proj:' + i ? 0.4 : 1
+      };
+    });
+    out.noResults = !out.projEmpty && out.prows.length === 0;
+    out.hasRows = out.prows.length > 0;
+    out.dragHint = canDrag ? 'Drag rows to change the order on the Work page. Focus a handle and use the arrow keys to move it.' : 'Clear the search to reorder projects.';
+
+    const d = s.draft;
+    if (d) {
+      const fe = sw(d.featured), live = d.status === 'published', E = s.dErr;
+      out.ed = {
+        title: d.title, slug: d.slug, client: d.client, scope: d.scope, year: d.year, tab: d.tab, overview: d.overview, seoTitle: d.seoTitle, seoDesc: d.seoDesc,
+        seoCount: (d.seoDesc || '').length + ' of 160 characters', heading: d.title || 'New project',
+        status: live ? 'Published' : 'Draft', statusText: live ? 'Live on the site.' : 'Only visible in preview.', dotBg: live ? '#E10600' : 'transparent', dotBd: live ? '#E10600' : 'rgba(244,242,239,0.6)',
+        cover: src(d.cover), hasCover: !!src(d.cover), noCover: !src(d.cover),
+        fOn: fe.checked, fBg: fe.bg, fX: fe.x,
+        edited: s.isNew ? 'Not saved yet' : 'Last edited ' + fmtDate(d.updated), dirty: s.dDirty ? 'Unsaved changes' : 'All changes saved', dirtyDot: s.dDirty ? '#E10600' : 'rgba(244,242,239,0.4)',
+        canDelete: !s.isNew, tabPh: (R.cat(db, d.cats[0]) || {}).name || 'Uses the first category', seoTitlePh: d.title || 'Uses the project title',
+        hasSecs: d.sections.length > 0, noSecs: d.sections.length === 0
+      };
+      out.edErr = { title: E.title || '', slug: E.slug || '', client: E.client || '' };
+      out.edHas = { title: !!E.title, slug: !!E.slug, client: !!E.client };
+      out.edBd = { title: E.title ? ERR : LINE, slug: E.slug ? ERR : LINE, client: E.client ? ERR : LINE };
+      const tv = k => e => this.setD({ [k]: e.target.value });
+      out.edOn = {
+        title: tv('title'), client: tv('client'), scope: tv('scope'), year: tv('year'), tab: tv('tab'), overview: tv('overview'), seoTitle: tv('seoTitle'),
+        seoDesc: e => this.setD({ seoDesc: e.target.value.slice(0, 160) }),
+        slug: e => { this.setState({ slugTouched: true }); this.setD({ slug: e.target.value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') }); },
+        featured: () => this.setD({ featured: !d.featured }),
+        cover: () => this.openPicker('cover', false, [d.cover]), clearCover: () => this.setD({ cover: null }),
+        draft: () => this.saveProject('draft'), publish: () => this.saveProject('published'), preview: () => this.preview(), del: () => this.deleteProject(),
+        back: () => this.nav('projects'),
+        addSec: () => this.setD({ sections: d.sections.concat([{ id: R.uid('s'), type: 'full', title: '', text: '', media: [], videoUrl: '' }]) })
+      };
+      out.edCats = db.categories.map(c => { const on = d.cats.indexOf(c.id) > -1, k = chip(on); return { name: c.name, pressed: k.pressed, bg: k.bg, bd: k.bd, on: () => this.setD({ cats: on ? d.cats.filter(x => x !== c.id) : d.cats.concat(c.id) }) }; });
+      out.secs = d.sections.map((x, i) => {
+        const dd = this.dnd('sec', i, d.sections.length, (a, b) => { const arr = d.sections.slice(); this.mv(arr, a, b); this.setD({ sections: arr }); });
+        return {
+          n: 'Section ' + (i + 1), title: x.title, text: x.text, videoUrl: x.videoUrl || '', isVideo: x.type === 'video',
+          types: TYPES.map(([k, l]) => { const c = chip(x.type === k); return { label: l, pressed: c.pressed, bg: c.bg, bd: c.bd, on: () => this.setSec(i, { type: k }) }; }),
+          media: x.media.map((mid, j) => ({ src: src(mid), alt: (M(mid) || {}).alt || '', rm: () => this.setSec(i, { media: x.media.filter((_, k) => k !== j) }), rmLabel: 'Remove image ' + (j + 1) })),
+          hasMedia: x.media.length > 0, noMedia: x.media.length === 0,
+          mediaLabel: x.type === 'video' ? 'Poster image' : 'Media',
+          onTitle: e => this.setSec(i, { title: e.target.value }), onText: e => this.setSec(i, { text: e.target.value }), onVideo: e => this.setSec(i, { videoUrl: e.target.value }),
+          add: () => this.openPicker('sec:' + i, true, x.media),
+          remove: () => this.ask('Remove this section?', 'Its title, line and media selection will be removed from the project.', 'Remove section', () => this.setD({ sections: this.state.draft.sections.filter((_, k) => k !== i) })),
+          dstart: dd.start, dover: dd.over, ddrop: dd.drop, dend: dd.end, dkey: dd.key, op: s.dragK === 'sec:' + i ? 0.4 : 1, handleLabel: 'Reorder section ' + (i + 1) + '. Use arrow keys to move.'
+        };
+      });
+    }
+
+    out.catName = s.catName; out.catErr = s.catErr; out.hasCatErr = !!s.catErr;
+    out.onCatName = e => this.setState({ catName: e.target.value, catErr: '' });
+    out.addCat = e => this.addCat(e);
+    out.cats = db.categories.map(c => {
+      const n = db.projects.filter(p => p.cats.indexOf(c.id) > -1).length, ren = !!(s.catRen && s.catRen.id === c.id);
+      return {
+        name: c.name, slug: c.slug, count: n + (n === 1 ? ' project' : ' projects'), renaming: ren, notRenaming: !ren, renVal: ren ? s.catRen.name : '',
+        onRen: e => this.setState({ catRen: Object.assign({}, this.state.catRen, { name: e.target.value }) }),
+        startRen: () => this.setState({ catRen: { id: c.id, name: c.name, old: c.name } }),
+        saveRen: e => { if (e && e.preventDefault) e.preventDefault(); this.saveRen(); }, cancelRen: () => this.setState({ catRen: null }),
+        del: () => this.ask('Delete ' + c.name + '?', n ? n + (n === 1 ? ' project uses' : ' projects use') + " this category. Deleting it removes it from them. This can't be undone." : "No projects use this category. This can't be undone.", 'Delete category', () => this.commit(x => { x.categories = x.categories.filter(k => k.id !== c.id); x.projects.forEach(p => { p.cats = p.cats.filter(k => k !== c.id); }); }, 'Deleted category ' + c.name, 'Category deleted.'))
+      };
+    });
+    out.noCats = db.categories.length === 0;
+
+    out.tests = db.testimonials.map((t, i) => {
+      const dd = this.dnd('t', i, db.testimonials.length, (a, b) => this.commit(x => this.mv(x.testimonials, a, b), null, 'Order saved.')), v = sw(t.visible);
+      return {
+        quote: t.quote.length > 140 ? t.quote.slice(0, 137) + '...' : t.quote, who: [t.name, t.role, t.business].filter(Boolean).join(', '),
+        photo: src(t.photo), hasPhoto: !!src(t.photo), noPhoto: !src(t.photo), initial: (t.business || t.name || '?').trim().charAt(0).toUpperCase(),
+        vOn: v.checked, vBg: v.bg, vX: v.x, vLabel: 'Show testimonial from ' + (t.business || t.name),
+        toggle: () => this.commit(x => { const k = x.testimonials.find(y => y.id === t.id); k.visible = !k.visible; }, null, t.visible ? 'Hidden from the site.' : 'Showing on the site.'),
+        edit: () => this.editT(t),
+        del: () => this.ask('Delete this testimonial?', "This can't be undone.", 'Delete testimonial', () => this.commit(x => { x.testimonials = x.testimonials.filter(y => y.id !== t.id); }, 'Deleted a testimonial', 'Testimonial deleted.')),
+        dstart: dd.start, dover: dd.over, ddrop: dd.drop, dend: dd.end, dkey: dd.key, op: s.dragK === 't:' + i ? 0.4 : 1, status: t.visible ? 'Visible' : 'Hidden'
+      };
+    });
+    out.noTests = db.testimonials.length === 0;
+    out.addT = () => this.editT(null);
+    const te = s.tEdit || { quote: '', name: '', role: '', business: '', photo: null, visible: true, _new: true };
+    const tv2 = sw(te.visible);
+    out.te = { quote: te.quote, name: te.name, role: te.role, business: te.business, photo: src(te.photo), hasPhoto: !!src(te.photo), noPhoto: !src(te.photo), title: te._new ? 'Add testimonial' : 'Edit testimonial', vOn: tv2.checked, vBg: tv2.bg, vX: tv2.x, errQuote: (s.tErr || {}).quote || '', errName: (s.tErr || {}).name || '', hasErrQuote: !!(s.tErr || {}).quote, hasErrName: !!(s.tErr || {}).name, bdQuote: (s.tErr || {}).quote ? ERR : LINE };
+    const tset = k => e => this.setState(st => { const er = Object.assign({}, st.tErr); delete er[k === 'business' ? 'name' : k]; return { tEdit: Object.assign({}, st.tEdit, { [k]: e.target.value }), tErr: er }; });
+    out.teOn = { quote: tset('quote'), name: tset('name'), role: tset('role'), business: tset('business'), visible: () => this.setState(st => ({ tEdit: Object.assign({}, st.tEdit, { visible: !st.tEdit.visible }) })), photo: () => this.openPicker('tphoto', false, [te.photo]), clearPhoto: () => this.setState(st => ({ tEdit: Object.assign({}, st.tEdit, { photo: null }) })), save: () => this.saveT(), close: () => this.setState({ tEdit: null }) };
+    out.drawerX = s.tEdit ? 'translate3d(0,0,0)' : 'translate3d(105%,0,0)';
+    out.drawerVis = s.tEdit ? 'visible' : 'hidden';
+    out.drawerBg = s.tEdit ? 1 : 0;
+    out.drawerPe = s.tEdit ? 'auto' : 'none';
+
+    const F = s.form;
+    if (V === 'pages' && F) {
+      const st = k => e => this.setF(k, e.target.value);
+      out.pTabs = [['home', 'Home'], ['about', 'About'], ['services', 'Services']].map(([k, l]) => { const c = chip(s.pageTab === k); return { label: l, pressed: c.pressed, bg: c.bg, bd: c.bd, on: () => this.setState({ pageTab: k }) }; });
+      out.pgHome = s.pageTab === 'home'; out.pgAbout = s.pageTab === 'about'; out.pgSvc = s.pageTab === 'services';
+      out.pf = F;
+      out.pfOn = {
+        tagline: st(['home', 'tagline']), smallLine: st(['home', 'smallLine']), clientsLine: st(['home', 'clientsLine']), showreelUrl: st(['home', 'showreelUrl']),
+        poster: () => this.openPicker('poster', false, [F.home.showreelPoster]), heroL: () => this.openPicker('heroL', false, [F.home.heroLeft]), heroR: () => this.openPicker('heroR', false, [F.home.heroRight]),
+        lead: st(['about', 'lead']), story: st(['about', 'story']), toolsD: st(['about', 'toolsDesignText']), toolsA: st(['about', 'toolsAIText']), expRole: st(['about', 'expRole']), expStart: st(['about', 'expStart']), expText: st(['about', 'expText']),
+        portrait: () => this.openPicker('portrait', false, [F.about.portrait]),
+        intro: st(['services', 'intro']), pricing: () => this.setF(['services', 'pricingOn'], !F.services.pricingOn),
+        save: () => this.savePages(), discard: () => this.setState({ form: this.pagesForm(this.state.db), fDirty: false })
+      };
+      out.pHeroL = src(F.home.heroLeft); out.pHasHeroL = !!out.pHeroL; out.pHeroR = src(F.home.heroRight); out.pHasHeroR = !!out.pHeroR;
+      out.pPoster = src(F.home.showreelPoster); out.pHasPoster = !!out.pPoster; out.pNoPoster = !out.pPoster;
+      out.pPortrait = src(F.about.portrait); out.pHasPortrait = !!out.pPortrait; out.pNoPortrait = !out.pPortrait;
+      const pr = sw(F.services.pricingOn); out.pricing = { on: pr.checked, bg: pr.bg, x: pr.x, show: !!F.services.pricingOn };
+      out.projOpts = [{ slug: '', title: 'No linked project' }].concat(db.projects.map(p => ({ slug: p.slug, title: p.title })));
+      out.svcItems = F.services.items.map((it, i) => ({
+        n: 'Service ' + (i + 1), name: it.name, short: it.short, desc: it.desc, delText: it.delText, project: it.project || '', price: it.price || '',
+        img: src(it.image), hasImg: !!src(it.image), noImg: !src(it.image), showPrice: !!F.services.pricingOn,
+        onName: st(['services', 'items', i, 'name']), onShort: st(['services', 'items', i, 'short']), onDesc: st(['services', 'items', i, 'desc']), onDel: st(['services', 'items', i, 'delText']), onProject: st(['services', 'items', i, 'project']), onPrice: st(['services', 'items', i, 'price']),
+        pick: () => this.openPicker('svc:' + i, false, [it.image])
+      }));
+      out.procItems = F.services.process.map((p, i) => ({ n: String(i + 1).padStart(2, '0'), title: p.title, text: p.text, onTitle: st(['services', 'process', i, 'title']), onText: st(['services', 'process', i, 'text']) }));
+      const feat = db.projects.map((p, i) => ({ p, i })).filter(x => x.p.featured);
+      out.featList = feat.map((x, k) => {
+        const dd = this.dnd('feat', k, feat.length, (a, b) => this.commit(db2 => {
+          const idxs = db2.projects.map((p, i) => p.featured ? i : -1).filter(i => i > -1);
+          const items = idxs.map(i => db2.projects[i]); this.mv(items, a, b); idxs.forEach((pi, j) => { db2.projects[pi] = items[j]; });
+        }, null, 'Featured order saved.'));
+        return { n: String(k + 1), title: x.p.title, sub: k < 4 ? (x.p.status === 'published' ? 'Shown on Home' : 'Draft, not shown') : 'Not shown, Home fits 4', thumb: src(x.p.cover), hasThumb: !!src(x.p.cover), noThumb: !src(x.p.cover), dstart: dd.start, dover: dd.over, ddrop: dd.drop, dend: dd.end, dkey: dd.key, op: s.dragK === 'feat:' + k ? 0.4 : 1 };
+      });
+      out.noFeat = feat.length === 0;
+      out.fDirty = s.fDirty; out.saveOp = s.fDirty ? 1 : 0.5; out.saveLabel = s.fDirty ? 'Unsaved changes' : 'All changes saved'; out.saveDot = s.fDirty ? '#E10600' : 'rgba(244,242,239,0.4)';
+    }
+
+    const qs = db.inquiries.slice().sort((a, b) => b.date - a.date);
+    const cnt = k => k === 'all' ? qs.length : qs.filter(q => q.status === k).length;
+    out.inqTabs = [['all', 'All'], ['new', 'New'], ['replied', 'Replied'], ['archived', 'Archived']].map(([k, l]) => { const c = chip(s.inqF === k); return { label: l + ' ' + cnt(k), pressed: c.pressed, bg: c.bg, bd: c.bd, on: () => this.setState({ inqF: k }) }; });
+    const SL = { new: 'New', replied: 'Replied', archived: 'Archived' };
+    out.inqRows = qs.filter(q => s.inqF === 'all' || q.status === s.inqF).map(q => ({
+      name: q.name, type: q.type || 'Not specified', budget: q.budget || 'No budget given', when: fmtDate(q.date), status: SL[q.status], isNew: q.status === 'new',
+      bg: s.inqSel === q.id ? 'rgba(244,242,239,0.07)' : 'transparent', on: () => this.setState({ inqSel: q.id }), cur: s.inqSel === q.id ? 'true' : 'false'
+    }));
+    out.inqEmpty = out.inqRows.length === 0;
+    out.inqEmptyText = db.inquiries.length ? 'Nothing here. Try another tab.' : 'No inquiries yet. Messages from the contact form show up here.';
+    const sel = qs.find(q => q.id === s.inqSel);
+    if (sel) {
+      const digits = (sel.phone || '').replace(/\D/g, '');
+      out.iq = {
+        name: sel.name, email: sel.email, phone: sel.phone || 'Not given', type: sel.type || 'Not specified', budget: sel.budget || 'Not given', timeline: sel.timeline || 'Not given',
+        when: new Date(sel.date).toLocaleString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }), message: sel.message, status: SL[sel.status],
+        mailto: 'mailto:' + sel.email + '?subject=' + encodeURIComponent('Your ' + (sel.type || 'design').toLowerCase() + ' project'),
+        wa: digits.length >= 10 ? 'https://wa.me/' + digits : '', hasWa: digits.length >= 10, noWa: digits.length < 10,
+        notReplied: sel.status !== 'replied', notArchived: sel.status !== 'archived', notNew: sel.status !== 'new',
+        replied: () => this.setInq(sel.id, 'replied', 'Marked as replied.'), archive: () => this.setInq(sel.id, 'archived', 'Archived.'), unnew: () => this.setInq(sel.id, 'new', 'Moved back to New.'),
+        back: () => this.setState({ inqSel: null })
+      };
+    }
+    out.hasSel = !!sel; out.noSel = !sel;
+    out.showInqList = !s.mobile || !sel; out.showInqDetail = !!sel; out.showInqPh = !s.mobile && !sel;
+
+    const mql = s.mq.trim().toLowerCase();
+    out.mq = s.mq; out.onMq = e => this.setState({ mq: e.target.value });
+    out.mTabs = [['all', 'All'], ['used', 'Used'], ['unused', 'Not used']].map(([k, l]) => { const c = chip(s.mf === k); return { label: l, pressed: c.pressed, bg: c.bg, bd: c.bd, on: () => this.setState({ mf: k }) }; });
+    out.mItems = db.media.map(m => ({ m, used: R.usedIn(db, m.id) })).filter(({ m, used }) => (!mql || (m.name + ' ' + m.alt).toLowerCase().indexOf(mql) > -1) && (s.mf === 'all' || (s.mf === 'used' ? used.length > 0 : used.length === 0))).map(({ m, used }) => ({
+      src: m.src, alt: m.alt || 'No alt text', name: m.name, size: m.w && m.h ? m.w + ' × ' + m.h : '',
+      used: used.length ? 'Used in ' + used.slice(0, 2).join(', ') + (used.length > 2 ? ' and ' + (used.length - 2) + ' more' : '') : 'Not used yet',
+      editAlt: () => this.setState({ up: { mode: 'edit', id: m.id, src: m.src, name: m.name, alt: m.alt || '', err: '', left: 0 } }), del: () => this.delMedia(m),
+      altLabel: 'Edit alt text for ' + m.name, delLabel: 'Delete ' + m.name
+    }));
+    out.mCount = db.media.length + (db.media.length === 1 ? ' image' : ' images');
+    out.mEmpty = out.mItems.length === 0;
+    out.browse = () => this.fileRef.current && this.fileRef.current.click();
+    out.dropBd = s.drop ? '#E10600' : 'rgba(244,242,239,0.22)';
+    out.dropBg = s.drop ? 'rgba(225,6,0,0.08)' : 'transparent';
+    out.dz = { over: e => { e.preventDefault(); if (!this.state.drop) this.setState({ drop: true }); }, leave: () => this.setState({ drop: false }), drop: e => { e.preventDefault(); this.setState({ drop: false }); this.queueFiles(e.dataTransfer && e.dataTransfer.files); } };
+
+    if (V === 'settings' && F) {
+      const st = k => e => this.setF([k], e.target.value);
+      out.sf = F;
+      out.sfOn = { siteTitle: st('siteTitle'), siteDesc: st('siteDesc'), email: st('email'), phone: st('phone'), whatsapp: st('whatsapp'), replyTime: st('replyTime'), instagram: st('instagram'), behance: st('behance'), linkedin: st('linkedin'), seo: () => this.openPicker('seo', false, [F.seoImage]), cv: () => this.cvRef.current && this.cvRef.current.click(), clearCv: () => { this.setF(['cvUrl'], ''); this.setState(s2 => ({ form: Object.assign({}, s2.form, { cvName: '' }) })); }, save: () => this.saveSettings(), discard: () => this.setState({ form: clone(this.state.db.settings), fDirty: false, fErr: {} }) };
+      out.sfErr = { email: s.fErr.email || '', whatsapp: s.fErr.whatsapp || '' }; out.sfHas = { email: !!s.fErr.email, whatsapp: !!s.fErr.whatsapp }; out.sfBd = { email: s.fErr.email ? ERR : LINE, whatsapp: s.fErr.whatsapp ? ERR : LINE };
+      out.sSeo = src(F.seoImage); out.sHasSeo = !!out.sSeo; out.sNoSeo = !out.sSeo;
+      out.cvName = F.cvName || ''; out.hasCv = !!F.cvUrl; out.noCv = !F.cvUrl;
+      out.fDirty = s.fDirty; out.saveOp = s.fDirty ? 1 : 0.5; out.saveLabel = s.fDirty ? 'Unsaved changes' : 'All changes saved'; out.saveDot = s.fDirty ? '#E10600' : 'rgba(244,242,239,0.4)';
+    }
+
+    const pk = s.picker;
+    out.pickerOpen = !!pk;
+    if (pk) {
+      const pq = (pk.q || '').trim().toLowerCase();
+      out.pk = {
+        title: pk.multi ? 'Choose images' : 'Choose an image', q: pk.q, onQ: e => this.setState({ picker: Object.assign({}, this.state.picker, { q: e.target.value }) }),
+        items: db.media.filter(m => !pq || (m.name + ' ' + m.alt).toLowerCase().indexOf(pq) > -1).map(m => {
+          const k = pk.sel.indexOf(m.id);
+          return { src: m.src, alt: m.alt, pressed: k > -1 ? 'true' : 'false', bd: k > -1 ? '#E10600' : 'rgba(244,242,239,0.10)', hasBadge: k > -1, badge: pk.multi ? String(k + 1) : 'Selected', on: () => { const p = this.state.picker; const sel2 = p.multi ? (k > -1 ? p.sel.filter(x => x !== m.id) : p.sel.concat(m.id)) : (k > -1 ? [] : [m.id]); this.setState({ picker: Object.assign({}, p, { sel: sel2 }) }); } };
+        }),
+        use: pk.multi ? (pk.sel.length ? 'Use ' + pk.sel.length + (pk.sel.length === 1 ? ' image' : ' images') : 'Use no images') : (pk.sel.length ? 'Use image' : 'Use no image'),
+        apply: () => this.applyPicker(), cancel: () => this.setState({ picker: null }), upload: () => this.fileRef.current && this.fileRef.current.click()
+      };
+    }
+
+    const u = s.up;
+    out.upOpen = !!u;
+    if (u) out.up = { src: u.src, name: u.name, alt: u.alt, err: u.err, hasErr: !!u.err, bd: u.err ? ERR : LINE, title: u.mode === 'edit' ? 'Edit alt text' : 'Add image', btn: u.mode === 'edit' ? 'Save alt text' : 'Add to Media', left: u.left ? u.left + ' more ' + (u.left === 1 ? 'image' : 'images') + ' after this one' : '', hasLeft: !!u.left, onAlt: e => this.setState({ up: Object.assign({}, this.state.up, { alt: e.target.value, err: '' }) }), ok: () => this.confirmUpload(), cancel: () => { this.setState({ up: null }, () => this.nextUpload()); } };
+
+    const c = s.confirm;
+    out.cfOpen = !!c;
+    if (c) out.cf = { title: c.title, text: c.text, label: c.label, ok: () => { this.setState({ confirm: null }); c.act(); }, cancel: () => this.setState({ confirm: null }) };
+
+    const t = s.toast;
+    out.toastText = t ? t.text : '';
+    out.toastY = t && t.show ? 'translate3d(0,0,0)' : 'translate3d(0,160%,0)';
+    out.toastDot = t && t.kind === 'error' ? '#E10600' : '#050505';
+    out.toastBottom = s.mobile ? '92px' : '24px';
+
+    out.sheetY = s.sheet ? 'translate3d(0,0,0)' : 'translate3d(0,105%,0)';
+    out.sheetVis = s.sheet ? 'visible' : 'hidden';
+    out.sheetOp = s.sheet ? 1 : 0;
+    out.sheetPe = s.sheet ? 'auto' : 'none';
+    out.openSheet = () => this.setState({ sheet: true, acct: false });
+    out.closeSheet = () => this.setState({ sheet: false });
+    out.viewLabel = V === 'editor' ? 'Project editor' : labelOf(V);
+    return out;
+  }
+}
+</script>
+</body>
+</html>

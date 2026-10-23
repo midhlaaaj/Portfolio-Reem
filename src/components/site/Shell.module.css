@@ -1,0 +1,8 @@
+.shell {
+  position: relative;
+  min-height: 100vh;
+  background: var(--ink);
+  color: rgba(244, 242, 239, 0.92);
+  font-family: var(--font-body);
+  overflow-x: clip;
+}

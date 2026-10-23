@@ -1,0 +1,352 @@
+/* Ported from the Claude Design inline styles. Tokens live in globals.css. */
+.header1 {
+  position: relative;
+  z-index: 1;
+  height: min(80vh, calc(62vw + 200px));
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.div1 {
+  position: absolute;
+  inset: 0;
+}
+
+.img1 {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.div2 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 30%;
+  background: linear-gradient(to bottom, rgba(5, 5, 5, 0.6), rgba(5, 5, 5, 0));
+  pointer-events: none;
+}
+
+.section1 {
+  position: relative;
+  z-index: 1;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(48px, 5.5vw, 88px) clamp(20px, 4.44vw, 64px) 0;
+  box-sizing: border-box;
+}
+
+.h11 {
+  margin: 0;
+  font: 900 clamp(56px, 9.6vw, 150px)/0.86 var(--font-display);
+  letter-spacing: -0.05em;
+  color: var(--paper);
+}
+
+.span1 {
+  display: block;
+  overflow: hidden;
+  padding: 0.1em 0.06em 0.04em 0;
+  margin: -0.1em 0 -0.04em;
+}
+
+.span2 {
+  display: block;
+}
+
+.div3 {
+  margin-top: clamp(48px, 5vw, 80px);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 0 clamp(20px, 2.8vw, 40px);
+}
+
+.div4 {
+  padding: 18px 0 22px;
+  border-top: 1px solid rgba(244, 242, 239, 0.14);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.span3 {
+  font: 500 14px/1.4 var(--font-body);
+  color: rgba(244, 242, 239, 0.68);
+}
+
+.span4 {
+  font: 600 clamp(17px, 1.35vw, 20px)/1.4 var(--font-body);
+  color: var(--paper);
+}
+
+.p1 {
+  margin: clamp(40px, 4.4vw, 72px) 0 0 auto;
+  max-width: 40em;
+  font: 400 clamp(19px, 1.6vw, 24px)/1.55 var(--font-body);
+  color: rgba(244, 242, 239, 0.86);
+  text-wrap: pretty;
+}
+
+.section2 {
+  position: relative;
+  z-index: 1;
+  padding-top: clamp(104px, 11vw, 168px);
+}
+
+.div5 {
+  max-width: 1440px;
+  margin: 0 auto clamp(28px, 3vw, 44px);
+  padding: 0 clamp(20px, 4.44vw, 64px);
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px 48px;
+}
+
+.h21 {
+  margin: 0;
+  font: 800 clamp(28px, 2.8vw, 42px)/1.05 var(--font-display);
+  letter-spacing: -0.03em;
+  color: var(--paper);
+}
+
+.p2 {
+  margin: 0;
+  flex: 0 1 520px;
+  font: 400 clamp(16px, 1.25vw, 18px)/1.6 var(--font-body);
+  color: rgba(244, 242, 239, 0.72);
+  text-wrap: pretty;
+}
+
+.div6 {
+  position: relative;
+  width: 100%;
+  max-height: 92vh;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.div7 {
+  margin: 0 auto;
+  padding: 0 clamp(20px, 4.44vw, 64px);
+  box-sizing: border-box;
+}
+
+.div8 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(12px, 1.4vw, 20px);
+}
+
+.div9 {
+  min-width: 0;
+  box-sizing: border-box;
+  padding: clamp(10px, 1.7vw, 24px);
+  background: var(--surface);
+  border: 1px solid rgba(244, 242, 239, 0.1);
+  border-radius: 6px;
+}
+
+.div10 {
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.div11 {
+  width: 100%;
+  height: 100%;
+}
+
+.div12 {
+  position: relative;
+}
+
+.div13 {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(24px, 4vh, 44px);
+}
+
+.div14 {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 4.44vw, 64px);
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px 48px;
+}
+
+.div15 {
+  display: flex;
+  gap: clamp(12px, 1.4vw, 20px);
+  width: max-content;
+  padding: 0 clamp(20px, 4.44vw, 64px);
+  will-change: transform;
+}
+
+.div16 {
+  flex: 0 0 auto;
+  width: clamp(260px, min(14vw + 140px, 46vh), 360px);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.div17 {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 4.44vw, 64px);
+  box-sizing: border-box;
+}
+
+.div18 {
+  position: relative;
+  height: 2px;
+  background: rgba(244, 242, 239, 0.12);
+  overflow: hidden;
+}
+
+.div19 {
+  position: absolute;
+  inset: 0;
+  background: var(--red);
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+}
+
+.div20 {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 4.44vw, 64px);
+  box-sizing: border-box;
+}
+
+.div21 {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid rgba(244, 242, 239, 0.1);
+}
+
+.section3 {
+  position: relative;
+  z-index: 1;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(140px, 15vw, 220px) clamp(20px, 4.44vw, 64px) 0;
+  box-sizing: border-box;
+}
+
+.span5 {
+  display: block;
+  font: 600 clamp(18px, 1.4vw, 21px)/1.3 var(--font-body);
+  color: rgba(244, 242, 239, 0.75);
+}
+
+.a1 {
+  position: relative;
+  display: block;
+  margin-top: 28px;
+  padding-top: 34px;
+  color: inherit;
+}
+
+.div22 {
+  position: absolute;
+  left: 5%;
+  top: 0;
+  height: 56px;
+  padding: 11px clamp(14px, 1.6vw, 22px) 0;
+  box-sizing: border-box;
+  border-radius: 14px 14px 0 0;
+  background: linear-gradient(170deg, #ee1d12 0%, #c90500 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 170, 160, 0.55);
+  font: 600 clamp(13px, 1vw, 14px)/1 var(--font-body);
+  color: var(--paper);
+  white-space: nowrap;
+  transition: transform 420ms var(--ease-spring);
+}
+
+.div23 {
+  position: relative;
+  height: clamp(340px, 44vw, 640px);
+}
+
+.div24 {
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  background: linear-gradient(120deg, #d80500 0%, #a50300 50%, var(--red-deep) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 150, 140, 0.45);
+}
+
+.div25 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 22px;
+  border-radius: 16px 16px 18px 18px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.img2 {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 650ms var(--ease-out);
+}
+
+.div26 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 62%;
+  background: linear-gradient(to top, rgba(5, 5, 5, 0.92) 0%, rgba(5, 5, 5, 0.5) 45%, rgba(5, 5, 5, 0) 100%);
+  pointer-events: none;
+}
+
+.div27 {
+  position: absolute;
+  left: clamp(20px, 2.8vw, 40px);
+  right: clamp(20px, 2.8vw, 40px);
+  bottom: clamp(20px, 2.8vw, 36px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.h22 {
+  margin: 0;
+  font: 900 clamp(40px, 6.4vw, 104px)/0.9 var(--font-display);
+  letter-spacing: -0.045em;
+  color: var(--paper);
+  text-wrap: balance;
+}
+
+.p3 {
+  margin: 0;
+  font: 500 clamp(14px, 1.1vw, 16px)/1.4 var(--font-body);
+  color: rgba(244, 242, 239, 0.8);
+}

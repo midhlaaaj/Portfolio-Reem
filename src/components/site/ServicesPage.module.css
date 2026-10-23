@@ -1,0 +1,288 @@
+/* Ported from the Claude Design inline styles. Tokens live in globals.css. */
+.section1 {
+  position: relative;
+  z-index: 1;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(140px, 15vw, 210px) clamp(20px, 4.44vw, 64px) 0;
+  box-sizing: border-box;
+}
+
+.div1 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 28px 48px;
+}
+
+.h11 {
+  margin: 0;
+  font: 900 clamp(84px, 15vw, 230px)/0.84 var(--font-display);
+  letter-spacing: -0.055em;
+  color: var(--paper);
+}
+
+.span1 {
+  display: block;
+  overflow: hidden;
+  padding: 0.1em 0.06em 0.04em 0;
+  margin: -0.1em 0 -0.04em;
+}
+
+.span2 {
+  display: block;
+}
+
+.p1 {
+  margin: 0 0 clamp(8px, 1.4vw, 24px);
+  max-width: 24em;
+  font: 400 clamp(18px, 1.5vw, 22px)/1.5 var(--font-body);
+  color: rgba(244, 242, 239, 0.8);
+  text-wrap: pretty;
+}
+
+.section2 {
+  position: relative;
+  z-index: 1;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(120px, 13vw, 200px) clamp(20px, 4.44vw, 64px) 0;
+  box-sizing: border-box;
+}
+
+.article1 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px clamp(40px, 6vw, 96px);
+  padding: clamp(48px, 5vw, 72px) 0;
+  border-top: 1px solid rgba(244, 242, 239, 0.12);
+}
+
+.div2 {
+  flex: 1 1 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.h21 {
+  margin: 0;
+  font: 900 clamp(40px, 4.8vw, 72px)/0.94 var(--font-display);
+  letter-spacing: -0.04em;
+  color: var(--paper);
+}
+
+.span3 {
+  display: block;
+  overflow: hidden;
+  padding: 0.1em 0.06em 0.06em 0;
+  margin: -0.1em 0 -0.06em;
+}
+
+.p2 {
+  margin: 0;
+  max-width: 34em;
+  font: 400 clamp(16px, 1.25vw, 18px)/1.6 var(--font-body);
+  color: rgba(244, 242, 239, 0.75);
+  text-wrap: pretty;
+}
+
+.p3 {
+  margin: 0;
+  font: 600 clamp(18px, 1.4vw, 21px)/1.3 var(--font-body);
+  color: var(--paper);
+}
+
+.div3 {
+  flex: 1 1 440px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+}
+
+.div4 {
+  flex: 1 1 200px;
+}
+
+.span4 {
+  font: 600 15px/1.4 var(--font-body);
+  color: rgba(244, 242, 239, 0.72);
+}
+
+.ul1 {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  border-bottom: 1px solid rgba(244, 242, 239, 0.12);
+}
+
+.li1 {
+  padding: 14px 0;
+  border-top: 1px solid rgba(244, 242, 239, 0.12);
+  font: 500 17px/1.4 var(--font-body);
+  color: var(--paper);
+}
+
+.a1 {
+  flex: 1 1 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  color: inherit;
+}
+
+.div5 {
+  aspect-ratio: 4 / 3;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.img1 {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 650ms var(--ease-out);
+}
+
+.span5 {
+  font: 500 14px/1.4 var(--font-body);
+  color: rgba(244, 242, 239, 0.68);
+}
+
+.span6 {
+  font: 800 22px/1.1 var(--font-display);
+  letter-spacing: -0.02em;
+  color: var(--paper);
+}
+
+.div6 {
+  border-top: 1px solid rgba(244, 242, 239, 0.12);
+}
+
+.section3 {
+  position: relative;
+  z-index: 1;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(140px, 15vw, 220px) clamp(20px, 4.44vw, 64px) 0;
+  box-sizing: border-box;
+}
+
+.div7 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 56px clamp(40px, 6vw, 96px);
+}
+
+.div8 {
+  position: sticky;
+  top: 132px;
+  flex: 1 1 320px;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+/* Design fix: below ~1040px the two columns wrap, and a sticky heading would slide over the rows below it. */
+@media (max-width: 1039.98px) {
+  .div8 {
+    position: relative;
+  }
+}
+
+.h22 {
+  margin: 0;
+  font: 900 clamp(52px, 7.6vw, 112px)/0.88 var(--font-display);
+  letter-spacing: -0.045em;
+  color: var(--paper);
+}
+
+.span7 {
+  display: block;
+  overflow: hidden;
+  padding: 0.1em 0.06em 0 0;
+  margin-top: -0.1em;
+}
+
+.p4 {
+  margin: 0;
+  font: 400 clamp(17px, 1.3vw, 19px)/1.6 var(--font-body);
+  color: rgba(244, 242, 239, 0.75);
+}
+
+.div9 {
+  flex: 999 1 560px;
+  min-width: 0;
+  position: relative;
+  padding-left: clamp(40px, 4vw, 64px);
+}
+
+.div10 {
+  position: absolute;
+  left: 11px;
+  top: 14px;
+  bottom: 14px;
+  width: 2px;
+  background: rgba(244, 242, 239, 0.1);
+}
+
+.div11 {
+  position: absolute;
+  inset: 0;
+  background: var(--red);
+  transform-origin: 50% 0;
+  transform: scaleY(0);
+  box-shadow: 0 0 18px rgba(225, 6, 0, 0.6);
+}
+
+.ol1 {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(64px, 7vw, 104px);
+}
+
+.li2 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.span8 {
+  position: absolute;
+  left: calc(-1 * clamp(40px, 4vw, 64px) + 4px);
+  top: 10px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  box-sizing: border-box;
+  background: var(--ink);
+  border: 2px solid var(--red);
+}
+
+.span9 {
+  font: 600 15px/1 var(--font-body);
+  color: rgba(244, 242, 239, 0.72);
+  font-variant-numeric: tabular-nums;
+}
+
+.h31 {
+  margin: 0;
+  font: 900 clamp(40px, 4.6vw, 68px)/0.94 var(--font-display);
+  letter-spacing: -0.04em;
+  color: var(--paper);
+}
+
+.p5 {
+  margin: 0;
+  max-width: 30em;
+  font: 400 clamp(16px, 1.25vw, 18px)/1.6 var(--font-body);
+  color: rgba(244, 242, 239, 0.75);
+}
