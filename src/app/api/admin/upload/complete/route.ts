@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
-import sharp from 'sharp';
 import { auth } from '@/auth';
 import { db, media } from '@/db';
 import { revalidateSite } from '@/lib/admin/revalidate';
 import { logActivity } from '@/lib/admin/activity';
-import { deleteObject, readObject } from '@/lib/storage';
+import { makeVariants } from '@/lib/images';
+import { deleteObject, putObject, readObject } from '@/lib/storage';
 
 export const runtime = 'nodejs';
 
@@ -23,23 +23,31 @@ export async function POST(req: Request) {
 
   try {
     const buf = await readObject(key);
-    const meta = await sharp(buf, { failOn: 'error' }).metadata();
-    if (!meta.width || !meta.height) throw new Error('not an image');
-    // EXIF orientations 5 to 8 are rotated a quarter turn when displayed.
-    const turned = (meta.orientation ?? 1) >= 5;
-    const [w, h] = turned ? [meta.height, meta.width] : [meta.width, meta.height];
+    // Also proves the stored file really is an image (sharp throws otherwise).
+    const { web, full } = await makeVariants(buf);
+    const webKey = `media/${m[1]}-web.webp`;
+    const fullKey = `media/${m[1]}-full.webp`;
+    const [url, fullUrl] = await Promise.all([
+      putObject(webKey, web.data, 'image/webp'),
+      putObject(fullKey, full.data, 'image/webp'),
+    ]);
+    // The untouched upload is no longer needed once both versions exist.
+    await deleteObject(key).catch(() => {});
     const label = (name ?? 'image').replace(/[\/]/g, '').slice(0, 120) || 'image';
     const [row] = await db
       .insert(media)
       .values({
         id: m[1],
-        url: `/files/${key}`,
-        width: w,
-        height: h,
+        url,
+        width: web.width,
+        height: web.height,
         alt: text.slice(0, 300),
         name: label,
-        bytes: buf.length,
-        storageKey: key,
+        bytes: web.data.length,
+        storageKey: webKey,
+        fullUrl,
+        fullStorageKey: fullKey,
+        fullBytes: full.data.length,
       })
       .returning();
     await logActivity(`Uploaded ${label}`);

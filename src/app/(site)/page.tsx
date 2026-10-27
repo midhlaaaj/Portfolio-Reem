@@ -10,6 +10,7 @@ import { WhatIDo } from '@/components/site/WhatIDo';
 import { JsonLd } from '@/components/ui/JsonLd';
 import {
   getAbout,
+  getBrandSummaries,
   getCopy,
   getFeaturedProjects,
   getHome,
@@ -21,6 +22,7 @@ import {
   getVisibleTestimonials,
 } from '@/lib/data';
 import { buildMetadata, personJsonLd } from '@/lib/seo';
+import { slugify } from '@/lib/text';
 
 export async function generateMetadata(): Promise<Metadata> {
   const [s, seo, home] = await Promise.all([getSettings(), getPageSeo('home'), getHome()]);
@@ -57,18 +59,31 @@ export default async function HomePage() {
   const m = (id: string | null) => (id ? (media.get(id) ?? null) : null);
 
   const live = new Set(published.map((p) => p.slug));
-  const brands: BrandCard[] = home.brands
+  // Hand-picked cards from the Pages editor win; otherwise every brand with a published project is shown.
+  const picked: BrandCard[] = home.brands
     .filter((b) => live.has(b.projectSlug))
     .map((b) => {
       const image = m(b.imageId);
+      const client = published.find((p) => p.slug === b.projectSlug)?.client ?? b.name;
       return {
         slug: b.projectSlug,
+        href: `/brands/${slugify(client)}`,
         title: published.find((p) => p.slug === b.projectSlug)?.title ?? b.name,
         name: b.name,
         kind: b.kind,
         image: image && { ...image, alt: `${b.name}, ${b.kind}` },
       };
     });
+  const brands: BrandCard[] = picked.length
+    ? picked
+    : (await getBrandSummaries()).map((b) => ({
+        slug: b.slug,
+        href: `/brands/${b.slug}`,
+        title: b.projectTitle,
+        name: b.name,
+        kind: b.kind,
+        image: b.cover && { ...b.cover, alt: `${b.name}, ${b.kind}` },
+      }));
 
   return (
     <PageFrame backdrop="home">

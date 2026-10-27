@@ -75,7 +75,7 @@ export function ProjectPage({
                   className={css.div6}
                   style={{ aspectRatio: ratio(im) }}
                   data-lb=""
-                  data-lb-src={im.src}
+                  data-lb-src={im.full}
                   data-cursor="View"
                   role="button"
                   tabIndex={0}
@@ -102,7 +102,7 @@ export function ProjectPage({
                         className={css.div9}
                         style={{ flex: `${ar} 1 calc(${ar} * clamp(150px, 18vw, 260px))` }}
                         data-lb=""
-                        data-lb-src={im.src}
+                        data-lb-src={im.full}
                         data-cursor="View"
                         role="button"
                         tabIndex={0}
@@ -133,9 +133,8 @@ export function ProjectPage({
                       <div
                         key={im.id}
                         className={css.div16}
-                        style={{ aspectRatio: ratio(im) }}
                         data-lb=""
-                        data-lb-src={im.src}
+                        data-lb-src={im.full}
                         data-cursor="View"
                         role="button"
                         tabIndex={0}

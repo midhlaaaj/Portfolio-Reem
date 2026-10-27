@@ -3,6 +3,7 @@ import { asc, count, desc, eq, inArray } from 'drizzle-orm';
 import {
   activity,
   categories,
+  companies,
   db,
   inquiries,
   media,
@@ -113,21 +114,24 @@ export type ProjectEditData = {
   updatedAt: string | null;
   media: Record<string, MediaRecord>;
   categories: { id: string; name: string }[];
+  /** Brand (company) names for the project's brand dropdown. */
+  brands: string[];
 };
 
-export async function adminProjectEdit(id: string | null): Promise<ProjectEditData | null> {
+export async function adminProjectEdit(id: string | null, client = ''): Promise<ProjectEditData | null> {
   await requireAdmin();
   const cats = (await db.select().from(categories).orderBy(asc(categories.position))).map((c) => ({
     id: c.id,
     name: c.name,
   }));
+  const brands = (await db.select().from(companies).orderBy(asc(companies.position))).map((c) => c.name);
   if (!id) {
     return {
       input: {
         id: null,
         title: '',
         slug: '',
-        client: '',
+        client,
         scope: '',
         year: String(new Date().getFullYear()),
         tab: '',
@@ -143,6 +147,7 @@ export async function adminProjectEdit(id: string | null): Promise<ProjectEditDa
       updatedAt: null,
       media: {},
       categories: cats,
+      brands,
     };
   }
   const [p] = await db.select().from(projects).where(eq(projects.id, id));
@@ -196,6 +201,7 @@ export async function adminProjectEdit(id: string | null): Promise<ProjectEditDa
     updatedAt: p.updatedAt.toISOString(),
     media: mediaMap,
     categories: cats,
+    brands,
   };
 }
 
@@ -213,6 +219,49 @@ export async function adminCategories() {
     slug: c.slug,
     count: links.filter((l) => l.categoryId === c.id).length,
   }));
+}
+
+// ---------- companies ----------
+
+export async function adminCompanies() {
+  await requireAdmin();
+  const [list, rows] = await Promise.all([
+    db.select().from(companies).orderBy(asc(companies.position)),
+    db
+      .select({ id: projects.id, title: projects.title, client: projects.client, status: projects.status })
+      .from(projects)
+      .orderBy(asc(projects.position)),
+  ]);
+  return list.map((c) => ({
+    id: c.id,
+    name: c.name,
+    slug: c.slug,
+    projects: rows
+      .filter((p) => p.client.trim().toLowerCase() === c.name.toLowerCase())
+      .map((p) => ({ id: p.id, title: p.title, published: p.status === 'published' })),
+  }));
+}
+
+export async function adminCompany(id: string) {
+  await requireAdmin();
+  const [c] = await db.select().from(companies).where(eq(companies.id, id));
+  if (!c) return null;
+  const [mediaMap, rows] = await Promise.all([
+    mediaByIds([c.coverId]),
+    db.select({ id: projects.id, title: projects.title, client: projects.client }).from(projects),
+  ]);
+  return {
+    input: {
+      id: c.id,
+      name: c.name,
+      kind: c.kind,
+      description: c.description,
+      website: c.website,
+      coverId: c.coverId,
+    },
+    media: mediaMap,
+    projects: rows.filter((p) => p.client.trim().toLowerCase() === c.name.toLowerCase()),
+  };
 }
 
 // ---------- testimonials ----------

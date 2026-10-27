@@ -73,7 +73,7 @@ export function ProjectsTable({ initial }: { initial: AdminProjectRow[] }) {
           <input
             type="search"
             aria-label="Search projects"
-            placeholder="Search by title or client"
+            placeholder="Search by title or brand"
             className={css.search}
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -105,7 +105,7 @@ export function ProjectsTable({ initial }: { initial: AdminProjectRow[] }) {
             color: 'rgba(244,242,239,0.75)',
           }}
         >
-          No projects match that search. Try a different title or client.
+          No projects match that search. Try a different title or brand.
         </p>
       )}
 
@@ -115,7 +115,7 @@ export function ProjectsTable({ initial }: { initial: AdminProjectRow[] }) {
             <span />
             <span />
             <span>Project</span>
-            <span>Client</span>
+            <span>Brand</span>
             <span>Categories</span>
             <span>Featured</span>
             <span>Status</span>
@@ -151,7 +151,7 @@ export function ProjectsTable({ initial }: { initial: AdminProjectRow[] }) {
                         <span className={css.rowTitleMain}>{r.title || 'Untitled project'}</span>
                         <span className={css.rowTitleSub}>/work/{r.slug}</span>
                       </Link>
-                      <span className={css.cell}>{r.client || 'No client yet'}</span>
+                      <span className={css.cell}>{r.client || 'No brand yet'}</span>
                       <span className={css.cell} style={{ flex: '1.3 1 140px' }}>
                         {r.cats || 'None'}
                       </span>

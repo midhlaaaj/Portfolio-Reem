@@ -1,5 +1,6 @@
 import './env.mts';
 import { count } from 'drizzle-orm';
+import { slugify } from '../src/lib/text';
 import { connect } from '../src/db/connect';
 import * as t from '../src/db/schema';
 import {
@@ -22,7 +23,7 @@ if (n > 0 && !force) {
   process.exit(0);
 }
 if (force) {
-  for (const table of [t.sectionMedia, t.projectSections, t.projectCategories, t.projects, t.categories, t.testimonials, t.pages, t.settings, t.activity, t.media]) {
+  for (const table of [t.sectionMedia, t.projectSections, t.projectCategories, t.projects, t.companies, t.categories, t.testimonials, t.pages, t.settings, t.activity, t.media]) {
     await db.delete(table);
   }
 }
@@ -67,6 +68,8 @@ await db.insert(t.pages).values([
   { key: 'services', content: seedServices, seo: {} },
 ]);
 await db.insert(t.settings).values({ id: 1, data: seedSettings });
+const clients = [...new Set(seedProjects.map((p) => p.client))];
+await db.insert(t.companies).values(clients.map((name, position) => ({ name, slug: slugify(name), position })));
 await db.insert(t.activity).values({ text: 'Site content imported from the portfolio PDF' });
 
 console.log(`Seeded ${seedMedia.length} images, ${seedProjects.length} projects.`);

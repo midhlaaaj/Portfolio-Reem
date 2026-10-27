@@ -11,6 +11,7 @@ import { cx } from './ui';
 const NAV = [
   ['dashboard', 'Dashboard', '/admin'],
   ['projects', 'Projects', '/admin/projects'],
+  ['brands', 'Brands', '/admin/brands'],
   ['categories', 'Categories', '/admin/categories'],
   ['testimonials', 'Testimonials', '/admin/testimonials'],
   ['pages', 'Pages', '/admin/pages'],

@@ -30,7 +30,7 @@ export const projectInputSchema = z.object({
     .min(1, 'Add a slug. It becomes the page address.')
     .max(80)
     .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'Use lowercase letters, numbers and single hyphens in the slug.'),
-  client: z.string().trim().min(1, 'Add the client name.').max(120),
+  client: z.string().trim().min(1, 'Choose a brand.').max(120),
   scope: z.string().trim().max(160),
   year: z.string().trim().max(10),
   tab: z.string().trim().max(40),
@@ -60,6 +60,20 @@ export const testimonialInputSchema = z
   });
 export type TestimonialInput = z.infer<typeof testimonialInputSchema>;
 
+export const companyNameSchema = z.string().trim().min(1, 'Add a company name.').max(120);
+export const companyDetailsSchema = z.object({
+  id: z.string().min(1),
+  name: companyNameSchema,
+  kind: z.string().trim().max(120),
+  description: z.string().trim().max(2000),
+  website: z
+    .string()
+    .trim()
+    .max(200)
+    .refine((v) => !v || /^https?:\/\/\S+$/i.test(v), 'Start the website with http:// or https://'),
+  coverId: z.string().nullable(),
+});
+export type CompanyDetailsInput = z.infer<typeof companyDetailsSchema>;
 export const categoryNameSchema = z.string().trim().min(1, 'Add a category name.').max(40);
 
 export type ActionResult<T = object> =

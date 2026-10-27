@@ -3,6 +3,7 @@ import { cache } from 'react';
 import { COPY_DEFAULTS, type Copy } from '@/content/copy';
 import { and, asc, desc, eq, inArray } from 'drizzle-orm';
 import { db } from '@/db';
+import { slugify } from '@/lib/text';
 import * as t from '@/db/schema';
 import {
   aboutContentSchema,
@@ -18,10 +19,11 @@ import {
   type SiteSettings,
 } from '@/lib/content';
 
-export type MediaItem = { id: string; src: string; alt: string; w: number; h: number };
+/** `src` is the small version shown across the site; `full` is the detailed one for previews and the lightbox. */
+export type MediaItem = { id: string; src: string; full: string; alt: string; w: number; h: number };
 
 const toMedia = (m: typeof t.media.$inferSelect | null | undefined): MediaItem | null =>
-  m ? { id: m.id, src: m.url, alt: m.alt, w: m.width, h: m.height } : null;
+  m ? { id: m.id, src: m.url, full: m.fullUrl ?? m.url, alt: m.alt, w: m.width, h: m.height } : null;
 
 export const getSettings = cache(async (): Promise<SiteSettings> => {
   const [row] = await db.select().from(t.settings).where(eq(t.settings.id, 1));
@@ -204,4 +206,91 @@ export const getLatestUpdate = cache(async (): Promise<Date | null> => {
     .orderBy(desc(t.projects.updatedAt))
     .limit(1);
   return row?.d ?? null;
+});
+
+export type BrandSummary = { slug: string; name: string; kind: string; cover: MediaItem | null; projectTitle: string };
+
+/** Every brand that has at least one published project, in the admin's order, for the home page row. */
+export const getBrandSummaries = cache(async (): Promise<BrandSummary[]> => {
+  const [rows, published] = await Promise.all([
+    db.select().from(t.companies).orderBy(asc(t.companies.position)),
+    getPublishedProjects(),
+  ]);
+  const covers = await getMedia(rows.map((r) => r.coverId));
+  return rows.flatMap((r) => {
+    const projects = published.filter((p) => slugify(p.client) === r.slug);
+    if (!projects.length) return [];
+    return [
+      {
+        slug: r.slug,
+        name: r.name,
+        kind: r.kind || projects[0].scope || projects[0].tab,
+        cover: (r.coverId ? covers.get(r.coverId) : null) ?? projects[0].cover,
+        projectTitle: projects[0].title,
+      },
+    ];
+  });
+});
+
+export type CompanyPage = {
+  name: string;
+  kind: string;
+  description: string;
+  website: string;
+  cover: MediaItem | null;
+  projects: ProjectCard[];
+  /** A mix of images taken from the company's project sections. */
+  showcase: MediaItem[];
+};
+
+const SHOWCASE_MAX = 9;
+
+/**
+ * A company page: its details (if it has a record) plus every published project whose client matches the slug.
+ * The showcase takes images from the projects' sections in turn, so each project is represented.
+ */
+export const getCompanyPage = cache(async (slug: string): Promise<CompanyPage | null> => {
+  const [[row], published] = await Promise.all([
+    db.select().from(t.companies).where(eq(t.companies.slug, slug)),
+    getPublishedProjects(),
+  ]);
+  const projects = published.filter((p) => slugify(p.client) === slug);
+  if (!projects.length && !row) return null;
+
+  let showcase: MediaItem[] = [];
+  if (projects.length) {
+    const ids = projects.map((p) => p.id);
+    const [secs, links] = await Promise.all([
+      db.select().from(t.projectSections).where(inArray(t.projectSections.projectId, ids)).orderBy(asc(t.projectSections.position)),
+      db.select().from(t.sectionMedia).orderBy(asc(t.sectionMedia.position)),
+    ]);
+    const perProject = projects.map((p) => {
+      const sectionIds = secs.filter((s) => s.projectId === p.id).map((s) => s.id);
+      return sectionIds.flatMap((sid) => links.filter((l) => l.sectionId === sid).map((l) => l.mediaId));
+    });
+    const picked: string[] = [];
+    for (let round = 0; picked.length < SHOWCASE_MAX; round++) {
+      let any = false;
+      for (const list of perProject) {
+        const id = list[round];
+        if (!id) continue;
+        any = true;
+        if (!picked.includes(id) && picked.length < SHOWCASE_MAX) picked.push(id);
+      }
+      if (!any) break;
+    }
+    const byId = await getMedia(picked);
+    showcase = picked.map((id) => byId.get(id)).filter((m): m is MediaItem => !!m);
+  }
+
+  const cover = row?.coverId ? ((await getMedia([row.coverId])).get(row.coverId) ?? null) : null;
+  return {
+    name: row?.name ?? projects[0].client,
+    kind: row?.kind ?? '',
+    description: row?.description ?? '',
+    website: row?.website ?? '',
+    cover: cover ?? projects[0]?.cover ?? null,
+    projects,
+    showcase,
+  };
 });

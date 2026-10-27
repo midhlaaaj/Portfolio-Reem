@@ -7,11 +7,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { projectInputSchema, SECTION_TYPES, type MediaRecord, type ProjectInput } from '@/lib/admin/schemas';
 import type { ProjectEditData } from '@/lib/admin/queries';
 import { slugify } from '@/lib/text';
+import { addCompany } from '../../_actions/content';
 import { deleteProject, saveProject } from '../../_actions/projects';
 import { useAdmin, useDirty } from '../../_components/AdminProvider';
 import { useCrumb } from '../../_components/AdminShell';
 import { SortableList, SortableRow } from '../../_components/Sortable';
-import { Chip, ErrLine, SaveState, Switch, cx } from '../../_components/ui';
+import { BrandSelect, Chip, ErrLine, SaveState, Switch, cx } from '../../_components/ui';
 import { fmtDate } from '../../_components/fmt';
 import css from '../../admin.module.css';
 
@@ -57,6 +58,8 @@ export function ProjectEditor({ data }: { data: ProjectEditData }) {
   const featured = watch('featured');
   const seoDesc = watch('seoDesc');
   const sections = watch('sections');
+  const client = watch('client');
+  const [brands, setBrands] = useState(data.brands);
 
   useDirty(isDirty);
   useCrumb(title);
@@ -272,12 +275,28 @@ export function ProjectEditor({ data }: { data: ProjectEditData }) {
               </div>
               <div className={css.field}>
                 <label className={css.label} htmlFor="ed-client">
-                  Client
+                  Brand
                 </label>
-                <input
+                <BrandSelect
                   id="ed-client"
-                  className={cx(css.input, err('client') && css.invalid)}
-                  {...register('client', { onChange: () => clearErrors('client') })}
+                  value={client}
+                  options={brands}
+                  invalid={!!err('client')}
+                  onChange={(name) => {
+                    setValue('client', name, mark);
+                    clearErrors('client');
+                  }}
+                  onCreate={async (name) => {
+                    const res = await addCompany(name);
+                    if (!res.ok) {
+                      toast(res.error ?? 'That brand could not be added.', 'error');
+                      return null;
+                    }
+                    setBrands((b) => [...b, name.trim()]);
+                    toast('Brand added.');
+                    router.refresh(); // keeps the Brands page in step
+                    return name.trim();
+                  }}
                 />
                 <ErrLine>{err('client')}</ErrLine>
               </div>

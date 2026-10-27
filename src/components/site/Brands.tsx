@@ -3,7 +3,7 @@ import { Img } from '@/components/ui/Img';
 import type { MediaItem } from '@/lib/data';
 import css from './Brands.module.css';
 
-export type BrandCard = { slug: string; title: string; name: string; kind: string; image: MediaItem | null };
+export type BrandCard = { slug: string; href: string; title: string; name: string; kind: string; image: MediaItem | null };
 
 export function Brands({ title, brands }: { title: string; brands: BrandCard[] }) {
   return (
@@ -27,7 +27,7 @@ export function Brands({ title, brands }: { title: string; brands: BrandCard[] }
               data-fcard=""
               data-cursor="View"
               data-label={b.title}
-              href={`/work/${b.slug}`}
+              href={b.href}
             >
               <div className={css.div4}>
                 {b.image && (

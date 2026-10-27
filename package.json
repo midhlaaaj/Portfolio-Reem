@@ -11,6 +11,8 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate.mts",
     "db:seed": "tsx scripts/seed.mts",
+    "db:companies": "tsx scripts/seed-companies.mts",
+    "db:variants": "tsx scripts/backfill-variants.mts",
     "db:copy": "tsx scripts/refresh-copy.mts",
     "admin:hash": "tsx scripts/hash-password.mts"
   },

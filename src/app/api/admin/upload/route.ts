@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import sharp from 'sharp';
 import { auth } from '@/auth';
 import { db, media } from '@/db';
 import { revalidateSite } from '@/lib/admin/revalidate';
 import { logActivity } from '@/lib/admin/activity';
+import { makeVariants } from '@/lib/images';
 import { putObject } from '@/lib/storage';
 
 export const runtime = 'nodejs';
@@ -11,10 +11,6 @@ export const runtime = 'nodejs';
 /** Only used without S3 settings (local dev); live uploads go straight to storage and have no size limit. */
 const MAX_IMAGE_BYTES = 60 * 1024 * 1024;
 const MAX_PDF_BYTES = 2.5 * 1024 * 1024;
-const MAX_EDGE = 3200;
-const LOSSLESS_MAX_BYTES = 3 * 1024 * 1024;
-/** Larger PNGs would not fit losslessly anyway, so skip the slow attempt. */
-const LOSSLESS_TRY_BYTES = 2.5 * 1024 * 1024;
 const IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/avif']);
 
 const fail = (error: string, status = 400) => NextResponse.json({ ok: false, error }, { status });
@@ -51,35 +47,31 @@ export async function POST(req: Request) {
   try {
     const input = Buffer.from(await file.arrayBuffer());
     // Re-encode on the server: strips metadata, enforces the size cap, and proves the file really is an image.
-    const base = () =>
-      sharp(input, { failOn: 'error' })
-        .rotate()
-        .resize({ width: MAX_EDGE, height: MAX_EDGE, fit: 'inside', withoutEnlargement: true });
-    // PNGs (posters, logos, type) stay pixel-perfect when lossless fits; anything bigger gets high-quality lossy WebP.
-    let out =
-      file.type === 'image/png' && file.size <= LOSSLESS_TRY_BYTES
-        ? await base().webp({ lossless: true, effort: 4 }).toBuffer({ resolveWithObject: true })
-        : null;
-    if (!out || out.data.length > LOSSLESS_MAX_BYTES) {
-      out = await base().webp({ quality: 94, smartSubsample: true, effort: 5 }).toBuffer({ resolveWithObject: true });
-    }
-    const { data, info } = out;
+    // Two versions: a small one for the site and a lightly compressed one for the lightbox.
+    const { web, full } = await makeVariants(input);
 
     const id = crypto.randomUUID();
-    const key = `media/${id}.webp`;
-    const url = await putObject(key, data, 'image/webp');
+    const webKey = `media/${id}-web.webp`;
+    const fullKey = `media/${id}-full.webp`;
+    const [url, fullUrl] = await Promise.all([
+      putObject(webKey, web.data, 'image/webp'),
+      putObject(fullKey, full.data, 'image/webp'),
+    ]);
     const name = file.name.replace(/\.[^.]+$/, '') + '.webp';
     const [row] = await db
       .insert(media)
       .values({
         id,
         url,
-        width: info.width,
-        height: info.height,
+        width: web.width,
+        height: web.height,
         alt: alt.slice(0, 300),
         name,
-        bytes: data.length,
-        storageKey: key,
+        bytes: web.data.length,
+        storageKey: webKey,
+        fullUrl,
+        fullStorageKey: fullKey,
+        fullBytes: full.data.length,
       })
       .returning();
     await logActivity(`Uploaded ${name}`);

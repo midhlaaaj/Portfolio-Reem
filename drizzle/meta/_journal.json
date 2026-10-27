@@ -8,6 +8,27 @@
       "when": 1792644225650,
       "tag": "0000_useful_cable",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793097080341,
+      "tag": "0001_companies",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793097431400,
+      "tag": "0002_company_details",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793097979953,
+      "tag": "0003_media_full_variant",
+      "breakpoints": true
     }
   ]
 }

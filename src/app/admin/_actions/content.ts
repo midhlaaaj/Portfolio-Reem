@@ -2,11 +2,11 @@
 
 import { asc, eq, max, sql } from 'drizzle-orm';
 import { z } from 'zod';
-import { categories, db, inquiries, media, pages, projects, settings, testimonials } from '@/db';
+import { categories, companies, db, inquiries, media, pages, projects, settings, testimonials } from '@/db';
 import { logActivity } from '@/lib/admin/activity';
 import { requireAdmin } from '@/lib/admin/guard';
 import { revalidateSite } from '@/lib/admin/revalidate';
-import { categoryNameSchema, testimonialInputSchema, type ActionResult } from '@/lib/admin/schemas';
+import { categoryNameSchema, companyDetailsSchema, companyNameSchema, testimonialInputSchema, type ActionResult } from '@/lib/admin/schemas';
 import {
   aboutContentSchema,
   homeContentSchema,
@@ -64,6 +64,78 @@ export async function deleteCategory(id: string): Promise<ActionResult> {
   await db.delete(categories).where(eq(categories.id, id));
   await logActivity(`Deleted category ${c?.name ?? ''}`.trim());
   revalidateSite();
+  return { ok: true };
+}
+
+// ---------- companies ----------
+
+export async function addCompany(name: string): Promise<ActionResult> {
+  await requireAdmin();
+  const parsed = companyNameSchema.safeParse(name);
+  if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message };
+  const all = await db.select().from(companies);
+  if (all.some((c) => c.name.toLowerCase() === parsed.data.toLowerCase() || c.slug === slugify(parsed.data))) {
+    return { ok: false, error: 'That company already exists. Use a different name.' };
+  }
+  const [m] = await db.select({ v: max(companies.position) }).from(companies);
+  await db.insert(companies).values({ name: parsed.data, slug: slugify(parsed.data), position: (m?.v ?? -1) + 1 });
+  await logActivity(`Added company ${parsed.data}`);
+  return { ok: true };
+}
+
+export async function renameCompany(id: string, name: string): Promise<ActionResult> {
+  await requireAdmin();
+  const parsed = companyNameSchema.safeParse(name);
+  if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message };
+  const [current] = await db.select().from(companies).where(eq(companies.id, id));
+  if (!current) return { ok: false, error: 'That company no longer exists.' };
+  const clash = (await db.select().from(companies)).find(
+    (c) => c.id !== id && (c.name.toLowerCase() === parsed.data.toLowerCase() || c.slug === slugify(parsed.data)),
+  );
+  if (clash) return { ok: false, error: 'That company already exists. Use a different name.' };
+  await db.transaction(async (tx) => {
+    await tx
+      .update(companies)
+      .set({ name: parsed.data, slug: slugify(parsed.data) })
+      .where(eq(companies.id, id));
+    // Projects carry the company name as their client, so they follow the rename.
+    await tx.update(projects).set({ client: parsed.data }).where(eq(projects.client, current.name));
+  });
+  await logActivity(`Renamed company to ${parsed.data}`);
+  revalidateSite();
+  return { ok: true };
+}
+
+export async function saveCompany(input: unknown): Promise<ActionResult> {
+  await requireAdmin();
+  const parsed = companyDetailsSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, fieldErrors: fieldErrors(parsed.error) };
+  const d = parsed.data;
+  const [current] = await db.select().from(companies).where(eq(companies.id, d.id));
+  if (!current) return { ok: false, error: 'That company no longer exists.' };
+  const slug = slugify(d.name);
+  const clash = (await db.select().from(companies)).find(
+    (c) => c.id !== d.id && (c.name.toLowerCase() === d.name.toLowerCase() || c.slug === slug),
+  );
+  if (clash) return { ok: false, fieldErrors: { name: 'That company already exists. Use a different name.' } };
+  await db.transaction(async (tx) => {
+    await tx
+      .update(companies)
+      .set({ name: d.name, slug, kind: d.kind, description: d.description, website: d.website, coverId: d.coverId })
+      .where(eq(companies.id, d.id));
+    if (d.name !== current.name) await tx.update(projects).set({ client: d.name }).where(eq(projects.client, current.name));
+  });
+  await logActivity(`Updated company ${d.name}`);
+  revalidateSite();
+  return { ok: true };
+}
+
+/** Removes the company from this list only; projects keep their client name. */
+export async function deleteCompany(id: string): Promise<ActionResult> {
+  await requireAdmin();
+  const [c] = await db.select().from(companies).where(eq(companies.id, id));
+  await db.delete(companies).where(eq(companies.id, id));
+  await logActivity(`Deleted company ${c?.name ?? ''}`.trim());
   return { ok: true };
 }
 
@@ -213,7 +285,9 @@ export async function deleteMedia(id: string): Promise<ActionResult> {
     }
     await tx.delete(media).where(eq(media.id, id)); // covers and testimonial photos are set null by their foreign keys
   });
-  if (m.storageKey) await deleteObject(m.storageKey).catch((e) => console.error('storage delete failed', e));
+  for (const key of [m.storageKey, m.fullStorageKey]) {
+    if (key) await deleteObject(key).catch((e) => console.error('storage delete failed', e));
+  }
   await logActivity(`Deleted image ${m.name}`);
   revalidateSite();
   return { ok: true };

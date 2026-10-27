@@ -18,6 +18,10 @@ export const media = pgTable('media', {
   bytes: integer('bytes').notNull().default(0),
   /** Object-storage key, null for images that ship with the app. */
   storageKey: text('storage_key'),
+  /** The larger, lightly compressed version shown in the lightbox; null means `url` is the only version. */
+  fullUrl: text('full_url'),
+  fullStorageKey: text('full_storage_key'),
+  fullBytes: integer('full_bytes').notNull().default(0),
   createdAt: createdAt(),
 });
 
@@ -26,6 +30,20 @@ export const categories = pgTable('categories', {
   name: text('name').notNull(),
   slug: text('slug').notNull().unique(),
   position: integer('position').notNull().default(0),
+});
+
+/** Companies the work was done for. Projects reference one by name through their `client` text. */
+export const companies = pgTable('companies', {
+  id: id(),
+  name: text('name').notNull(),
+  slug: text('slug').notNull().unique(),
+  /** Short line under the name, e.g. "Brand identity and packaging". */
+  kind: text('kind').notNull().default(''),
+  description: text('description').notNull().default(''),
+  website: text('website').notNull().default(''),
+  coverId: text('cover_id').references(() => media.id, { onDelete: 'set null' }),
+  position: integer('position').notNull().default(0),
+  createdAt: createdAt(),
 });
 
 export const projects = pgTable(

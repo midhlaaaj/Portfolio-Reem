@@ -1,11 +1,12 @@
 'use server';
 
 import { and, eq, inArray, max, ne } from 'drizzle-orm';
-import { db, categories, projectCategories, projectSections, projects, sectionMedia } from '@/db';
+import { db, categories, companies, projectCategories, projectSections, projects, sectionMedia } from '@/db';
 import { logActivity } from '@/lib/admin/activity';
 import { fieldErrors } from '@/lib/admin/errors';
 import { requireAdmin } from '@/lib/admin/guard';
 import { revalidateSite } from '@/lib/admin/revalidate';
+import { slugify } from '@/lib/text';
 import { projectInputSchema, type ActionResult } from '@/lib/admin/schemas';
 
 export async function saveProject(
@@ -105,6 +106,14 @@ export async function saveProject(
   } catch (e) {
     console.error('saveProject failed', e);
     return { ok: false, error: 'That could not be saved. Check the fields and try again.' };
+  }
+
+  // A client typed on a project joins the Companies list if it is not there yet.
+  const known = await db.select({ name: companies.name, slug: companies.slug, position: companies.position }).from(companies);
+  const clientSlug = slugify(d.client);
+  if (clientSlug && !known.some((c) => c.slug === clientSlug)) {
+    const next = known.reduce((m, c) => Math.max(m, c.position), -1) + 1;
+    await db.insert(companies).values({ name: d.client, slug: clientSlug, position: next }).onConflictDoNothing();
   }
 
   await logActivity(status === 'published' ? `Published ${d.title}` : `Saved draft of ${d.title}`);

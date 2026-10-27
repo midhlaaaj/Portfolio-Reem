@@ -3,7 +3,7 @@ import { clamp, engine, jumpToY } from '../engine';
 
 /**
  * Horizontal strips that scroll sideways while the page scrolls down: a sticky stage inside a tall section, the
- * track translated by scroll progress, with a slight skew from velocity and a progress bar. Under reduced motion
+ * track translated by scroll progress, with a progress bar. Under reduced motion
  * the stage becomes an ordinary horizontally scrollable row.
  */
 export function setupHpins(root: HTMLElement): () => void {
@@ -21,7 +21,7 @@ export function setupHpins(root: HTMLElement): () => void {
       return;
     }
 
-    const s = { dist: 0, progress: 0, x: 0, last: 0, skew: 0, visible: false };
+    const s = { dist: 0, progress: 0, visible: false };
     const layout = () => {
       stage.style.height = CSS.supports('height', '100svh') ? '100svh' : '100vh';
       s.dist = Math.max(0, track.offsetWidth - stage.clientWidth);
@@ -43,16 +43,10 @@ export function setupHpins(root: HTMLElement): () => void {
     const io = new IntersectionObserver(([e]) => (s.visible = e.isIntersecting), { rootMargin: '50px' });
     io.observe(section);
 
-    const frame = (_now: number, _dt: number, L: (k: number) => number) => {
-      if (!s.visible || !s.dist) {
-        s.last = NaN;
-        return;
-      }
+    const frame = () => {
+      if (!s.visible || !s.dist) return;
       const x = -clamp(s.progress, 0, 1) * s.dist;
-      const vel = Number.isNaN(s.last) ? 0 : x - s.last;
-      s.last = x;
-      s.skew += (clamp(-vel * 0.15, -3, 3) - s.skew) * L(0.12);
-      track.style.transform = `translate3d(${x.toFixed(1)}px,0,0) skewX(${s.skew.toFixed(2)}deg)`;
+      track.style.transform = `translate3d(${x.toFixed(1)}px,0,0)`;
       if (bar) bar.style.transform = `scaleX(${s.progress.toFixed(4)})`;
     };
     engine.hooks.add(frame);
