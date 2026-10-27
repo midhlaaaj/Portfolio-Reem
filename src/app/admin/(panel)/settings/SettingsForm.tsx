@@ -109,7 +109,7 @@ export function SettingsForm({ data }: { data: Data }) {
   };
 
   const chooseSeo = async () => {
-    const res = await pickImages({ multi: false, selected: [seoImageId] });
+    const res = await pickImages({ multi: false, selected: [seoImageId], ratio: 1200 / 630 });
     if (!res) return;
     setMedia((m) => ({ ...m, ...Object.fromEntries(res.map((r) => [r.id, r])) }));
     setValue('seoImageId', res[0]?.id ?? null, mark);

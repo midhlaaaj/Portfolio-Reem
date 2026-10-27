@@ -11,7 +11,8 @@ export const runtime = 'nodejs';
 /** Vercel functions accept request bodies up to 4.5 MB, so the browser resizes images before sending them. */
 const MAX_IMAGE_BYTES = 4 * 1024 * 1024;
 const MAX_PDF_BYTES = 2.5 * 1024 * 1024;
-const MAX_EDGE = 2400;
+const MAX_EDGE = 3200;
+const LOSSLESS_MAX_BYTES = 3 * 1024 * 1024;
 const IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/avif']);
 
 const fail = (error: string, status = 400) => NextResponse.json({ ok: false, error }, { status });
@@ -48,11 +49,19 @@ export async function POST(req: Request) {
   try {
     const input = Buffer.from(await file.arrayBuffer());
     // Re-encode on the server: strips metadata, enforces the size cap, and proves the file really is an image.
-    const { data, info } = await sharp(input, { failOn: 'error' })
-      .rotate()
-      .resize({ width: MAX_EDGE, height: MAX_EDGE, fit: 'inside', withoutEnlargement: true })
-      .webp({ quality: 85 })
-      .toBuffer({ resolveWithObject: true });
+    const base = () =>
+      sharp(input, { failOn: 'error' })
+        .rotate()
+        .resize({ width: MAX_EDGE, height: MAX_EDGE, fit: 'inside', withoutEnlargement: true });
+    // PNGs (posters, logos, type) stay pixel-perfect when lossless fits; anything bigger gets high-quality lossy WebP.
+    let out =
+      file.type === 'image/png'
+        ? await base().webp({ lossless: true, effort: 4 }).toBuffer({ resolveWithObject: true })
+        : null;
+    if (!out || out.data.length > LOSSLESS_MAX_BYTES) {
+      out = await base().webp({ quality: 94, smartSubsample: true, effort: 5 }).toBuffer({ resolveWithObject: true });
+    }
+    const { data, info } = out;
 
     const id = crypto.randomUUID();
     const key = `media/${id}.webp`;

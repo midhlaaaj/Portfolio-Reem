@@ -15,11 +15,36 @@ import {
 import type { MediaRecord } from '@/lib/admin/schemas';
 import { listMedia } from '../_actions/media';
 import css from '../admin.module.css';
-import { cx } from './ui';
+import { Chip, cx } from './ui';
 
 type ToastKind = 'ok' | 'error';
 type ConfirmOpts = { title: string; text: string; label: string };
-type PickOpts = { multi: boolean; selected: (string | null)[]; title?: string };
+type PickOpts = {
+  multi: boolean;
+  selected: (string | null)[];
+  title?: string;
+  /** Width / height the image is displayed at. A single chosen image is cropped to it before it is used. */
+  ratio?: number;
+};
+
+type CropState = {
+  m: MediaRecord;
+  ratio: number;
+  zoom: number;
+  ox: number;
+  oy: number;
+  busy: boolean;
+  err: string;
+  resolve: (r: MediaRecord | null | 'cancel') => void;
+};
+
+const CROP_MAX_W = 470;
+const CROP_MAX_H = 320;
+/** Frame size in px for a target ratio, fitted inside the dialog. */
+const cropFrame = (ratio: number) =>
+  ratio >= CROP_MAX_W / CROP_MAX_H
+    ? { fw: CROP_MAX_W, fh: CROP_MAX_W / ratio }
+    : { fw: CROP_MAX_H * ratio, fh: CROP_MAX_H };
 
 type AdminApi = {
   toast: (text: string, kind?: ToastKind) => void;
@@ -65,11 +90,18 @@ type Pending = {
   busy: boolean;
 };
 
-const MAX_EDGE = 2400;
+const MAX_EDGE = 3200;
+const MAX_SEND_BYTES = 3.9 * 1024 * 1024;
 
 /** Resizes in the browser first so the upload stays small enough for a serverless request. */
 async function prepareImage(file: File): Promise<{ blob: Blob; src: string; w: number; h: number }> {
   const bmp = await createImageBitmap(file);
+  // Files that already fit go up untouched, so the browser never adds a lossy pass of its own.
+  if (file.size <= MAX_SEND_BYTES && Math.max(bmp.width, bmp.height) <= MAX_EDGE) {
+    const { width: w, height: h } = bmp;
+    bmp.close();
+    return { blob: file, src: URL.createObjectURL(file), w, h };
+  }
   const k = Math.min(1, MAX_EDGE / Math.max(bmp.width, bmp.height));
   const w = Math.round(bmp.width * k);
   const h = Math.round(bmp.height * k);
@@ -79,7 +111,12 @@ async function prepareImage(file: File): Promise<{ blob: Blob; src: string; w: n
   canvas.getContext('2d')!.drawImage(bmp, 0, 0, w, h);
   bmp.close();
   const toBlob = (type: string, q: number) => new Promise<Blob | null>((res) => canvas.toBlob(res, type, q));
-  const blob = (await toBlob('image/webp', 0.88)) ?? (await toBlob('image/jpeg', 0.88));
+  // Highest quality that still fits a serverless request body.
+  let blob: Blob | null = null;
+  for (const q of [0.97, 0.92, 0.86, 0.8]) {
+    blob = (await toBlob('image/webp', q)) ?? (await toBlob('image/jpeg', q));
+    if (blob && blob.size <= MAX_SEND_BYTES) break;
+  }
   if (!blob) throw new Error('encode');
   return { blob, src: URL.createObjectURL(blob), w, h };
 }
@@ -145,9 +182,19 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     multi: boolean;
     sel: string[];
     q: string;
+    tab: 'library' | 'upload';
+    over: boolean;
     resolve: (r: MediaRecord[] | null) => void;
   } | null>(null);
-  const pickImages = useCallback(
+  const [crop, setCrop] = useState<CropState | null>(null);
+  const askCrop = useCallback(
+    (m: MediaRecord, ratio: number) =>
+      new Promise<MediaRecord | null | 'cancel'>((resolve) =>
+        setCrop({ m, ratio, zoom: 1, ox: 0, oy: 0, busy: false, err: '', resolve }),
+      ),
+    [],
+  );
+  const pickFromLibrary = useCallback(
     async (opts: PickOpts) => {
       await ensureLibrary();
       return new Promise<MediaRecord[] | null>((resolve) =>
@@ -156,11 +203,26 @@ export function AdminProvider({ children }: { children: ReactNode }) {
           multi: opts.multi,
           sel: opts.selected.filter((x): x is string => !!x),
           q: '',
+          tab: 'library',
+          over: false,
           resolve,
         }),
       );
     },
     [ensureLibrary],
+  );
+  const pickImages = useCallback(
+    async (opts: PickOpts) => {
+      const picked = await pickFromLibrary(opts);
+      const [one] = picked ?? [];
+      const ratio = opts.ratio;
+      // No crop for several images, or when the image is already the right shape or was already in use.
+      if (!picked || !one || !ratio || opts.multi || picked.length !== 1) return picked;
+      if (Math.abs(one.w / one.h / ratio - 1) < 0.02 || opts.selected[0] === one.id) return picked;
+      const out = await askCrop(one, ratio);
+      return out === 'cancel' ? null : [out ?? one];
+    },
+    [pickFromLibrary, askCrop],
   );
   const applyPicker = () => {
     if (!picker) return;
@@ -228,8 +290,14 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       }
       const added = data.media;
       setLibrary((l) => [added, ...(l ?? [])]);
-      setPicker((p) => (p ? { ...p, sel: p.multi ? [...p.sel, added.id] : [added.id] } : p));
       toast('Image added to Media.');
+      if (picker && !picker.multi && queue.current.length === 0) {
+        // A direct upload for a single-image field is used straight away.
+        picker.resolve([added]);
+        setPicker(null);
+      } else {
+        setPicker((p) => (p ? { ...p, tab: 'library', sel: p.multi ? [...p.sel, added.id] : [added.id] } : p));
+      }
       URL.revokeObjectURL(pending.src);
       router.refresh();
       void next();
@@ -242,18 +310,77 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     void next();
   };
 
+  // ---- cropper: pan and zoom the image under a frame that has the display ratio ----
+  const cropGeo = (c: CropState) => {
+    const { fw, fh } = cropFrame(c.ratio);
+    const s = Math.max(fw / c.m.w, fh / c.m.h) * c.zoom;
+    const iw = c.m.w * s;
+    const ih = c.m.h * s;
+    const mx = (iw - fw) / 2;
+    const my = (ih - fh) / 2;
+    return { fw, fh, s, iw, ih, ox: Math.min(mx, Math.max(-mx, c.ox)), oy: Math.min(my, Math.max(-my, c.oy)) };
+  };
+  const drag = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null);
+  const finishCrop = (out: MediaRecord | null | 'cancel') => {
+    crop?.resolve(out);
+    setCrop(null);
+  };
+  const applyCrop = async () => {
+    if (!crop || crop.busy) return;
+    const g = cropGeo(crop);
+    setCrop({ ...crop, busy: true, err: '' });
+    try {
+      const img = new Image();
+      img.src = crop.m.src;
+      await img.decode();
+      // The region under the frame, in the image's own pixels.
+      const sw = g.fw / g.s;
+      const sh = g.fh / g.s;
+      const sx = crop.m.w / 2 - g.ox / g.s - sw / 2;
+      const sy = crop.m.h / 2 - g.oy / g.s - sh / 2;
+      const k = Math.min(1, MAX_EDGE / Math.max(sw, sh));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(sw * k);
+      canvas.height = Math.round(sh * k);
+      canvas.getContext('2d')!.drawImage(img, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+      const toBlob = (type: string, q?: number) => new Promise<Blob | null>((res) => canvas.toBlob(res, type, q));
+      let blob = await toBlob('image/png');
+      if (blob && blob.size > MAX_SEND_BYTES) blob = await toBlob('image/webp', 0.95);
+      if (!blob) throw new Error('encode');
+      const base = crop.m.name.replace(/\.[^.]+$/, '');
+      const body = new FormData();
+      body.set('file', new File([blob], `${base}-crop`, { type: blob.type }));
+      body.set('kind', 'image');
+      body.set('alt', crop.m.alt);
+      const res = await fetch('/api/admin/upload', { method: 'POST', body });
+      const data = (await res.json()) as { ok: boolean; error?: string; media?: MediaRecord };
+      if (!data.ok || !data.media) {
+        setCrop((c) => c && { ...c, busy: false, err: data.error ?? 'The crop could not be saved. Try again.' });
+        return;
+      }
+      const added = data.media;
+      setLibrary((l) => [added, ...(l ?? [])]);
+      toast('Cropped copy added to Media.');
+      router.refresh();
+      finishCrop(added);
+    } catch {
+      setCrop((c) => c && { ...c, busy: false, err: 'The crop could not be saved. Try again.' });
+    }
+  };
+
   // Escape closes the topmost dialog.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
-      if (pending) cancelUpload();
+      if (crop) finishCrop('cancel');
+      else if (pending) cancelUpload();
       else if (picker) cancelPicker();
       else if (confirmState) closeConfirm(false);
     };
     addEventListener('keydown', onKey);
     return () => removeEventListener('keydown', onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pending, picker, confirmState]);
+  }, [crop, pending, picker, confirmState]);
 
   const api = useMemo<AdminApi>(
     () => ({ toast, confirm, pickImages, uploadFiles, go, setDirty }),
@@ -282,51 +409,101 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
       {picker && (
         <div className={cx(css.overlay, css.z60)}>
-          <div role="dialog" aria-modal="true" aria-label={picker.title} className={cx(css.dialog, css.dialogLg)}>
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={picker.title}
+            className={cx(css.dialog, css.dialogLg, css.dialogPick)}
+          >
             <div className={css.pickHead}>
               <h2 className={css.pickTitle}>{picker.title}</h2>
-              <input
-                type="search"
-                aria-label="Search images"
-                placeholder="Search"
-                className={css.pickSearch}
-                value={picker.q}
-                onChange={(e) => setPicker({ ...picker, q: e.target.value })}
-              />
-              <button type="button" className={cx(css.btn, css.btnSm)} onClick={() => fileInput.current?.click()}>
-                Upload
-              </button>
+              {picker.tab === 'library' && (
+                <input
+                  type="search"
+                  aria-label="Search images"
+                  placeholder="Search"
+                  className={css.pickSearch}
+                  value={picker.q}
+                  onChange={(e) => setPicker({ ...picker, q: e.target.value })}
+                />
+              )}
             </div>
-            <div className={css.pickGrid}>
-              {pickItems.map((m) => {
-                const k = picker.sel.indexOf(m.id);
-                return (
+            <div className={css.pickTabs} role="tablist">
+              <Chip tab small on={picker.tab === 'library'} onClick={() => setPicker({ ...picker, tab: 'library' })}>
+                Select from media
+              </Chip>
+              <Chip tab small on={picker.tab === 'upload'} onClick={() => setPicker({ ...picker, tab: 'upload' })}>
+                Upload new
+              </Chip>
+            </div>
+            {picker.tab === 'upload' ? (
+              <div className={css.pickBody}>
+                <div
+                  className={css.pickDrop}
+                  data-over={picker.over}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    if (!picker.over) setPicker({ ...picker, over: true });
+                  }}
+                  onDragLeave={() => setPicker({ ...picker, over: false })}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setPicker({ ...picker, over: false });
+                    uploadFiles(e.dataTransfer.files);
+                  }}
+                >
+                  <span>Drop {picker.multi ? 'images' : 'an image'} here</span>
                   <button
-                    key={m.id}
                     type="button"
-                    aria-pressed={k > -1}
-                    className={css.pickItem}
-                    onClick={() =>
-                      setPicker({
-                        ...picker,
-                        sel: picker.multi
-                          ? k > -1
-                            ? picker.sel.filter((x) => x !== m.id)
-                            : [...picker.sel, m.id]
-                          : k > -1
-                            ? []
-                            : [m.id],
-                      })
-                    }
+                    className={cx(css.btn, css.btnPrimary)}
+                    onClick={() => fileInput.current?.click()}
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={m.src} alt={m.alt} loading="lazy" />
-                    {k > -1 && <span className={css.pickBadge}>{picker.multi ? k + 1 : 'Selected'}</span>}
+                    Choose {picker.multi ? 'files' : 'a file'}
                   </button>
-                );
-              })}
-            </div>
+                  <span className={css.pickFootNote}>JPG, PNG, WebP or AVIF. Resized automatically.</span>
+                </div>
+              </div>
+            ) : (
+              <div className={css.pickGrid}>
+                {pickItems.length === 0 && (
+                  <p className={css.pickEmpty}>
+                    {pq ? 'No images match that search.' : 'No images yet. Use Upload new.'}
+                  </p>
+                )}
+                {pickItems.map((m) => {
+                  const k = picker.sel.indexOf(m.id);
+                  return (
+                    <button
+                      key={m.id}
+                      type="button"
+                      aria-pressed={k > -1}
+                      className={css.pickItem}
+                      onClick={() =>
+                        setPicker({
+                          ...picker,
+                          sel: picker.multi
+                            ? k > -1
+                              ? picker.sel.filter((x) => x !== m.id)
+                              : [...picker.sel, m.id]
+                            : k > -1
+                              ? []
+                              : [m.id],
+                        })
+                      }
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={m.src} alt={m.alt} loading="lazy" />
+                      <span className={css.pickCap}>{m.name}</span>
+                      {k > -1 && <span className={css.pickBadge}>{picker.multi ? k + 1 : 'Selected'}</span>}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
             <div className={css.pickFoot}>
+              {picker.multi && picker.sel.length > 0 && (
+                <span className={css.pickFootNote}>{picker.sel.length} selected</span>
+              )}
               <button type="button" className={css.btn} onClick={cancelPicker}>
                 Cancel
               </button>
@@ -390,6 +567,82 @@ export function AdminProvider({ children }: { children: ReactNode }) {
           </div>
         </div>
       )}
+
+      {crop &&
+        (() => {
+          const g = cropGeo(crop);
+          return (
+            <div className={cx(css.overlay, css.z70)}>
+              <div role="dialog" aria-modal="true" aria-label="Crop image" className={cx(css.dialog, css.dialogMd)}>
+                <h2 className={cx(css.dialogH2, css.dialogH2Sm)}>Crop image</h2>
+                <p className={css.cropHint}>
+                  Drag to position and use the slider to zoom. The frame is the shape this image is shown in on the
+                  site.
+                </p>
+                <div
+                  className={css.cropFrame}
+                  style={{ width: g.fw, height: g.fh }}
+                  onPointerDown={(e) => {
+                    e.currentTarget.setPointerCapture(e.pointerId);
+                    drag.current = { x: e.clientX, y: e.clientY, ox: g.ox, oy: g.oy };
+                  }}
+                  onPointerMove={(e) => {
+                    const d = drag.current;
+                    if (d) setCrop({ ...crop, ox: d.ox + e.clientX - d.x, oy: d.oy + e.clientY - d.y });
+                  }}
+                  onPointerUp={() => (drag.current = null)}
+                  onPointerCancel={() => (drag.current = null)}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={crop.m.src}
+                    alt=""
+                    draggable={false}
+                    className={css.cropImg}
+                    style={{
+                      width: g.iw,
+                      height: g.ih,
+                      left: g.fw / 2 - g.iw / 2 + g.ox,
+                      top: g.fh / 2 - g.ih / 2 + g.oy,
+                    }}
+                  />
+                </div>
+                <label className={css.cropZoom}>
+                  <span className={css.label}>Zoom</span>
+                  <input
+                    type="range"
+                    min={1}
+                    max={4}
+                    step={0.01}
+                    value={crop.zoom}
+                    onChange={(e) => setCrop({ ...crop, zoom: Number(e.target.value) })}
+                  />
+                </label>
+                {crop.err && (
+                  <p className={css.err} role="alert">
+                    {crop.err}
+                  </p>
+                )}
+                <div className={css.dialogActions}>
+                  <button type="button" className={css.btn} onClick={() => finishCrop('cancel')} disabled={crop.busy}>
+                    Cancel
+                  </button>
+                  <button type="button" className={css.btn} onClick={() => finishCrop(null)} disabled={crop.busy}>
+                    Use original
+                  </button>
+                  <button
+                    type="button"
+                    className={cx(css.btn, css.btnPrimary)}
+                    onClick={() => void applyCrop()}
+                    disabled={crop.busy}
+                  >
+                    {crop.busy ? 'Saving…' : 'Use crop'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
 
       {confirmState && (
         <div className={cx(css.overlay, css.z80)}>

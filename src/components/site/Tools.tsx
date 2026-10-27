@@ -28,10 +28,11 @@ function Row({ tools, reverse, label }: { tools: string[]; reverse: boolean; lab
       last = t;
       if (pos < 0) pos = reverse ? half() - 1 : 0;
       if (!paused) {
-        // scrollLeft rounds on some browsers, so the position is tracked separately and re-synced after user scrolling.
-        pos += (reverse ? -1 : 1) * SPEED * dt;
+        // The position is kept as a float and never read back from scrollLeft (which rounds), so both rows
+        // move at exactly SPEED px/s in either direction.
+        const h = half();
+        pos = (((pos + (reverse ? -1 : 1) * SPEED * dt) % h) + h) % h;
         el.scrollLeft = pos;
-        pos = el.scrollLeft + (pos - Math.round(pos));
       }
       raf = requestAnimationFrame(tick);
     };

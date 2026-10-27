@@ -148,8 +148,9 @@ export function PagesEditor({ data }: { data: Data }) {
 
   const mark = { shouldDirty: true };
   const remember = (rs: MediaRecord[]) => setMedia((m) => ({ ...m, ...Object.fromEntries(rs.map((r) => [r.id, r])) }));
-  const choose = async (current: string | null, apply: (id: string | null) => void) => {
-    const res = await pickImages({ multi: false, selected: [current] });
+  /** `ratio` is the width / height the image is shown at, so the cropper frames it the same way. */
+  const choose = async (current: string | null, apply: (id: string | null) => void, ratio?: number) => {
+    const res = await pickImages({ multi: false, selected: [current], ratio });
     if (!res) return;
     remember(res);
     apply(res[0]?.id ?? null);
@@ -217,7 +218,7 @@ export function PagesEditor({ data }: { data: Data }) {
         <button
           type="button"
           className={cx(css.btn, css.btnSm)}
-          onClick={() => void choose(seo[key].imageId, (id) => setValue(`seo.${key}.imageId`, id, mark))}
+          onClick={() => void choose(seo[key].imageId, (id) => setValue(`seo.${key}.imageId`, id, mark), 1200 / 630)}
         >
           Choose share image
         </button>
@@ -233,7 +234,7 @@ export function PagesEditor({ data }: { data: Data }) {
         type="button"
         className={cx(css.btn, css.btnXs)}
         style={{ height: 38 }}
-        onClick={() => void choose(home[field], (id) => setValue(`home.${field}`, id, mark))}
+        onClick={() => void choose(home[field], (id) => setValue(`home.${field}`, id, mark), 4 / 5)}
       >
         Change
       </button>
@@ -306,7 +307,9 @@ export function PagesEditor({ data }: { data: Data }) {
                   <button
                     type="button"
                     className={cx(css.btn, css.btnXs)}
-                    onClick={() => void choose(b.imageId, (id) => setValue(`home.brands.${i}.imageId`, id, mark))}
+                    onClick={() =>
+                      void choose(b.imageId, (id) => setValue(`home.brands.${i}.imageId`, id, mark), 4 / 5)
+                    }
                   >
                     Image
                   </button>
@@ -443,7 +446,7 @@ export function PagesEditor({ data }: { data: Data }) {
               <button
                 type="button"
                 className={cx(css.btn, css.btnSm)}
-                onClick={() => void choose(about.portraitId, (id) => setValue('about.portraitId', id, mark))}
+                onClick={() => void choose(about.portraitId, (id) => setValue('about.portraitId', id, mark), 4 / 5)}
               >
                 Choose portrait
               </button>
@@ -542,7 +545,9 @@ export function PagesEditor({ data }: { data: Data }) {
                     <button
                       type="button"
                       className={cx(css.btn, css.btnSm)}
-                      onClick={() => void choose(it.imageId, (id) => setValue(`services.items.${i}.imageId`, id, mark))}
+                      onClick={() =>
+                        void choose(it.imageId, (id) => setValue(`services.items.${i}.imageId`, id, mark), 4 / 3)
+                      }
                     >
                       Choose image
                     </button>

@@ -70,7 +70,7 @@ export function ProjectEditor({ data }: { data: ProjectEditData }) {
     setMedia((m) => ({ ...m, ...Object.fromEntries(records.map((r) => [r.id, r])) }));
 
   const chooseCover = async () => {
-    const res = await pickImages({ multi: false, selected: [coverId] });
+    const res = await pickImages({ multi: false, selected: [coverId], ratio: 6 / 5 });
     if (!res) return;
     remember(res);
     setValue('coverId', res[0]?.id ?? null, mark);

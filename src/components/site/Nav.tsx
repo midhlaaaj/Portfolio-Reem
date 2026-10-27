@@ -11,6 +11,8 @@ const LINKS = [
   { href: '/about', label: 'About', match: (p: string) => p.startsWith('/about') },
 ] as const;
 
+const DESKTOP_LINKS = [{ href: '/', label: 'Home', match: (p: string) => p === '/' }, ...LINKS] as const;
+
 type Props = { email: string; phone: string; whatsapp: string };
 
 export function Nav({ copy: c, email, phone, whatsapp }: Props & { copy: Copy }) {
@@ -31,7 +33,7 @@ export function Nav({ copy: c, email, phone, whatsapp }: Props & { copy: Copy })
             <span className={css.span1}>Reem Fathima</span>
           </TLink>
           <div className={css.div2}>
-            {LINKS.map((l) => (
+            {DESKTOP_LINKS.map((l) => (
               <TLink
                 key={l.href}
                 className={css.a2}

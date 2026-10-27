@@ -16,7 +16,7 @@ type Props = Omit<ImageProps, 'src' | 'alt' | 'width' | 'height'> &
  * renders a plain <img> on the server, so images cost no hydration. The intrinsic size comes from the media record
  * so the design's CSS keeps full control of layout.
  */
-export function Img({ m, sizes = '100vw', priority, quality, loading, ...rest }: Props) {
+export function Img({ m, sizes = '100vw', priority, quality = 90, loading, ...rest }: Props) {
   const { props } = getImageProps({
     src: m.src,
     alt: m.alt,
