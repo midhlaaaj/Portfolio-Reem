@@ -8,11 +8,13 @@ import { putObject } from '@/lib/storage';
 
 export const runtime = 'nodejs';
 
-/** Vercel functions accept request bodies up to 4.5 MB, so the browser resizes images before sending them. */
-const MAX_IMAGE_BYTES = 4 * 1024 * 1024;
+/** Only used without S3 settings (local dev); live uploads go straight to storage and have no size limit. */
+const MAX_IMAGE_BYTES = 60 * 1024 * 1024;
 const MAX_PDF_BYTES = 2.5 * 1024 * 1024;
 const MAX_EDGE = 3200;
 const LOSSLESS_MAX_BYTES = 3 * 1024 * 1024;
+/** Larger PNGs would not fit losslessly anyway, so skip the slow attempt. */
+const LOSSLESS_TRY_BYTES = 2.5 * 1024 * 1024;
 const IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/avif']);
 
 const fail = (error: string, status = 400) => NextResponse.json({ ok: false, error }, { status });
@@ -55,7 +57,7 @@ export async function POST(req: Request) {
         .resize({ width: MAX_EDGE, height: MAX_EDGE, fit: 'inside', withoutEnlargement: true });
     // PNGs (posters, logos, type) stay pixel-perfect when lossless fits; anything bigger gets high-quality lossy WebP.
     let out =
-      file.type === 'image/png'
+      file.type === 'image/png' && file.size <= LOSSLESS_TRY_BYTES
         ? await base().webp({ lossless: true, effort: 4 }).toBuffer({ resolveWithObject: true })
         : null;
     if (!out || out.data.length > LOSSLESS_MAX_BYTES) {

@@ -90,35 +90,45 @@ type Pending = {
   busy: boolean;
 };
 
-const MAX_EDGE = 3200;
-const MAX_SEND_BYTES = 3.9 * 1024 * 1024;
-
-/** Resizes in the browser first so the upload stays small enough for a serverless request. */
+/** Reads the picture's size. The file itself goes up untouched, so nothing is resized or re-compressed on the way. */
 async function prepareImage(file: File): Promise<{ blob: Blob; src: string; w: number; h: number }> {
   const bmp = await createImageBitmap(file);
-  // Files that already fit go up untouched, so the browser never adds a lossy pass of its own.
-  if (file.size <= MAX_SEND_BYTES && Math.max(bmp.width, bmp.height) <= MAX_EDGE) {
-    const { width: w, height: h } = bmp;
-    bmp.close();
-    return { blob: file, src: URL.createObjectURL(file), w, h };
-  }
-  const k = Math.min(1, MAX_EDGE / Math.max(bmp.width, bmp.height));
-  const w = Math.round(bmp.width * k);
-  const h = Math.round(bmp.height * k);
-  const canvas = document.createElement('canvas');
-  canvas.width = w;
-  canvas.height = h;
-  canvas.getContext('2d')!.drawImage(bmp, 0, 0, w, h);
+  const { width: w, height: h } = bmp;
   bmp.close();
-  const toBlob = (type: string, q: number) => new Promise<Blob | null>((res) => canvas.toBlob(res, type, q));
-  // Highest quality that still fits a serverless request body.
-  let blob: Blob | null = null;
-  for (const q of [0.97, 0.92, 0.86, 0.8]) {
-    blob = (await toBlob('image/webp', q)) ?? (await toBlob('image/jpeg', q));
-    if (blob && blob.size <= MAX_SEND_BYTES) break;
+  return { blob: file, src: URL.createObjectURL(file), w, h };
+}
+
+type SendResult = { media?: MediaRecord; error?: string };
+
+/** Uploads straight to storage with a one-off URL, so there is no size limit; falls back to the app's own route locally. */
+async function sendImage(blob: Blob, name: string, alt: string): Promise<SendResult> {
+  const json = <T,>(r: Response) => r.json().catch(() => null) as Promise<T | null>;
+  const post = (url: string, body: unknown) =>
+    fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+  const sign = await json<{ ok: boolean; error?: string; direct?: boolean; key?: string; url?: string }>(
+    await post('/api/admin/upload/sign', { type: blob.type }),
+  );
+  if (!sign?.ok) return { error: sign?.error ?? 'The server could not start that upload. Try again in a moment.' };
+
+  if (!sign.direct) {
+    const body = new FormData();
+    body.set('file', new File([blob], name, { type: blob.type }));
+    body.set('kind', 'image');
+    body.set('alt', alt);
+    const res = await fetch('/api/admin/upload', { method: 'POST', body });
+    const data = await json<{ ok: boolean; error?: string; media?: MediaRecord }>(res);
+    return data?.media
+      ? { media: data.media }
+      : { error: data?.error ?? `The server answered with an error (${res.status}).` };
   }
-  if (!blob) throw new Error('encode');
-  return { blob, src: URL.createObjectURL(blob), w, h };
+
+  const put = await fetch(sign.url!, { method: 'PUT', headers: { 'Content-Type': blob.type }, body: blob });
+  if (!put.ok) return { error: `Storage refused the upload (${put.status}). Try again.` };
+  const res = await post('/api/admin/upload/complete', { key: sign.key, alt, name });
+  const data = await json<{ ok: boolean; error?: string; media?: MediaRecord }>(res);
+  return data?.media
+    ? { media: data.media }
+    : { error: data?.error ?? `The server answered with an error (${res.status}).` };
 }
 
 export function AdminProvider({ children }: { children: ReactNode }) {
@@ -277,18 +287,13 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       return;
     }
     setPending({ ...pending, busy: true, err: '' });
-    const body = new FormData();
-    body.set('file', new File([pending.blob], pending.name, { type: pending.blob.type }));
-    body.set('kind', 'image');
-    body.set('alt', pending.alt.trim());
     try {
-      const res = await fetch('/api/admin/upload', { method: 'POST', body });
-      const data = (await res.json()) as { ok: boolean; error?: string; media?: MediaRecord };
-      if (!data.ok || !data.media) {
-        setPending((p) => p && { ...p, busy: false, err: data.error ?? 'That upload failed. Try again.' });
+      const sent = await sendImage(pending.blob, pending.name, pending.alt.trim());
+      if (!sent.media) {
+        setPending((p) => p && { ...p, busy: false, err: sent.error ?? 'That upload failed. Try again.' });
         return;
       }
-      const added = data.media;
+      const added = sent.media;
       setLibrary((l) => [added, ...(l ?? [])]);
       toast('Image added to Media.');
       if (picker && !picker.multi && queue.current.length === 0) {
@@ -338,27 +343,19 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       const sh = g.fh / g.s;
       const sx = crop.m.w / 2 - g.ox / g.s - sw / 2;
       const sy = crop.m.h / 2 - g.oy / g.s - sh / 2;
-      const k = Math.min(1, MAX_EDGE / Math.max(sw, sh));
       const canvas = document.createElement('canvas');
-      canvas.width = Math.round(sw * k);
-      canvas.height = Math.round(sh * k);
+      canvas.width = Math.round(sw);
+      canvas.height = Math.round(sh);
       canvas.getContext('2d')!.drawImage(img, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
-      const toBlob = (type: string, q?: number) => new Promise<Blob | null>((res) => canvas.toBlob(res, type, q));
-      let blob = await toBlob('image/png');
-      if (blob && blob.size > MAX_SEND_BYTES) blob = await toBlob('image/webp', 0.95);
+      // PNG keeps the crop pixel-exact; the upload has no size limit.
+      const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, 'image/png'));
       if (!blob) throw new Error('encode');
-      const base = crop.m.name.replace(/\.[^.]+$/, '');
-      const body = new FormData();
-      body.set('file', new File([blob], `${base}-crop`, { type: blob.type }));
-      body.set('kind', 'image');
-      body.set('alt', crop.m.alt);
-      const res = await fetch('/api/admin/upload', { method: 'POST', body });
-      const data = (await res.json()) as { ok: boolean; error?: string; media?: MediaRecord };
-      if (!data.ok || !data.media) {
-        setCrop((c) => c && { ...c, busy: false, err: data.error ?? 'The crop could not be saved. Try again.' });
+      const sent = await sendImage(blob, `${crop.m.name.replace(/\.[^.]+$/, '')}-crop.png`, crop.m.alt);
+      if (!sent.media) {
+        setCrop((c) => c && { ...c, busy: false, err: sent.error ?? 'The crop could not be saved. Try again.' });
         return;
       }
-      const added = data.media;
+      const added = sent.media;
       setLibrary((l) => [added, ...(l ?? [])]);
       toast('Cropped copy added to Media.');
       router.refresh();

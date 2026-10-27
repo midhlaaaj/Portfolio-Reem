@@ -2,6 +2,7 @@ import 'server-only';
 import { mkdir, unlink, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 const env = process.env;
 const endpoint = env.AWS_ENDPOINT_URL_S3 || env.S3_ENDPOINT;
@@ -45,6 +46,24 @@ export async function putObject(key: string, body: Buffer, contentType: string):
   await mkdir(path.dirname(file), { recursive: true });
   await writeFile(file, body);
   return `/uploads/${key}`;
+}
+
+/** True when files live in the S3 bucket, so the browser can upload to it directly. */
+export const directUploads = () => configured;
+
+/** A short-lived URL the browser can PUT a file to, skipping the serverless request-size limit. */
+export async function presignPut(key: string, contentType: string): Promise<string> {
+  assertUsable();
+  return getSignedUrl(s3(), new PutObjectCommand({ Bucket: bucket, Key: key, ContentType: contentType }), {
+    expiresIn: 600,
+  });
+}
+
+/** Reads a whole stored file into memory (used to check what was uploaded directly). */
+export async function readObject(key: string): Promise<Buffer> {
+  assertUsable();
+  const res = await s3().send(new GetObjectCommand({ Bucket: bucket, Key: key }));
+  return Buffer.from(await res.Body!.transformToByteArray());
 }
 
 /** Reads a stored file for the /files route. */
